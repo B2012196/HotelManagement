@@ -1,0 +1,6 @@
+services:
+  hotelmanagementdb:
+   image: postgres
+
+volumes:
+  postgres_hotelmanagement:
