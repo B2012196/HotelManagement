@@ -12,7 +12,7 @@ builder.Services.AddMediatR(config =>
 
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 
 var app = builder.Build();

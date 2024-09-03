@@ -1,4 +1,4 @@
-﻿namespace HotelManagement.API.Hotels.CreateHotel
+﻿namespace HotelManagement.API.Features.Hotels.CreateHotel
 {
     public record CreateHotelRequest
         (string Name, string Address, string Phone, string Email, int Stars, DateTime CheckinTime, DateTime CheckoutTime);
@@ -14,9 +14,9 @@
 
                 var result = await sender.Send(command);
 
-                var response = result.Adapt<CreateHotelResponse>(); 
+                var response = result.Adapt<CreateHotelResponse>();
 
-                return Results.Created($"/hotels/{response.Id}", response);    
+                return Results.Created($"/hotels/{response.Id}", response);
             })
             .WithName("CreateHotel")
             .Produces<CreateHotelResponse>(StatusCodes.Status201Created)
