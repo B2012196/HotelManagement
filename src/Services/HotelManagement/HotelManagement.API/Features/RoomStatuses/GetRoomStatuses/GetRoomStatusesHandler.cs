@@ -1,19 +1,13 @@
-﻿
-namespace HotelManagement.API.Features.RoomStatuses.GetRoomStatuses
+﻿namespace HotelManagement.API.Features.RoomStatuses.GetRoomStatuses
 {
     public record GetRoomStatusesQuery() : IQuery<GetRoomStatusesResult>;
     public record GetRoomStatusesResult(IEnumerable<RoomStatus> Statuses);
-    public class GetRoomStatusesHandler : IQueryHandler<GetRoomStatusesQuery, GetRoomStatusesResult>
+    public class GetRoomStatusesHandler(ApplicationDbContext context)
+        : IQueryHandler<GetRoomStatusesQuery, GetRoomStatusesResult>
     {
-        private readonly ApplicationDbContext _context;
-
-        public GetRoomStatusesHandler(ApplicationDbContext context)
-        {
-            _context = context;
-        }
         public async Task<GetRoomStatusesResult> Handle(GetRoomStatusesQuery query, CancellationToken cancellationToken)
         {
-            var statuses = await _context.RoomStatus.ToListAsync(cancellationToken);
+            var statuses = await context.RoomStatus.ToListAsync(cancellationToken);
 
             return new GetRoomStatusesResult(statuses);
         }

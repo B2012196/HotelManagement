@@ -1,4 +1,6 @@
-﻿namespace HotelManagement.API.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HotelManagement.API.Models
 {
     public class Room
     {
@@ -11,8 +13,11 @@
         public Guid StatusId { get; set; }
 
         //Navigation Properties
+        [JsonIgnore]
         public Hotel Hotel { get; set; }
+        [JsonIgnore]
         public RoomType RoomType { get; set; }
+        [JsonIgnore]
         public RoomStatus RoomStatus { get; set; }
     }
 }

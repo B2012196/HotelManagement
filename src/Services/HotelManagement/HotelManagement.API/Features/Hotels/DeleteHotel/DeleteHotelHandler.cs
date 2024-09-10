@@ -2,25 +2,29 @@
 {
     public record DeleteHotelCommand(Guid HotelId) : ICommand<DeleteHotelResult>;
     public record DeleteHotelResult(bool IsSuccess);
-    public class DeleteHotelHandler : ICommandHandler<DeleteHotelCommand, DeleteHotelResult>
-    {
-        private readonly ApplicationDbContext _context;
 
-        public DeleteHotelHandler(ApplicationDbContext context)
+    public class DeleteHotelCommandValidator : AbstractValidator<DeleteHotelCommand>
+    {
+        public DeleteHotelCommandValidator()
         {
-            _context = context;
+            RuleFor(x => x.HotelId).NotEmpty().WithMessage("Hotel ID is required");
         }
+    }
+
+    public class DeleteHotelHandler(ApplicationDbContext context)
+        : ICommandHandler<DeleteHotelCommand, DeleteHotelResult>
+    {
         public async Task<DeleteHotelResult> Handle(DeleteHotelCommand command, CancellationToken cancellationToken)
         {
-            var hotel = await _context.Hotels.SingleOrDefaultAsync(h => h.HotelId == command.HotelId, cancellationToken);
+            var hotel = await context.Hotels.SingleOrDefaultAsync(h => h.HotelId == command.HotelId, cancellationToken);
 
             if (hotel is null)
             {
-                throw new HotelNotFoundException();
+                throw new HotelNotFoundException(command.HotelId);
             }
 
-            _context.Hotels.Remove(hotel);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.Hotels.Remove(hotel);
+            await context.SaveChangesAsync(cancellationToken);
 
             return new DeleteHotelResult(true);
         }

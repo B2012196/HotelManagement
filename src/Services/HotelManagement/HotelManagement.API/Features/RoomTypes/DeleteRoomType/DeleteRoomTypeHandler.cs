@@ -1,23 +1,25 @@
-﻿
-namespace HotelManagement.API.Features.RoomTypes.DeleteRoomType
+﻿namespace HotelManagement.API.Features.RoomTypes.DeleteRoomType
 {
     public record DeleteRoomTypeCommand(Guid TypeId) : ICommand<DeleteRoomTypeResult>;
     public record DeleteRoomTypeResult(bool IsSuccess);
-    public class DeleteRoomTypeHandler : ICommandHandler<DeleteRoomTypeCommand, DeleteRoomTypeResult>
+    public class DeleteRoomTypeValidator : AbstractValidator<DeleteRoomTypeCommand>
     {
-        private readonly ApplicationDbContext _context;
-
-        public DeleteRoomTypeHandler(ApplicationDbContext context)
+        public DeleteRoomTypeValidator()
         {
-            _context = context;
+            RuleFor(x => x.TypeId)
+                .NotEmpty().WithMessage("TypeId is required.");
         }
+    }
+    public class DeleteRoomTypeHandler(ApplicationDbContext context)
+        : ICommandHandler<DeleteRoomTypeCommand, DeleteRoomTypeResult>
+    {
         public async Task<DeleteRoomTypeResult> Handle(DeleteRoomTypeCommand command, CancellationToken cancellationToken)
         {
-            var type = await _context.RoomTypes.SingleOrDefaultAsync(t => t.TypeId == command.TypeId, cancellationToken);
+            var type = await context.RoomTypes.SingleOrDefaultAsync(t => t.TypeId == command.TypeId, cancellationToken);
             if (type is null) { }
 
-            _context.RoomTypes.Remove(type);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.RoomTypes.Remove(type);
+            await context.SaveChangesAsync(cancellationToken);
             return new DeleteRoomTypeResult(true);
 
         }

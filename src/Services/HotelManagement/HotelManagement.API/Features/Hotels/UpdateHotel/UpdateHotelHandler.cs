@@ -6,20 +6,28 @@
 
     public record UpdateHotelResult(bool IsSuccess);
 
-    public class UpdateHotelCommandHandler : ICommandHandler<UpdateHotelCommand, UpdateHotelResult>
+    public class UpdateHotelCommandValidator : AbstractValidator<UpdateHotelCommand>
     {
-        private readonly ApplicationDbContext _context;
-
-        public UpdateHotelCommandHandler(ApplicationDbContext context)
+        public UpdateHotelCommandValidator()
         {
-            _context = context;
+            RuleFor(x => x.HotelId).NotEmpty().WithMessage("Hotel ID is required");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Hotel name is required");
+            RuleFor(x => x.Phone).NotEmpty().WithMessage("Phone number is required");
+            RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("A valid email is required");
+            RuleFor(x => x.Stars).GreaterThan(0).WithMessage("Stars must be greater than 0");
+            RuleFor(x => x.CheckinTime).LessThan(x => x.CheckoutTime)
+                .WithMessage("Check-in time must be before check-out time");
         }
+    }
+    public class UpdateHotelCommandHandler (ApplicationDbContext context)
+        : ICommandHandler<UpdateHotelCommand, UpdateHotelResult>
+    {
         public async Task<UpdateHotelResult> Handle(UpdateHotelCommand command, CancellationToken cancellationToken)
         {
-            var hotel = await _context.Hotels.SingleOrDefaultAsync(h => h.HotelId == command.HotelId, cancellationToken);
+            var hotel = await context.Hotels.SingleOrDefaultAsync(h => h.HotelId == command.HotelId, cancellationToken);
             if (hotel is null)
             {
-                throw new HotelNotFoundException();
+                throw new HotelNotFoundException(command.HotelId);
             }
 
             hotel.Name = command.Name;
@@ -30,8 +38,8 @@
             hotel.CheckinTime = command.CheckinTime;
             hotel.CheckoutTime = command.CheckoutTime;
 
-            _context.Hotels.Update(hotel);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.Hotels.Update(hotel);
+            await context.SaveChangesAsync(cancellationToken);
             return new UpdateHotelResult(true);
 
 

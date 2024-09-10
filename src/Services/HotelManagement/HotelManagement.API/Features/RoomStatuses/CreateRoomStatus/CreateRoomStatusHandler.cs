@@ -2,14 +2,17 @@
 {
     public record CreateRoomStatusCommand(string Name) : ICommand<CreateRoomStatusResult>;
     public record CreateRoomStatusResult(Guid StatusId);
-    public class CreateRoomStatusHandler : ICommandHandler<CreateRoomStatusCommand, CreateRoomStatusResult>
+    public class CreateRoomStatusValidator : AbstractValidator<CreateRoomStatusCommand>
     {
-        private readonly ApplicationDbContext _context;
-
-        public CreateRoomStatusHandler(ApplicationDbContext context)
+        public CreateRoomStatusValidator()
         {
-            _context = context;
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("StatusName is required.");
         }
+    }
+    public class CreateRoomStatusHandler(ApplicationDbContext context)
+        : ICommandHandler<CreateRoomStatusCommand, CreateRoomStatusResult>
+    {
         public async Task<CreateRoomStatusResult> Handle(CreateRoomStatusCommand command, CancellationToken cancellationToken)
         {
             var status = new RoomStatus
@@ -18,8 +21,8 @@
                 Name = command.Name,
             };   
             
-            _context.RoomStatus.Add(status);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.RoomStatus.Add(status);
+            await context.SaveChangesAsync(cancellationToken);
 
             return new CreateRoomStatusResult(status.StatusId);
         }

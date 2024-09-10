@@ -6,6 +6,9 @@
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>39551352-5683-4f6c-9d87-0419684f7b87</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup>
+    <DockerServiceName>hotelmanagement.api</DockerServiceName>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>

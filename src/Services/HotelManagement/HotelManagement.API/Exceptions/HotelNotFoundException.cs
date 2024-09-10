@@ -1,8 +1,8 @@
 ﻿namespace HotelManagement.API.Exceptions
 {
-    public class HotelNotFoundException : Exception
+    public class HotelNotFoundException : NotFoundException
     {
-        public HotelNotFoundException() : base("Hotel not found!")
+        public HotelNotFoundException(Guid Id) : base("Hotel", Id)
         {
             
         }

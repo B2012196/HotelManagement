@@ -1,23 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace HotelManagement.API.Features.Hotels.GetHotels
+﻿namespace HotelManagement.API.Features.Hotels.GetHotels
 {
-    public record GetHotelsQuery() : IQuery<GetHotelsResult>;
-
+    public record GetHotelsQuery(int? PageNumber = 1, int? PageSize = 10) 
+        : IQuery<GetHotelsResult>;
+        
     public record GetHotelsResult(IEnumerable<Hotel> Hotels);
-    public class GetHotelsQueryHandler : IQueryHandler<GetHotelsQuery, GetHotelsResult>
+    public class GetHotelsQueryHandler(ApplicationDbContext context)
+        : IQueryHandler<GetHotelsQuery, GetHotelsResult>
     {
-        private readonly ApplicationDbContext _context;
-
-        public GetHotelsQueryHandler(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<GetHotelsResult> Handle(GetHotelsQuery query, CancellationToken cancellationToken)
         {
-            var hotels = await _context.Hotels.ToListAsync(cancellationToken);
-            return new GetHotelsResult(hotels);
+            //Truy xuat du lieu tu database
+            var hotels = context.Hotels.AsQueryable();
+
+            // Thêm OrderBy để sắp xếp kết quả
+            hotels = hotels.OrderBy(h => h.HotelId);
+
+            //Ap dung phan trang neu co nhap PageNumber va PageSize
+            if (query.PageNumber.HasValue && query.PageSize.HasValue)
+            {
+                int pageNumber = query.PageNumber.Value;    
+                var pageSize = query.PageSize.Value;
+
+                //Tinh so ban ghi can bo qua
+                int skip = (pageNumber - 1) * pageSize;
+
+                //Ap dung phan trang
+                hotels = hotels.Skip(skip).Take(pageSize);
+
+            }
+
+            //var hotels = await _context.Hotels.ToListAsync(cancellationToken);
+            return new GetHotelsResult(await hotels.ToListAsync());
         }
     }
 }

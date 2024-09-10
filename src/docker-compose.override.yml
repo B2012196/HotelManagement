@@ -10,3 +10,57 @@ services:
         - "5435:5432"
     volumes:
       - postgres_hotelmanagement:/var/lib/postgresql/data/ 
+
+  guestdb:
+    container_name: guestdb
+    environment:
+      - POSTGRES_USER=guestpostgres
+      - POSTGRES_PASSWORD=guestpostgres
+      - POSTGRES_DB=GuestDb
+    restart: always
+    ports:
+        - "5436:5432"
+    volumes:
+      - postgres_guest:/var/lib/postgresql/data/ 
+   
+  bookingdb:
+    container_name: bookingdb
+    environment:
+      - POSTGRES_USER=bookingpostgres
+      - POSTGRES_PASSWORD=bookingpostgres
+      - POSTGRES_DB=BookingDb
+    restart: always
+    ports:
+        - "5437:5432"
+    volumes:
+      - postgres_booking:/var/lib/postgresql/data/  
+    
+
+  hotelmanagement.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      # - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=hotelmanagementdb;Port=5432;Database=HotelmanagementDb;User Id=hotelpostgres;Password=hotelpostgres;Include Error Detail=true
+    depends_on:
+      - hotelmanagementdb
+    ports:
+      - "6000:8080"
+      # - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  guestmanagement.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      # - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=guestdb;Port=5432;Database=GuestDb;User Id=guestpostgres;Password=guestpostgres;Include Error Detail=true
+    depends_on:
+      - guestdb
+    ports:
+      - "6001:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

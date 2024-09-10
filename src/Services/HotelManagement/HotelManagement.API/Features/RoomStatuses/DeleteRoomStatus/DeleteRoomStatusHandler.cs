@@ -3,21 +3,24 @@ namespace HotelManagement.API.Features.RoomStatuses.DeleteRoomStatus
 {
     public record DeleteRoomStatusCommand(Guid StatusId) : ICommand<DeleteRoomStatusResult>;
     public record DeleteRoomStatusResult(bool IsSuccess);
-    public class DeleteRoomStatusHandler : ICommandHandler<DeleteRoomStatusCommand, DeleteRoomStatusResult>
+    public class DeleteRoomStatusValidator : AbstractValidator<DeleteRoomStatusCommand>
     {
-        private readonly ApplicationDbContext _context;
-
-        public DeleteRoomStatusHandler(ApplicationDbContext context)
+        public DeleteRoomStatusValidator()
         {
-            _context = context;
+            RuleFor(x => x.StatusId)
+                .NotEmpty().WithMessage("StatusId is required.");
         }
+    }
+    public class DeleteRoomStatusHandler(ApplicationDbContext context)
+        : ICommandHandler<DeleteRoomStatusCommand, DeleteRoomStatusResult>
+    {
         public async Task<DeleteRoomStatusResult> Handle(DeleteRoomStatusCommand command, CancellationToken cancellationToken)
         {
-            var status = await _context.RoomStatus.SingleOrDefaultAsync(s => s.StatusId == command.StatusId, cancellationToken);
+            var status = await context.RoomStatus.SingleOrDefaultAsync(s => s.StatusId == command.StatusId, cancellationToken);
             if (status is null) { }
 
-            _context.RoomStatus.Remove(status);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.RoomStatus.Remove(status);
+            await context.SaveChangesAsync(cancellationToken);
 
             return new DeleteRoomStatusResult(true);
         }

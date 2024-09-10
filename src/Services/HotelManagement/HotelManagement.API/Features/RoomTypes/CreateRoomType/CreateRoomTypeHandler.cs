@@ -3,14 +3,27 @@
     public record CreateRoomTypeCommand(string Name, string Description, decimal PricePerNight, int Capacity) 
         : ICommand<CreateRoomTypeResult>;
     public record CreateRoomTypeResult(Guid TypeId);
-    public class CreateRoomTypeHandler : ICommandHandler<CreateRoomTypeCommand, CreateRoomTypeResult>
+    public class CreateRoomTypeValidator : AbstractValidator<CreateRoomTypeCommand>
     {
-        private readonly ApplicationDbContext _context;
-
-        public CreateRoomTypeHandler(ApplicationDbContext context)
+        public CreateRoomTypeValidator()
         {
-            _context = context;
+            RuleFor(x => x.Name).NotEmpty().WithMessage("RoomTypeName is required.")
+                .MaximumLength(100).WithMessage("RoomTypeName cannot exceed 100 characters.");
+
+            RuleFor(x => x.Description)
+                .NotEmpty().WithMessage("Description is required.")
+                .MaximumLength(200).WithMessage("Description cannot exceed 200 characters.");
+
+            RuleFor(x => x.PricePerNight)
+                .GreaterThan(0).WithMessage("Price per night must be greater than zero.");
+
+            RuleFor(x => x.Capacity)
+                .GreaterThan(0).WithMessage("Capacity must be greater than zero.");
         }
+    }
+    public class CreateRoomTypeHandler(ApplicationDbContext context)
+        : ICommandHandler<CreateRoomTypeCommand, CreateRoomTypeResult>
+    {
         public async Task<CreateRoomTypeResult> Handle(CreateRoomTypeCommand command, CancellationToken cancellationToken)
         {
             var type = new RoomType
@@ -22,8 +35,8 @@
                 Capacity = command.Capacity
             };
 
-            _context.RoomTypes.Add(type);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.RoomTypes.Add(type);
+            await context.SaveChangesAsync(cancellationToken);
 
             return new CreateRoomTypeResult(type.TypeId);
         }

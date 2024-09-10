@@ -6,5 +6,15 @@ global using HotelManagement.API.Models;
 global using HotelManagement.API.Data;
 global using HotelManagement.API.Exceptions;
 global using Microsoft.EntityFrameworkCore;
+global using FluentValidation;
+global using BuildingBlocks.Exceptions;
+global using BuildingBlocks.Behaviors;
+global using BuildingBlocks.Exceptions.Handler;
+
+
+
+
+
+
 
 
