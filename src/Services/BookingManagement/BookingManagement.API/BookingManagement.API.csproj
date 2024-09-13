@@ -7,6 +7,7 @@
     <UserSecretsId>ae07e95b-e6c0-478a-8f98-e7b36b9dc938</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\BookingRooms\" />
   </ItemGroup>
 
 </Project>

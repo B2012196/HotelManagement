@@ -24,7 +24,6 @@
                 throw new BookingNotFoundException(command.BookingId);
             }
 
-            booking.RoomId = command.RoomId;
             booking.BookingStatus = BookingStatus.Confirmed;
 
             context.Bookings.Update(booking);

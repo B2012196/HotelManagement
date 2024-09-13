@@ -6,7 +6,9 @@
       "serviceActions": {
         "hotelmanagementdb": "StartWithoutDebugging",
         "hotelmanagement.api": "StartDebugging",
-        "guestmanagement.api": "StartDebugging"
+        "guestmanagement.api": "StartDebugging",
+        "bookingmanagement.api": "StartDebugging",
+        "paymentmanagement.api": "StartDebugging"
       }
     }
   }

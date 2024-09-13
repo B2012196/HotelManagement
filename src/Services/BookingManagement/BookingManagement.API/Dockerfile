@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/BookingManagement/BookingManagement.API/BookingManagement.API.csproj", "Services/BookingManagement/BookingManagement.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 RUN dotnet restore "./Services/BookingManagement/BookingManagement.API/BookingManagement.API.csproj"
 COPY . .
 WORKDIR "/src/Services/BookingManagement/BookingManagement.API"

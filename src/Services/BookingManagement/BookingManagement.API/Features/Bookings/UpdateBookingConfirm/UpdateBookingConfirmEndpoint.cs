@@ -1,4 +1,6 @@
-﻿namespace BookingManagement.API.Features.Bookings.UpdateBookingConfirm
+﻿using BookingManagement.API.Features.BookingRooms.CreateBookingRoom;
+
+namespace BookingManagement.API.Features.Bookings.UpdateBookingConfirm
 {
     public record UpdateBookingConfirmRequest(Guid BookingId, Guid RoomId);
     public record UpdateBookingConfirmResponse(bool IsSuccess);
@@ -13,6 +15,15 @@
                 var result = await sender.Send(command);
 
                 var response = result.Adapt<UpdateBookingConfirmResponse>();
+
+                if (result.IsSuccess)
+                {
+                    //Tạo BookingRoom
+                    var command2 = request.Adapt<CreateBookingRoomCommand>();
+                    var result2 = await sender.Send(command2);
+                    var response2 = result2.Adapt<UpdateBookingConfirmResponse>();
+                }
+
                 return Results.Ok(response);
             })
             .WithName("UpdateBookingConfirm")

@@ -17,11 +17,10 @@ namespace BookingManagement.API.Data.Migrations
                 {
                     BookingId = table.Column<Guid>(type: "uuid", nullable: false),
                     GuestId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoomId = table.Column<Guid>(type: "uuid", nullable: true),
                     ExpectedCheckinDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ExpectedCheckoutDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CheckinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CheckoutDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CheckinDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CheckoutDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "numeric(12,2)", nullable: true),
                     BookingStatus = table.Column<int>(type: "integer", nullable: false)
                 },

@@ -35,7 +35,29 @@ services:
     volumes:
       - postgres_booking:/var/lib/postgresql/data/  
     
+  paymentdb:
+    container_name: paymentdb
+    environment:
+      - POSTGRES_USER=paymentpostgres
+      - POSTGRES_PASSWORD=paymentpostgres
+      - POSTGRES_DB=PaymentDb
+    restart: always
+    ports:
+        - "5438:5432"
+    volumes:
+      - postgres_payment:/var/lib/postgresql/data/
 
+  staffdb:
+    container_name: staffdb
+    environment:
+      - POSTGRES_USER=staffpostgres
+      - POSTGRES_PASSWORD=staffpostgres
+      - POSTGRES_DB=StaffDb
+    restart: always
+    ports:
+        - "5439:5432"
+    volumes:
+      - postgres_staff:/var/lib/postgresql/data/
   hotelmanagement.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -61,6 +83,34 @@ services:
       - guestdb
     ports:
       - "6001:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  bookingmanagement.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      # - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=bookingdb;Port=5432;Database=BookingDb;User Id=bookingpostgres;Password=bookingpostgres;Include Error Detail=true
+    ports:
+      - "6002:8080"
+    depends_on:
+      - bookingdb
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  paymentmanagement.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      # - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=paymentdb;Port=5432;Database=PaymentDb;User Id=paymentpostgres;Password=paymentpostgres;Include Error Detail=true
+    ports:
+      - "6003:8080"
+    depends_on:
+      - paymentdb
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

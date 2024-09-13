@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/PaymentManagement/PaymentManagement.API/PaymentManagement.API.csproj", "Services/PaymentManagement/PaymentManagement.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 RUN dotnet restore "./Services/PaymentManagement/PaymentManagement.API/PaymentManagement.API.csproj"
 COPY . .
 WORKDIR "/src/Services/PaymentManagement/PaymentManagement.API"

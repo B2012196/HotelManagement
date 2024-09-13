@@ -8,6 +8,12 @@ services:
   bookingdb:
     image: postgres
 
+  paymentdb:
+    image: postgres
+
+  staffdb:
+    image: postgres
+
   hotelmanagement.api:
     image: ${DOCKER_REGISTRY-}hotelmanagementapi
     build:
@@ -20,9 +26,25 @@ services:
       context: .
       dockerfile: Services/GuestManagement/GuestManagement.API/Dockerfile
 
+  bookingmanagement.api:
+    image: ${DOCKER_REGISTRY-}bookingmanagementapi
+    build:
+      context: .
+      dockerfile: Services/BookingManagement/BookingManagement.API/Dockerfile
+
+  paymentmanagement.api:
+    image: ${DOCKER_REGISTRY-}paymentmanagementapi
+    build:
+      context: .
+      dockerfile: Services/PaymentManagement/PaymentManagement.API/Dockerfile
+
 volumes:
   postgres_hotelmanagement:    
   postgres_guest:
   postgres_booking:
+  postgres_payment:
+  postgres_staff:
+
+
 
 

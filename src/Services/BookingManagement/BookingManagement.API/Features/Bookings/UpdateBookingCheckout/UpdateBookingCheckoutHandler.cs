@@ -50,9 +50,8 @@
             TimeSpan lateCheckoutTime2 = new TimeSpan(15, 0, 0);
             TimeSpan lateCheckoutTime3 = new TimeSpan(18, 0, 0);
 
-            // Tính số giờ lưu trú
-            TimeSpan duration = checkoutDate - checkinDate;
-            int totalDays = (int)duration.TotalDays;
+            // Tính số ngày lưu trú
+            int totalDays = (int)(checkoutDate.Date - checkinDate.Date).TotalDays + 1;
 
             // Kiểm tra trường hợp check-in sớm
             decimal earlyCheckinFee = 0;

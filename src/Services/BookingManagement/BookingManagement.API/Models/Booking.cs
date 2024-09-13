@@ -4,7 +4,6 @@
     {
         public Guid BookingId { get; set; }
         public Guid GuestId { get; set; }
-        public Guid? RoomId { get; set; }
         public DateTime ExpectedCheckinDate { get; set; }
         public DateTime ExpectedCheckoutDate { get; set; }
         public DateTime? CheckinDate { get; set; }

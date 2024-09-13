@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingManagement.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240910022259_InitialCreate")]
+    [Migration("20240911093642_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -35,10 +35,10 @@ namespace BookingManagement.API.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("CheckinDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("CheckoutDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("ExpectedCheckinDate")
                         .HasColumnType("timestamp without time zone");
@@ -47,9 +47,6 @@ namespace BookingManagement.API.Data.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("GuestId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("RoomId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal?>("TotalPrice")
