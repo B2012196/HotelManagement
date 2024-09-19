@@ -37,8 +37,6 @@ namespace GuestManagement.API.Guests.UpdateGuest
             guest.LastName = command.LastName;
             guest.DateofBirst = command.DateofBirst;
             guest.Address = command.Address;
-            guest.Phone = command.Phone;
-            guest.Email = command.Email;
 
             //save database
             context.Guests.Update(guest);

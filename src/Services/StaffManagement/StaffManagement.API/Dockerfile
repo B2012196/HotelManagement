@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/StaffManagement/StaffManagement.API/StaffManagement.API.csproj", "Services/StaffManagement/StaffManagement.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 RUN dotnet restore "./Services/StaffManagement/StaffManagement.API/StaffManagement.API.csproj"
 COPY . .
 WORKDIR "/src/Services/StaffManagement/StaffManagement.API"

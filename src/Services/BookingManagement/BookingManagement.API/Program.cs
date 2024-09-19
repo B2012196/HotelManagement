@@ -1,3 +1,4 @@
+using BuildingBlocks.Messaging.MassTransit;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -20,6 +21,9 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+
+//Async communication service
+builder.Services.AddMessageBroker(builder.Configuration);
 
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();

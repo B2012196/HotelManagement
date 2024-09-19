@@ -29,7 +29,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentManagement.API", "Se
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StaffManagement", "StaffManagement", "{D3A0B3E1-8227-40D0-9E91-56723993A0F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffManagement.API", "Services\StaffManagement\StaffManagement.API\StaffManagement.API.csproj", "{FF284AB8-C0FF-4C2A-8917-A1919AE27023}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffManagement.API", "Services\StaffManagement\StaffManagement.API\StaffManagement.API.csproj", "{FF284AB8-C0FF-4C2A-8917-A1919AE27023}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotificationManagement", "NotificationManagement", "{E9387DD5-41F5-493D-9F43-FFE4C9ADBC9A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationManagement.API", "Services\NotificationManagement\NotificationManagement.API\NotificationManagement.API.csproj", "{358FE35C-9833-4299-95B5-2952E2E73FF6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildingBlocks.Messaging", "BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.csproj", "{6C8E7FFB-7E85-4A4E-BC26-3F0FA34CF930}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityManagement", "IdentityManagement", "{0278A54D-FC27-4E1B-B7BD-E72C185B8F2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityManagement.API", "Services\IdentityManagement\IdentityManagement.API\IdentityManagement.API.csproj", "{82093A47-CAC5-4938-9F76-ECEA6CC3AA28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +75,18 @@ Global
 		{FF284AB8-C0FF-4C2A-8917-A1919AE27023}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF284AB8-C0FF-4C2A-8917-A1919AE27023}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF284AB8-C0FF-4C2A-8917-A1919AE27023}.Release|Any CPU.Build.0 = Release|Any CPU
+		{358FE35C-9833-4299-95B5-2952E2E73FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{358FE35C-9833-4299-95B5-2952E2E73FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{358FE35C-9833-4299-95B5-2952E2E73FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{358FE35C-9833-4299-95B5-2952E2E73FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C8E7FFB-7E85-4A4E-BC26-3F0FA34CF930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C8E7FFB-7E85-4A4E-BC26-3F0FA34CF930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C8E7FFB-7E85-4A4E-BC26-3F0FA34CF930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C8E7FFB-7E85-4A4E-BC26-3F0FA34CF930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82093A47-CAC5-4938-9F76-ECEA6CC3AA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82093A47-CAC5-4938-9F76-ECEA6CC3AA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82093A47-CAC5-4938-9F76-ECEA6CC3AA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82093A47-CAC5-4938-9F76-ECEA6CC3AA28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +103,11 @@ Global
 		{0BD3B8EB-71A1-4788-9D62-70CD132B2741} = {284900D1-5655-4ADF-8728-1FF227902DB0}
 		{D3A0B3E1-8227-40D0-9E91-56723993A0F3} = {804F814D-2B97-45FF-8AAD-F42BD0212EC9}
 		{FF284AB8-C0FF-4C2A-8917-A1919AE27023} = {D3A0B3E1-8227-40D0-9E91-56723993A0F3}
+		{E9387DD5-41F5-493D-9F43-FFE4C9ADBC9A} = {804F814D-2B97-45FF-8AAD-F42BD0212EC9}
+		{358FE35C-9833-4299-95B5-2952E2E73FF6} = {E9387DD5-41F5-493D-9F43-FFE4C9ADBC9A}
+		{6C8E7FFB-7E85-4A4E-BC26-3F0FA34CF930} = {76C7EAE5-786E-479C-AFF8-660F8B1E9960}
+		{0278A54D-FC27-4E1B-B7BD-E72C185B8F2B} = {804F814D-2B97-45FF-8AAD-F42BD0212EC9}
+		{82093A47-CAC5-4938-9F76-ECEA6CC3AA28} = {0278A54D-FC27-4E1B-B7BD-E72C185B8F2B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E2F3DE8-DF14-4833-AB7E-6C3B9B324CEB}

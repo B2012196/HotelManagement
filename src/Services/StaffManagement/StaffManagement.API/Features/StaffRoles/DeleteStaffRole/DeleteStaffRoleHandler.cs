@@ -1,9 +1,15 @@
-﻿using System.Security.Cryptography.Xml;
-
-namespace StaffManagement.API.Features.StaffRoles.DeleteStaffRole
+﻿namespace StaffManagement.API.Features.StaffRoles.DeleteStaffRole
 {
     public record DeleteStaffRoleCommand(Guid StaffRoleId) : ICommand<DeleteStaffRoleResult>;
     public record DeleteStaffRoleResult(bool IsSuccess);
+    public class DeleteStaffRoleValidator : AbstractValidator<DeleteStaffRoleCommand>
+    {
+        public DeleteStaffRoleValidator()
+        {
+            RuleFor(x => x.StaffRoleId)
+                .NotEmpty().WithMessage("StaffRoleId is required.");
+        }
+    }
     public class DeleteStaffRoleHandler(ApplicationDbContext context)
         : ICommandHandler<DeleteStaffRoleCommand, DeleteStaffRoleResult>
     {

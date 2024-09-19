@@ -16,14 +16,21 @@ namespace GuestManagement.API.Guests.CreateGuest
 
             RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required");
 
-            RuleFor(x => x.DateofBirst).NotEmpty().WithMessage("Date of birth is required");
+            RuleFor(x => x.DateofBirst)
+                .Must(BeAValidDate).WithMessage("Date of birth must be a valid date.")
+                .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("Date of birth cannot be in the future.");
 
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required");
 
-            RuleFor(x => x.Phone).NotEmpty().WithMessage("Phone number is required").Matches(@"^\d+$")
-                .WithMessage("Phone number must be numeric");
+            RuleFor(x => x.Phone).NotEmpty().WithMessage("Phone number is required")
+                .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Phone number is not valid");
 
             RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("A valid email is required");
+        }
+        // Hàm kiểm tra DateOnly có hợp lệ không
+        private bool BeAValidDate(DateOnly date)
+        {
+            return date != default;
         }
     }
     public class CreateGuestHandler(ApplicationDbContext context)
@@ -38,8 +45,6 @@ namespace GuestManagement.API.Guests.CreateGuest
                 LastName = command.LastName,
                 DateofBirst = command.DateofBirst,
                 Address = command.Address,
-                Phone = command.Phone,
-                Email = command.Email
             };
 
             //save database

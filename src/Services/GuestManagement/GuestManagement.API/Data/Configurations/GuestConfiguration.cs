@@ -9,8 +9,6 @@
             builder.Property(g => g.LastName ).IsRequired().HasMaxLength(20);
             builder.Property(g => g.DateofBirst).IsRequired();
             builder.Property(g => g.Address).IsRequired().HasMaxLength(200);
-            builder.Property(g => g.Phone).IsRequired().HasMaxLength(15);
-            builder.Property(g => g.Email).IsRequired().HasMaxLength(100);
         }
     }
 }
