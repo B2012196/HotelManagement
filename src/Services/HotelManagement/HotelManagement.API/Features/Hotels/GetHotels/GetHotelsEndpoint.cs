@@ -6,7 +6,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/hotels", async ([AsParameters] GetHotelsRequest request, ISender sender) =>
+            app.MapGet("/hotels/hotels", async ([AsParameters] GetHotelsRequest request, ISender sender) =>
             {
                 var query = request.Adapt<GetHotelsQuery>();
 
@@ -16,6 +16,7 @@
 
                 return Results.Ok(reponse);
             })
+            //.RequireAuthorization()
             .WithName("GetHotels")
             .Produces<GetHotelsResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

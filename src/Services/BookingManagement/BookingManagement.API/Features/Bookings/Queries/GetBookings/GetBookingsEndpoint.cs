@@ -7,7 +7,7 @@ namespace BookingManagement.API.Features.Bookings.Queries.GetBookings
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/bookings", async (ISender sender) =>
+            app.MapGet("/bookings/bookings", async (ISender sender) =>
             {
                 var result = await sender.Send(new GetBookingsQuery());
 

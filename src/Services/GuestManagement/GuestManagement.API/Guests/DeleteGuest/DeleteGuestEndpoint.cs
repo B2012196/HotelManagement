@@ -6,7 +6,7 @@ namespace GuestManagement.API.Guests.DeleteGuest
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/guests/{id}", async (Guid id, ISender sender) =>
+            app.MapDelete("/guests/guests/{id}", async (Guid id, ISender sender) =>
             {
                 var result = await sender.Send(new DeleteGuestCommand(id));
 

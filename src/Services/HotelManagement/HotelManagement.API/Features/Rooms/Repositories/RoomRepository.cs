@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
-namespace HotelManagement.API.Features.Rooms.Repositories
+﻿namespace HotelManagement.API.Features.Rooms.Repositories
 {
     public class RoomRepository(ApplicationDbContext context)
         : IRoomRepository

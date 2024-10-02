@@ -6,7 +6,7 @@ namespace GuestManagement.API.Guests.GetGuests
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/guests", async (ISender sender) =>
+            app.MapGet("/guests/guests", async (ISender sender) =>
             {
                 var result = await sender.Send(new GetGuestsQuery());
 

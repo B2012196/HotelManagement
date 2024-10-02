@@ -6,7 +6,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/roomstatus", async (CreateRoomStatusRequest request, ISender sender) =>
+            app.MapPost("/hotels/roomstatus", async (CreateRoomStatusRequest request, ISender sender) =>
             {
                 var command = request.Adapt<CreateRoomStatusCommand>();
 

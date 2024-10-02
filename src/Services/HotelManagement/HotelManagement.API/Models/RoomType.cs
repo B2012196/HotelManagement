@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace HotelManagement.API.Models
 {
@@ -8,6 +7,8 @@ namespace HotelManagement.API.Models
         public Guid TypeId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public byte[] Image { get; set; }
+        public string ImageContentType { get; set; }
         public decimal PricePerNight { get; set; }
         public int Capacity { get; set; }
 

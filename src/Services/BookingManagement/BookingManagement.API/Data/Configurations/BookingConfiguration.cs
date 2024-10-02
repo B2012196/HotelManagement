@@ -8,7 +8,9 @@
 
             builder.Property(b => b.GuestId)
                    .IsRequired();
-
+            builder.Property(b => b.TypeId)
+                   .IsRequired();
+            
             builder.Property(b => b.ExpectedCheckinDate).HasColumnType("timestamp without time zone").IsRequired();
 
             builder.Property(b => b.ExpectedCheckoutDate).HasColumnType("timestamp without time zone").IsRequired();

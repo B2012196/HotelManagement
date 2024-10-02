@@ -8,7 +8,7 @@ namespace HotelManagement.API.Features.RoomStatuses.GetRoomStatuses
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/roomstatus", async (ISender sender) =>
+            app.MapGet("/hotels/roomstatus", async (ISender sender) =>
             {
                 var result = await sender.Send(new GetRoomStatusesQuery());
 

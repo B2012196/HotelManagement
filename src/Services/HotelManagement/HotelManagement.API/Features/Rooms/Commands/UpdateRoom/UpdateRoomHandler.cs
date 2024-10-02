@@ -1,6 +1,4 @@
-﻿using HotelManagement.API.Models;
-
-namespace HotelManagement.API.Features.Rooms.Commands.UpdateRoom
+﻿namespace HotelManagement.API.Features.Rooms.Commands.UpdateRoom
 {
     public record UpdateRoomCommand
         (Guid RoomId, string Number, Guid HotelId, Guid TypeId, Guid StatusId) : ICommand<UpdateRoomResult>;

@@ -36,11 +36,6 @@ namespace GuestManagement.API.Data.Migrations
                     b.Property<DateOnly>("DateofBirst")
                         .HasColumnType("date");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -51,10 +46,8 @@ namespace GuestManagement.API.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("GuestId");
 

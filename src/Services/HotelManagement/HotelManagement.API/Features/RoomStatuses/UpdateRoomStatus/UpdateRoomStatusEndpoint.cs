@@ -9,7 +9,7 @@ namespace HotelManagement.API.Features.RoomStatuses.UpdateRoomStatus
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/roomstatus", async (UpdateRoomStatusRequest request, ISender sender) =>
+            app.MapPut("/hotels/roomstatus", async (UpdateRoomStatusRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateRoomStatusCommand>();
 

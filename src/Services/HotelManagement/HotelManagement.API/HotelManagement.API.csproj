@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Features\Rooms\EventHandlers\Domain\" />
   </ItemGroup>
 
 </Project>

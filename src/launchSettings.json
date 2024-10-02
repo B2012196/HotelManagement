@@ -9,7 +9,8 @@
         "guestmanagement.api": "StartDebugging",
         "bookingmanagement.api": "StartDebugging",
         "paymentmanagement.api": "StartDebugging",
-        "staffmanagement.api": "StartDebugging"
+        "staffmanagement.api": "StartDebugging",
+        "authentication.api": "StartDebugging"
       }
     }
   }

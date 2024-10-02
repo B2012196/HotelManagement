@@ -8,7 +8,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/hotels", async (CreateHotelRequest request, ISender sender) =>
+            app.MapPost("/hotels/hotels", async (CreateHotelRequest request, ISender sender) =>
             {
                 var command = request.Adapt<CreateHotelCommand>();
 
@@ -16,7 +16,7 @@
 
                 var response = result.Adapt<CreateHotelResponse>();
 
-                return Results.Created($"/hotels/{response.Id}", response);
+                return Results.Created($"/hotels/hotels/{response.Id}", response);
             })
             .WithName("CreateHotel")
             .Produces<CreateHotelResponse>(StatusCodes.Status201Created)

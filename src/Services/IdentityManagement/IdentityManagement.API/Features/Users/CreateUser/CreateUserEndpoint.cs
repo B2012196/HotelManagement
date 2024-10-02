@@ -18,6 +18,7 @@ namespace IdentityManagement.API.Features.Users.CreateUser
 
                 return Results.Created($"/users/{response.UserId}", response);
             })
+            .RequireAuthorization()
             .WithName("CreateUser")
             .Produces<CreateUserResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

@@ -1,14 +1,13 @@
-﻿
-namespace GuestManagement.API.Guests.UpdateGuest
+﻿namespace GuestManagement.API.Guests.UpdateGuest
 {
     public record UpdateGuestRequest
-        (Guid GuestId, string FirstName, string LastName, DateOnly DateofBirst, string Address, string Phone, string Email);
+        (Guid GuestId, Guid UserId, string FirstName, string LastName, DateOnly DateofBirst, string Address);
     public record UpdateGuestResponse(bool IsSuccess);
     public class UpdateGuestEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/guests", async (UpdateGuestRequest request, ISender sender) =>
+            app.MapPut("/guests/guests", async (UpdateGuestRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateGuestCommand>();
 

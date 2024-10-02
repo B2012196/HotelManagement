@@ -5,7 +5,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/rooms/{id}", async (Guid id, ISender sender) =>
+            app.MapDelete("/hotels/rooms/{id}", async (Guid id, ISender sender) =>
             {
                 var result = await sender.Send(new DeleteRoomCommand(id));
 

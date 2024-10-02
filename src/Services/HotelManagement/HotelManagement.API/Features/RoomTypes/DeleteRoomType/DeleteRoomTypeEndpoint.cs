@@ -1,14 +1,11 @@
-﻿
-using HotelManagement.API.Features.Hotels.DeleteHotel;
-
-namespace HotelManagement.API.Features.RoomTypes.DeleteRoomType
+﻿namespace HotelManagement.API.Features.RoomTypes.DeleteRoomType
 {
     public record DeleteRoomTypeResponse(bool IsSuccess);
     public class DeleteRoomTypeEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/roomtypes/{id}", async (Guid id, ISender sender) =>
+            app.MapDelete("/hotels/roomtypes/{id}", async (Guid id, ISender sender) =>
             {
                 var result = await sender.Send(new DeleteRoomTypeCommand(id));
                 var response = result.Adapt<DeleteRoomTypeResponse>();

@@ -87,6 +87,7 @@ services:
 
   messagebroker:
     container_name: messagebroker
+    hostname: ecommerce-mq
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -95,17 +96,17 @@ services:
       - "5672:5672"
       - "15672:15672"
     
-  identitydb:
-    container_name: identitydb
+  authenticationdb:
+    container_name: authenticationdb
     environment:
-      - POSTGRES_USER=identitypostgres
-      - POSTGRES_PASSWORD=identitypostgres
-      - POSTGRES_DB=IdentityDb
+      - POSTGRES_USER=authenticationpostgres
+      - POSTGRES_PASSWORD=authenticationpostgres
+      - POSTGRES_DB=AuthenticationDb
     restart: always
     ports:
       - "5440:5432"
     volumes:
-      - postgres_identity:/var/lib/postgresql/data/
+      - postgres_authentication:/var/lib/postgresql/data/
 
   hotelmanagement.api:
     environment:
@@ -121,7 +122,6 @@ services:
       - messagebroker
     ports:
       - "6000:8080"
-      # - "8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -132,8 +132,12 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=guestdb;Port=5432;Database=GuestDb;User Id=guestpostgres;Password=guestpostgres;Include Error Detail=true
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
     depends_on:
       - guestdb
+      - messagebroker
     ports:
       - "6001:8080"
     volumes:
@@ -197,6 +201,20 @@ services:
       - "6005:8080"
     depends_on:
       - notificationdb
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  authentication.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      # - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=authenticationdb;Port=5432;Database=AuthenticationDb;User Id=authenticationpostgres;Password=authenticationpostgres;Include Error Detail=true
+    ports:
+      - "6006:8080"
+    depends_on:
+      - authenticationdb
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

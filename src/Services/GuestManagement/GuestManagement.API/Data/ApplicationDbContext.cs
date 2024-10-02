@@ -1,5 +1,4 @@
-﻿using GuestManagement.API.Models;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace GuestManagement.API.Data
 {

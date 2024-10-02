@@ -7,7 +7,7 @@ namespace IdentityManagement.API.Features.Roles.UpdateRole
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/identities", async (UpdateRoleRequest request, ISender sender) =>
+            app.MapPut("/authentications", async (UpdateRoleRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateRoleCommand>();
 

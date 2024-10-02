@@ -46,8 +46,14 @@ namespace BookingManagement.API.Data.Migrations
                     b.Property<Guid>("GuestId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("RoomQuantity")
+                        .HasColumnType("integer");
+
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(12,2)");
+
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("BookingId");
 

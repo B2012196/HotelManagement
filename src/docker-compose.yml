@@ -23,7 +23,7 @@ services:
   messagebroker:
     image: rabbitmq:management
 
-  identitydb:
+  authenticationdb:
     image: postgres
 
   hotelmanagement.api:
@@ -62,6 +62,12 @@ services:
       context: .
       dockerfile: Services/NotificationManagement/NotificationManagement.API/Dockerfile
 
+  authentication.api:
+    image: ${DOCKER_REGISTRY-}authenticationapi
+    build:
+      context: .
+      dockerfile: Services/Authentication/Authentication.API/Dockerfile
+
 volumes:
   postgres_hotelmanagement:    
   postgres_guest:
@@ -69,7 +75,9 @@ volumes:
   postgres_payment:
   postgres_staff:
   mongo_notification:
-  postgres_identity:
+  postgres_authentication:
+
+
 
 
 

@@ -4,6 +4,5 @@
     {
         public Guid BookingId { get; set; }
         public Guid RoomId { get; set; }
-
     }
 }

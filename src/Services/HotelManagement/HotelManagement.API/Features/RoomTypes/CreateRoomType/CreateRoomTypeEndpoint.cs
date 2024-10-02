@@ -10,7 +10,7 @@ namespace HotelManagement.API.Features.RoomTypes.CreateRoomType
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/roomtypes", async (CreateRoomTypeRequest request, ISender sender) =>
+            app.MapPost("/hotels/roomtypes", async (CreateRoomTypeRequest request, ISender sender) =>
             {
                 var command = request.Adapt<CreateRoomTypeCommand>();
 

@@ -1,13 +1,13 @@
 ﻿namespace BookingManagement.API.Features.Bookings.Commands.CreateBooking
 {
     public record CreateBookingRequest
-        (Guid GuestId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate);
+        (Guid GuestId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate, int RoomQuantity);
     public record CreateBookingResponse(Guid BookingId);
     public class CreateBookingEndpoint : ICarterModule
-    {
+    { 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/bookings", async (CreateBookingRequest request, ISender sender) =>
+            app.MapPost("/bookings/bookings", async (CreateBookingRequest request, ISender sender) =>
             {
                 var command = request.Adapt<CreateBookingCommand>();
 

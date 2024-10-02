@@ -1,5 +1,5 @@
 using BuildingBlocks.Exceptions.Handler;
-using FluentValidation;
+using BuildingBlocks.Messaging.MassTransit;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -26,6 +26,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+//Async communication service
+builder.Services.AddMessageBroker(builder.Configuration);
 
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);

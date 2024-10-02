@@ -1,7 +1,4 @@
-﻿
-using HotelManagement.API.Features.Hotels.UpdateHotel;
-
-namespace HotelManagement.API.Features.RoomTypes.UpdateRoomType
+﻿namespace HotelManagement.API.Features.RoomTypes.UpdateRoomType
 {
     public record UpdateRoomTypeRequest
         (Guid TypeId, string Name, string Description, decimal PricePerNight, int Capacity);
@@ -10,7 +7,7 @@ namespace HotelManagement.API.Features.RoomTypes.UpdateRoomType
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/roomtypes", async (UpdateRoomTypeRequest request, ISender sender) =>
+            app.MapPut("/hotels/roomtypes", async (UpdateRoomTypeRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateRoomTypeCommand>();
 

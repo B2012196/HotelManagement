@@ -1,0 +1,116 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<!-- Banner Section -->
+<div class="banner" style="background-image: url('/images/banner/hotel-banner.jpg'); background-size: cover; background-position: center; width: 100%; height: 400px; position: relative;">
+    <div class="banner-content text-center text-light" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <h1 class="display-4">Golden Sands Hotel</h1>
+        <p class="lead">Trải nghiệm dịch vụ cao cấp và không gian thư giãn hoàn hảo</p>
+    </div>
+</div>
+
+<!-- Booking Form Section -->
+<div id="booking-container" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h3 class="text-center mb-4">Đặt phòng ngay</h3>
+                <form method="post" asp-page-handler="BookRoom">
+                    <!-- Loại phòng -->
+                    <div class="form-group">
+                        <label for="roomType">Loại phòng</label>
+                        <select class="form-control" id="roomType" name="roomType">
+                            <option value="1">Phòng Deluxe King</option>
+                            <option value="2">Phòng Deluxe Twin</option>
+                            <option value="3">Phòng Deluxe Triple</option>
+                        </select>
+                    </div>
+
+                    <!-- Ngày nhận phòng -->
+                    <div class="form-group">
+                        <label for="checkInDate">Ngày nhận phòng</label>
+                        <input type="date" class="form-control" id="checkInDate" name="checkInDate" required>
+                    </div>
+
+                    <!-- Ngày trả phòng -->
+                    <div class="form-group">
+                        <label for="checkOutDate">Ngày trả phòng</label>
+                        <input type="date" class="form-control" id="checkOutDate" name="checkOutDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkOutDate">Số phòng</label>
+                        <input type="number" class="form-control" id="checkNumber" name="checkNumber" required>
+                    </div>
+                    <!-- Nút đặt phòng -->
+                    <button type="submit" class="btn btn-primary btn-block">Đặt phòng</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row">
+    @if(Model.RoomTypeList != null && Model.RoomTypeList.Any())
+    {
+        foreach(var roomType in Model.RoomTypeList)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 hover-card">
+                    @* <img class="card-img-top custom-img" src="/images/rooms/1-giuong.jpg" alt="Ảnh khách sạn"> *@
+                    @if (roomType.Image != null && roomType.Image.Length > 0)
+                    {
+                        <img class="card-img-top custom-img" src="data:@roomType.ImageContentType;base64,@Convert.ToBase64String(roomType.Image)" alt="Ảnh phòng">
+                    }
+                    else
+                    {
+                        <img class="card-img-top custom-img" src="/images/placeholder.png" alt="Hình ảnh chưa có">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@roomType.Name</h5>
+                        <p class="card-text">Sức chứa: @roomType.Capacity người</p>
+                        <p class="card-text">@roomType.Description</p>
+                        <h6 class="card-text">Giá phòng: @roomType.PricePerNight VNĐ</h6> <!-- Định dạng lại tiền -->
+                        <a href="#booking-container" class="btn btn-outline-info">Đặt ngay</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="container my-4">
+    <div class="row text-center">
+
+        <div class="col-md-4">
+            <div>
+                <h4>Dọn phòng, Giặt ủi</h4>
+                <p>Dọn phòng hằng ngày, giặt ủi đồ (phụ phí)</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div>
+                <h4>Nhà hàng</h4>
+                <p>Thưởng thức các món ăn ngon từ đầu bếp hàng đầu.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div>
+                <h4>Wi-Fi miễn phí</h4>
+                <p>Internet tốc độ cao phủ sóng toàn bộ khách sạn.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="map-container" style="max-width: 1000px; margin: 0 auto;">
+    <h4>Vị trí tuyệt vời của Golden Sands Hotel</h4>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4409.972169800734!2d105.7636706401366!3d10.030189345167212!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a0894058d7ecb9%3A0x2ae0a7757a2dc701!2zS1RYIEIgxJBIIEPhuqduIFRoxqE!5e0!3m2!1svi!2sus!4v1727107496218!5m2!1svi!2sus" width="1000" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+
+

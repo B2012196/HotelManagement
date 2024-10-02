@@ -9,7 +9,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/hotels", async (UpdateHotelRequest request, ISender sender) =>
+            app.MapPut("/hotels/hotels", async (UpdateHotelRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateHotelCommand>();
                 var result = await sender.Send(command);

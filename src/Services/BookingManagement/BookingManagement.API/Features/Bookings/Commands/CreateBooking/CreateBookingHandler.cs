@@ -1,7 +1,11 @@
-﻿namespace BookingManagement.API.Features.Bookings.Commands.CreateBooking
+﻿using BuildingBlocks.Messaging.Events;
+using MassTransit;
+using MassTransit.Transports;
+
+namespace BookingManagement.API.Features.Bookings.Commands.CreateBooking
 {
     public record CreateBookingCommand
-        (Guid GuestId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate)
+        (Guid GuestId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate, int RoomQuantity)
         : ICommand<CreateBookingResult>;
     public record CreateBookingResult(Guid BookingId);
 
@@ -21,17 +25,21 @@
         }
     }
 
-    public class CreateBookingHandler(ApplicationDbContext context)
+    public class CreateBookingHandler(ApplicationDbContext context, IPublishEndpoint publishEndpoint)
         : ICommandHandler<CreateBookingCommand, CreateBookingResult>
     {
         public async Task<CreateBookingResult> Handle(CreateBookingCommand command, CancellationToken cancellationToken)
         {
+            //var eventMessage = new GuestInfoRequested(command.UserName);
+            //await publishEndpoint.Publish(eventMessage, cancellationToken);
+
             var booking = new Booking
             {
                 BookingId = Guid.NewGuid(),
                 GuestId = command.GuestId,
                 ExpectedCheckinDate = command.ExpectedCheckinDate,
                 ExpectedCheckoutDate = command.ExpectedCheckoutDate,
+                RoomQuantity = command.RoomQuantity,
                 BookingStatus = BookingStatus.Pending
             };
 
