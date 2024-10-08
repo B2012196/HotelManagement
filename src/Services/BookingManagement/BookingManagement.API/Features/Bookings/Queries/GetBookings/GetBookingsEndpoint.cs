@@ -1,6 +1,4 @@
-﻿using BookingManagement.API.Features.Bookings.Queries.GetBookings;
-
-namespace BookingManagement.API.Features.Bookings.Queries.GetBookings
+﻿namespace BookingManagement.API.Features.Bookings.Queries.GetBookings
 {
     public record GetBookingsResponse(IEnumerable<Booking> Bookings);
     public class GetBookingsEndpoint : ICarterModule

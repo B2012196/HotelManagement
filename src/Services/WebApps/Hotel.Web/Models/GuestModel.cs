@@ -9,4 +9,10 @@
         public DateOnly DateofBirst { get; set; }
         public string Address { get; set; }
     }
+
+    public record GetGuestsResponse(IEnumerable<GuestModel> Guests);
+    public record GetGuestByUserIdReponse(GuestModel Guest);
+    public record CreateGuestReponse(Guid GuestId);
+    public record UpdateGuestResponse(bool IsSuccess);
+    public record DeleteGuestResponse(bool IsSuccess);
 }

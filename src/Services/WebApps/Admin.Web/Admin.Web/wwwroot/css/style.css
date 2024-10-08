@@ -1,0 +1,32 @@
+﻿/*
+** Style Simple Ecommerce Theme for Bootstrap 4
+** Created by T-PHP https://t-php.fr/43-theme-ecommerce-bootstrap-4.html
+*/
+/* Sidebar styles */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.container-fluid {
+    height: 100%;
+}
+.row {
+    height: 100%;
+}
+.sidebar {
+    height: 100%;
+    background-color: #f8f9fa;
+}
+.nav-link:hover {
+    /*transform: scale(1.03);*/ /* Slight scaling on hover */
+    background-color: #b4d1bc;
+}
+
+footer {
+    background: #343a40;
+    padding: 40px;
+}
+footer a {
+    color: #f8f9fa!important
+}

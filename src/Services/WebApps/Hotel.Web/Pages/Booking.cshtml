@@ -1,0 +1,58 @@
+﻿@page "/booking"
+@model BookingModel
+@{
+    ViewData["Title"] = "Đặt phòng";
+}
+<div class="container">
+    <div class="row">
+        <!-- Phần bên trái: Thông tin người dùng -->
+        <br/>
+        <div class="col-md-6">
+            <h3>Thông tin người dùng</h3>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Họ tên:</strong> Lam Minh DUc</p>
+                    <p><strong>Email:</strong> duc@gmail</p>
+                    <p><strong>Số điện thoại:</strong> 032677</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phần bên phải: Thông tin đơn đặt phòng -->
+        <div class="col-md-6">
+            <h3>Thông tin đơn đặt phòng</h3>
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" asp-page-handler="Booking">
+                        <!-- Trường ẩn để giữ giá trị RoomType -->
+                        <div class="form-group">
+                            <label for="checkInDate">Loại phòng</label>
+                            <input readonly type="text" class="form-control" id="RoomType" name="RoomType" value="@Model.RoomTypeName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="checkInDate">Ngày nhận phòng</label>
+                            <input readonly type="date" class="form-control" id="ExpectedCheckInDate" name="ExpectedCheckInDate" value="@Model.ExpectedCheckInDate.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="form-group">
+                            <label for="checkInDate">Ngày trả phòng</label>
+                            <input readonly type="date" class="form-control" id="ExpectedCheckOutDate" name="ExpectedCheckOutDate" value="@Model.ExpectedCheckOutDate.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="form-group">
+                            <label for="checkInDate">Số phòng</label>
+                            <input readonly type="number" class="form-control" id="RoomQuantity" name="RoomQuantity" value="@Model.RoomQuantity" />
+                        </div>
+                        <button type="submit" class="btn btn-success">Xác nhận đặt phòng</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút xác nhận và quay lại -->
+    <div class="row mt-4">
+        <div class="col text-right">
+            <a href="/PreviousPageUrl" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </div>
+</div>

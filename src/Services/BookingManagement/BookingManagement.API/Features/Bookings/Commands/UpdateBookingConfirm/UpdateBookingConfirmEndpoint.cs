@@ -8,7 +8,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("bookings/confirm", async (UpdateBookingConfirmRequest request, ISender sender) =>
+            app.MapPut("/bookings/confirm", async (UpdateBookingConfirmRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateBookingConfirmCommand>();
 

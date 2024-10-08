@@ -1,0 +1,84 @@
+﻿@page "/admin/booking"
+@model BookingModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>Ngày Check-in dự kiến</th>
+            <th>Ngày Check-out dự kiến</th>
+            <th>Ngày Check-in</th>
+            <th>Ngày Check-out</th>
+            <th>Số phòng</th>
+        </tr>   
+    </thead>
+    <tbody>
+        @foreach (var booking in Model.BookingList)
+        {
+            <tr>
+                <td>@booking.GuestLastName @booking.GuestFirstName</td>
+                <td>@booking.ExpectedCheckinDate.ToString("dd/MM/yyyy")</td>
+                <td>@booking.ExpectedCheckoutDate.ToString("dd/MM/yyyy")</td>
+                <td>@booking.CheckinDate</td>
+                <td>@booking.CheckoutDate</td>
+                <td>@booking.RoomQuantity</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@booking.BookingId">
+                        Tìm phòng
+                    </button>
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="ConfirmBooking">
+                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                        <button type="submit" class="btn btn-success btn-sm">Checkin</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="ConfirmBooking">
+                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                        <button type="submit" class="btn btn-warning btn-sm">Checkout</button>
+                    </form>
+                </td>
+            </tr>
+
+
+
+
+            <!-- Modal (phải nằm ngoài vòng lặp của bảng) -->
+            <div class="modal fade" id="roomSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="roomSelectionModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="roomSelectionModalLabel">Lựa chọn phòng trống</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form to choose available room -->
+                            <form method="post" action="/admin/confirmBooking">
+                                <div class="form-group">
+                                    <label for="room">Chọn phòng:</label>
+                                    <select class="form-control" id="room" name="roomId">
+                                       @*  <!-- Loop through available rooms (giả sử có danh sách các phòng trống) -->
+                                        @foreach (var room in Model.AvailableRooms)
+                                        {
+                                            <option value="@room.Id">@room.Name</option>
+                                        } *@
+                                    </select>
+                                </div>
+                                <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>

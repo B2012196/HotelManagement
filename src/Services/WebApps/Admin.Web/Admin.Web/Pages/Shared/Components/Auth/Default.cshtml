@@ -1,0 +1,14 @@
+﻿@model AuthViewModel
+
+@if (Model.IsAuthenticated)
+{
+    <form method="post" asp-page-handler="Logout">
+        <button type="submit" class="btn btn-outline-primary">Đăng xuất</button>
+    </form>
+}
+else
+{
+    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#loginModal">
+        Đăng nhập
+    </button>
+}

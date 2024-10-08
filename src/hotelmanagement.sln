@@ -47,11 +47,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Web", "Services\WebAp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{A0A61E2C-14DB-4C69-8664-073A2328009A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.API", "Services\Authentication\Authentication.API\Authentication.API.csproj", "{659AC650-EC65-400D-8190-2D2F2E53E3FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.API", "Services\Authentication\Authentication.API\Authentication.API.csproj", "{659AC650-EC65-400D-8190-2D2F2E53E3FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{B5B14763-D805-4D0C-B321-98FBA8356210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotApiGateway", "ApiGateways\OcelotApiGateway\OcelotApiGateway.csproj", "{18FCAE35-262E-4E60-91C8-27777955ABDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OcelotApiGateway", "ApiGateways\OcelotApiGateway\OcelotApiGateway.csproj", "{18FCAE35-262E-4E60-91C8-27777955ABDC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admin.Web", "Services\WebApps\Admin.Web\Admin.Web\Admin.Web.csproj", "{AA2E4082-C7AF-4B8D-8AF2-0434011A7D8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,10 @@ Global
 		{18FCAE35-262E-4E60-91C8-27777955ABDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18FCAE35-262E-4E60-91C8-27777955ABDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18FCAE35-262E-4E60-91C8-27777955ABDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA2E4082-C7AF-4B8D-8AF2-0434011A7D8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA2E4082-C7AF-4B8D-8AF2-0434011A7D8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA2E4082-C7AF-4B8D-8AF2-0434011A7D8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA2E4082-C7AF-4B8D-8AF2-0434011A7D8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{A0A61E2C-14DB-4C69-8664-073A2328009A} = {804F814D-2B97-45FF-8AAD-F42BD0212EC9}
 		{659AC650-EC65-400D-8190-2D2F2E53E3FE} = {A0A61E2C-14DB-4C69-8664-073A2328009A}
 		{18FCAE35-262E-4E60-91C8-27777955ABDC} = {B5B14763-D805-4D0C-B321-98FBA8356210}
+		{AA2E4082-C7AF-4B8D-8AF2-0434011A7D8C} = {82B398E2-D1CF-41FA-988D-E38E98C5BFEF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E2F3DE8-DF14-4833-AB7E-6C3B9B324CEB}

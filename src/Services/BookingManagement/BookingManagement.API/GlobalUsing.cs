@@ -12,7 +12,7 @@ global using BookingManagement.API.Exceptions;
 global using BuildingBlocks.Exceptions;
 global using BuildingBlocks.Behaviors;
 global using FluentValidation;
-
+global using MassTransit;
 
 
 

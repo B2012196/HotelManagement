@@ -23,6 +23,19 @@
             return true;
         }
 
+        public async Task<IEnumerable<Room>> GetRoomAvaByType(Guid TypeId, CancellationToken cancellationToken)
+        {
+            var rooms = await context.Rooms.Where(r => r.TypeId == TypeId && r.StatusId == Guid.Parse("3ad2b5c4-cd33-42f1-a030-53a0a213f791"))
+                .ToListAsync(cancellationToken);
+
+            if (rooms is null)
+            {
+                throw new RoomNotFoundException(TypeId);
+            }
+
+            return rooms;
+        }
+
         public async Task<Room> GetRoomById(Guid RoomId, CancellationToken cancellationToken)
         {
             var room = await context.Rooms.SingleOrDefaultAsync(r => r.RoomId == RoomId, cancellationToken);
@@ -32,6 +45,19 @@
             }
 
             return room;
+        }
+
+        public async Task<IEnumerable<Room>> GetRoomByType(Guid TypeId, CancellationToken cancellationToken)
+        {
+            var rooms = await context.Rooms.Where(r => r.TypeId == TypeId)
+                .ToListAsync(cancellationToken);
+
+            if(rooms is null)
+            {
+                throw new RoomNotFoundException(TypeId);
+            }
+
+            return rooms;
         }
 
         public async Task<IEnumerable<Room>> GetRooms(CancellationToken cancellationToken)

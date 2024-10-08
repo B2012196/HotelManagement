@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Hotel.Web.Services;
-using Microsoft.Extensions.Options;
-using System.Diagnostics;
+﻿using Hotel.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +12,18 @@ builder.Services.AddRefitClient<IHotelService>()
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
     });
+
+builder.Services.AddRefitClient<IGuestService>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
+builder.Services.AddRefitClient<IBookingService>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
 builder.Services.AddRefitClient<IAuthentication>()
     .ConfigureHttpClient(c =>
@@ -43,9 +51,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseSession();
-app.MapRazorPages();
+app.MapRazorPages();    
 
 app.Run();

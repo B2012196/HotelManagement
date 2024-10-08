@@ -27,9 +27,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
+builder.Services.AddScoped<IGuestRepository, GuestRepository>();
 //Async communication service
 builder.Services.AddMessageBroker(builder.Configuration);
-
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 

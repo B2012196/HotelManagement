@@ -18,32 +18,32 @@
         <div class="col-md-8">
             <div class="card p-4">
                 <h3 class="text-center mb-4">Đặt phòng ngay</h3>
-                <form method="post" asp-page-handler="BookRoom">
+                <form method="get" asp-page="/booking">
                     <!-- Loại phòng -->
                     <div class="form-group">
                         <label for="roomType">Loại phòng</label>
-                        <select class="form-control" id="roomType" name="roomType">
-                            <option value="1">Phòng Deluxe King</option>
-                            <option value="2">Phòng Deluxe Twin</option>
-                            <option value="3">Phòng Deluxe Triple</option>
+                        <select class="form-control" id="RoomType" name="RoomType">
+                            <option value="1b0b63e1-96de-4ca8-8fc2-82a319bb896a">Phòng Deluxe King</option>
+                            <option value="54b8d4d6-c9c6-4cbb-85eb-2f41d516cedf">Phòng Deluxe Twin</option>
+                            <option value="da78d03e-7c63-43eb-847c-8683c2e6545b">Phòng Deluxe Triple</option>
                         </select>
                     </div>
 
                     <!-- Ngày nhận phòng -->
                     <div class="form-group">
                         <label for="checkInDate">Ngày nhận phòng</label>
-                        <input type="date" class="form-control" id="checkInDate" name="checkInDate" required>
+                        <input type="date" class="form-control" id="ExpectedCheckInDate" name="ExpectedCheckInDate" required>
                     </div>
 
                     <!-- Ngày trả phòng -->
                     <div class="form-group">
                         <label for="checkOutDate">Ngày trả phòng</label>
-                        <input type="date" class="form-control" id="checkOutDate" name="checkOutDate" required>
+                        <input type="date" class="form-control" id="ExpectedCheckOutDate" name="ExpectedCheckOutDate" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="checkOutDate">Số phòng</label>
-                        <input type="number" class="form-control" id="checkNumber" name="checkNumber" required>
+                        <label for="roomQuantity">Số phòng</label>
+                        <input type="number" class="form-control" id="RoomQuantity" name="RoomQuantity" required>
                     </div>
                     <!-- Nút đặt phòng -->
                     <button type="submit" class="btn btn-primary btn-block">Đặt phòng</button>

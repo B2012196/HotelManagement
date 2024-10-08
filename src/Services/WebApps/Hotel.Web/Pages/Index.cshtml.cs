@@ -1,17 +1,15 @@
 ﻿using Hotel.Web.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System.Diagnostics;
-using System.Net.Http;
+
 
 namespace Hotel.Web.Pages
 {
     public class IndexModel
-        (IHotelService hotelService, IAuthentication authentication, ILogger<IndexModel> logger) : PageModel
+        (IHotelService hotelService, IAuthentication authentication, IGuestService guestService,
+        IBookingService bookingService, ILogger<IndexModel> logger)
+        : PageModel
     {
         public IEnumerable<HotelModel> HotelList { get; set; } = new List<HotelModel>();
         public IEnumerable<RoomTypeModel> RoomTypeList { get; set; } = new List<RoomTypeModel>();
@@ -94,11 +92,7 @@ namespace Hotel.Web.Pages
             ModelState.AddModelError("", "error register");
             return Page();
         }
-    
-        //public async Task<IActionResult> OnPostBookingAsync()
-        //{
 
-        //}
 
 
     }

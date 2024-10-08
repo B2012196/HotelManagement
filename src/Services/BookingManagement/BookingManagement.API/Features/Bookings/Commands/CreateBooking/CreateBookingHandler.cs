@@ -1,11 +1,9 @@
-﻿using BuildingBlocks.Messaging.Events;
-using MassTransit;
-using MassTransit.Transports;
+﻿
 
 namespace BookingManagement.API.Features.Bookings.Commands.CreateBooking
 {
     public record CreateBookingCommand
-        (Guid GuestId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate, int RoomQuantity)
+        (Guid GuestId, Guid TypeId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate, int RoomQuantity)
         : ICommand<CreateBookingResult>;
     public record CreateBookingResult(Guid BookingId);
 
@@ -37,6 +35,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.CreateBooking
             {
                 BookingId = Guid.NewGuid(),
                 GuestId = command.GuestId,
+                TypeId = command.TypeId,
                 ExpectedCheckinDate = command.ExpectedCheckinDate,
                 ExpectedCheckoutDate = command.ExpectedCheckoutDate,
                 RoomQuantity = command.RoomQuantity,

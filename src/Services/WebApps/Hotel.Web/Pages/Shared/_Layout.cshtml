@@ -1,10 +1,8 @@
-﻿@model IndexModel
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AspnetRunBasics</title>
 
     <!-- CSS -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -30,19 +28,7 @@
                     </a>
                 </div>
 
-                @if (ViewData["IsLoggedIn"] != null && (bool)ViewData["IsLoggedIn"]!)
-                {
-                    <form method="post" asp-page-handler="Logout">
-                        <button type="submit" class="btn btn-outline-primary">Đăng xuất</button>
-                    </form>
-                }
-                else
-                {
-                    <!-- Phần 3: Nút Đăng Nhập bên phải -->
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#loginModal">
-                        Đăng nhập
-                    </button>
-                }
+                @await Component.InvokeAsync("Auth")
                 <!-- Modal đăng nhập -->
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">

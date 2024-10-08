@@ -4,6 +4,8 @@
     {
         Task<IEnumerable<Room>> GetRooms(CancellationToken cancellationToken);
         Task<Room> GetRoomById(Guid RoomId, CancellationToken cancellationToken);
+        Task<IEnumerable<Room>> GetRoomByType(Guid TypeId, CancellationToken cancellationToken);
+        Task<IEnumerable<Room>> GetRoomAvaByType(Guid TypeId, CancellationToken cancellationToken);
         Task<Guid> CreateRoom(Room room, CancellationToken cancellationToken);
         Task<bool> UpdateRoom(Room room, CancellationToken cancellationToken);
         Task<bool> UpdateRoomStatus(Guid RoomId, CancellationToken cancellationToken);

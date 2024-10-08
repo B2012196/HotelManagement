@@ -1,6 +1,7 @@
 {
   "Routes": [
     //Hotel API -- http://localhost:5000
+    //GET ALL
     {
       "DownstreamPathTemplate": "/hotels/{endpoint}",
       "DownstreamScheme": "http",
@@ -13,6 +14,20 @@
       "UpstreamPathTemplate": "/hotels/{endpoint}",
       "UpstreamHttpMethod": [ "GET" ]
     },
+    //GET by...
+    {
+      "DownstreamPathTemplate": "/hotels/{endpoint1}/{endpoint2}/{params}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6000
+        }
+      ],
+      "UpstreamPathTemplate": "/hotels/{endpoint1}/{endpoint2}/{params}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
     {
       "DownstreamPathTemplate": "/hotels/{endpoint}",
       "DownstreamScheme": "http",
@@ -29,8 +44,8 @@
         "AllowedScopes": []
       }
     },
-
-    //guest
+    //-----------//
+    //guest POST, PUT, GET All
     {
       "DownstreamPathTemplate": "/guests/{endpoint}",
       "DownstreamScheme": "http",
@@ -47,6 +62,7 @@
         "AllowedScopes": []
       }
     },
+    //DELETE
     {
       "DownstreamPathTemplate": "/guests/{endpoint}/{params}",
       "DownstreamScheme": "http",
@@ -57,12 +73,32 @@
         }
       ],
       "UpstreamPathTemplate": "/guests/{endpoint}/{params}",
-      "UpstreamHttpMethod": [ "GET", "DELETE" ],
+      "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
     },
+    //GET BY ..
+    {
+      "DownstreamPathTemplate": "/guests/{endpoint1}/{endpoint2}/{params}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        }
+      ],
+      "UpstreamPathTemplate": "/guests/{endpoint1}/{endpoint2}/{params}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+
+    //-----------//
+
     //booking
     {
       "DownstreamPathTemplate": "/bookings/{endpoint}",
