@@ -1,7 +1,4 @@
-﻿
-using HotelManagement.API.Features.RoomTypes.UpdateRoomType;
-
-namespace HotelManagement.API.Features.RoomStatuses.UpdateRoomStatus
+﻿namespace HotelManagement.API.Features.RoomStatuses.UpdateRoomStatus
 {
     public record UpdateRoomStatusRequest(Guid StatusId, string Name);
     public record UpdateRoomStatusResponse(bool IsSuccess);

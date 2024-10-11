@@ -1,13 +1,13 @@
 ﻿namespace StaffManagement.API.Features.Staffs.UpdateStaff
 {
-    public record UpdateStaffRequest(Guid StaffId, Guid HotelId, Guid StaffRoleId, string FirstName, string LastName, DateOnly DateofBirst,
-        string Phone, string Address, string Email);
+    public record UpdateStaffRequest(Guid StaffId, Guid UserId, Guid HotelId, string FirstName, string LastName, decimal Salary, DateOnly DateofBirst,
+        string Address, DateOnly HireDate);
     public record UpdateStaffResponse(bool IsSuccess);
     public class UpdateStaffEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/staffs", async (UpdateStaffRequest request, ISender sender) =>
+            app.MapPut("/staffs/staffs", async (UpdateStaffRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateStaffCommand>();
 

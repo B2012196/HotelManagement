@@ -4,6 +4,7 @@
     {
         [Get("/guests/guests")]
         Task<GetGuestsResponse> GetGuests();
+
         [Get("/guests/guests/id/{GuestId}")]
         Task<GetGuestByIdResponse> GetGuestById(Guid GuestId);
 

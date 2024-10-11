@@ -9,7 +9,7 @@
         Task<CreateBookingResponse> CreateBooking(Booking Booking);
 
         [Put("/bookings/confirm")]
-        Task<UpdateBookingConfirmResponse> UpdateBookingConfirm(Booking Booking);
+        Task<UpdateBookingConfirmResponse> UpdateBookingConfirm(object obj);
 
         [Put("/bookings/checkin")]
         Task<UpdateBookingCheckinResponse> UpdateBookingCheckin(Booking Booking);

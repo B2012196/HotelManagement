@@ -1,4 +1,4 @@
-﻿namespace StaffManagement.API.Models
+﻿namespace Admin.Web.Models
 {
     public class Staff
     {
@@ -12,4 +12,8 @@
         public string Address { get; set; }
         public DateOnly HireDate { get; set; }
     }
+    public record GetStaffsResponse(IEnumerable<Staff> Staffs);
+    public record CreateStaffResponse(Guid StaffId);
+    public record UpdateStaffResponse(bool IsSuccess);
+    public record DeleteStaffResponse(bool IsSuccess);
 }

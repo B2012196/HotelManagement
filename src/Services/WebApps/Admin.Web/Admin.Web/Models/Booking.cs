@@ -5,6 +5,7 @@
         public Guid BookingId { get; set; }
         public string GuestFirstName { get; set; }
         public string GuestLastName { get; set; }
+        public Guid TypeId { get; set; }
         public string TypeName { get; set; }
         public DateTime ExpectedCheckinDate { get; set; }
         public DateTime ExpectedCheckoutDate { get; set; }

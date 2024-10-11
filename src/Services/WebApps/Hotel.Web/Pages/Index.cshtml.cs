@@ -47,7 +47,7 @@ namespace Hotel.Web.Pages
                     Console.WriteLine("Token đã được lưu vào session: " + storedToken);
                 }
                 // Redirect sau khi đăng nhập thành công
-                return RedirectToPage("/Index");
+                return RedirectToPage("Index");
             }
 
             ModelState.AddModelError("", "Invalid login attempt");

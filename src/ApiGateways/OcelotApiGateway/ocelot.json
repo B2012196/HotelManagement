@@ -44,6 +44,24 @@
         "AllowedScopes": []
       }
     },
+    //delete
+    {
+      "DownstreamPathTemplate": "/hotels/{endpoint}/{params}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6000
+        }
+      ],
+      "UpstreamPathTemplate": "/hotels/{endpoint}/{params}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+
     //-----------//
     //guest POST, PUT, GET All
     {
@@ -98,7 +116,25 @@
     },
 
     //-----------//
+    //Staffs POST, PUT, GET All
+    {
+      "DownstreamPathTemplate": "/staffs/{endpoint}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/staffs/{endpoint}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
 
+    //-----------//
     //booking
     {
       "DownstreamPathTemplate": "/bookings/{endpoint}",

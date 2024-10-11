@@ -12,7 +12,7 @@ using StaffManagement.API.Data;
 namespace StaffManagement.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240913142257_InitialCreate")]
+    [Migration("20241009160604_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -39,15 +39,13 @@ namespace StaffManagement.API.Data.Migrations
                     b.Property<DateOnly>("DateofBirst")
                         .HasColumnType("date");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<DateOnly>("HireDate")
+                        .HasColumnType("date");
 
                     b.Property<Guid>("HotelId")
                         .HasColumnType("uuid");
@@ -57,51 +55,15 @@ namespace StaffManagement.API.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("numeric");
 
-                    b.Property<Guid>("StaffRoleId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("StaffId");
 
-                    b.HasIndex("StaffRoleId");
-
                     b.ToTable("Staffs");
-                });
-
-            modelBuilder.Entity("StaffManagement.API.Models.StaffRole", b =>
-                {
-                    b.Property<Guid>("StaffRoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("StaffRoleName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.HasKey("StaffRoleId");
-
-                    b.ToTable("StaffRoles");
-                });
-
-            modelBuilder.Entity("StaffManagement.API.Models.Staff", b =>
-                {
-                    b.HasOne("StaffManagement.API.Models.StaffRole", "StaffRole")
-                        .WithMany("Staffs")
-                        .HasForeignKey("StaffRoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("StaffRole");
-                });
-
-            modelBuilder.Entity("StaffManagement.API.Models.StaffRole", b =>
-                {
-                    b.Navigation("Staffs");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,7 +1,4 @@
-﻿
-using HotelManagement.API.Features.RoomTypes.GetRoomTypes;
-
-namespace HotelManagement.API.Features.RoomStatuses.GetRoomStatuses
+﻿namespace HotelManagement.API.Features.RoomStatuses.GetRoomStatuses
 {
     public record GetRoomStatusesResponse(IEnumerable<RoomStatus> Statuses);
     public class GetRoomStatusesEndpoint : ICarterModule

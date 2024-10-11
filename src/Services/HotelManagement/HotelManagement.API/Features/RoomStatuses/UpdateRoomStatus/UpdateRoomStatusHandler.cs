@@ -19,7 +19,10 @@ namespace HotelManagement.API.Features.RoomStatuses.UpdateRoomStatus
         public async Task<UpdateRoomStatusResult> Handle(UpdateRoomStatusCommand command, CancellationToken cancellationToken)
         {
             var status = await context.RoomStatus.SingleOrDefaultAsync(s => s.StatusId == command.StatusId, cancellationToken);
-            if(status is null) { }
+            if(status is null)
+            {
+                throw new RoomStatusNotFoundException(command.StatusId);
+            }
 
             status.Name = command.Name;
 

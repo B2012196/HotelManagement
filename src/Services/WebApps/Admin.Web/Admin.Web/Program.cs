@@ -1,6 +1,4 @@
-﻿using Admin.Web.Services;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
@@ -12,11 +10,25 @@ builder.Services.AddRefitClient<IBookingService>()
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
     }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
 builder.Services.AddRefitClient<IGuestService>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
     }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
+builder.Services.AddRefitClient<IStaffService>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
+builder.Services.AddRefitClient<IHotelService>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
 builder.Services.AddRefitClient<IAuthentication>()
     .ConfigureHttpClient(c =>
     {

@@ -1,0 +1,148 @@
+﻿@page "/admin/room"
+@model RoomModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Số phòng</th>
+            <th>Loại phòng</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model.RoomList)
+        {
+            <tr>
+                <td>@room.Number</td>
+                <td>@room.TypeName</td>
+                <td>@room.StatusName.Translate()</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@room.RoomId">
+                        Cập nhật
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@room.RoomId">
+                        Xóa
+                    </button>
+                </td>
+            </tr>
+
+            <div class="modal fade" id="roomSelectionDeleteModal-@room.RoomId" tabindex="-1" role="dialog" aria-labelledby="roomSelectionDeleteModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="roomSelectionModalLabel">Bạn có chắc chắn muốn xóa?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" asp-page-handler="DeleteRoom">
+                                <input type="text" id="roomId" name="RoomId" required value="@room.RoomId" hidden readonly>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="roomSelectionModal-@room.RoomId" tabindex="-1" role="dialog" aria-labelledby="roomSelectionModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin phòng</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" asp-page-handler="UpdateRoom">
+                                <input type="text" id="roomId" name="RoomId" required value="@room.RoomId" hidden readonly>
+                                <div class="mb-3">
+                                    <label for="roomNumber" class="form-label">Số phòng</label>
+                                    <input type="text" class="form-control" id="roomNumber" name="Number" required value="@room.Number">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomType" class="form-label">Loại phòng</label>
+                                    <select class="form-control" id="roomType" name="TypeId">
+                                        @foreach (var type in Model.TypeList)
+                                        {
+                                            <option value="@type.TypeId">@type.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomStatus" class="form-label">Trạng thái</label>
+                                    <select class="form-control" id="roomStatus" name="StatusId">
+                                        @foreach (var status in Model.StatusList)
+                                        {
+                                            <option value="@status.StatusId">@status.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Lưu</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>
+
+<!-- Button to trigger modal -->
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addRoomModal">
+    Thêm phòng
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="addRoomModal" tabindex="-1" role="dialog" aria-labelledby="addRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomSelectionModalLabel">Thêm phòng mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="AddRoom">
+                    <div class="mb-3">
+                        <label for="roomNumber" class="form-label">Số phòng</label>
+                        <input type="text" class="form-control" id="roomNumber" name="Number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="roomType" class="form-label">Loại phòng</label>
+                        <select class="form-control" id="roomType" name="TypeId">
+                            @foreach (var type in Model.TypeList)
+                            {
+                                <option value="@type.TypeId">@type.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="roomStatus" class="form-label">Trạng thái</label>
+                        <select class="form-control" id="roomStatus" name="StatusId">
+                            @foreach (var status in Model.StatusList)
+                            {
+                                <option value="@status.StatusId">@status.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

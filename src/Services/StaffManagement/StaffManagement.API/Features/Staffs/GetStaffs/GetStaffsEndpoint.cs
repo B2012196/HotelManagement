@@ -5,7 +5,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/staffs", async (ISender sender) =>
+            app.MapGet("/staffs/staffs", async (ISender sender) =>
             {
                 var result = await sender.Send(new GetStaffsQuery());
 

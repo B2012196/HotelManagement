@@ -9,9 +9,8 @@
             <th>Họ tên</th>
             <th>Ngày Check-in dự kiến</th>
             <th>Ngày Check-out dự kiến</th>
-            <th>Ngày Check-in</th>
-            <th>Ngày Check-out</th>
             <th>Số phòng</th>
+            <th>Trạng thái</th>
         </tr>   
     </thead>
     <tbody>
@@ -21,30 +20,40 @@
                 <td>@booking.GuestLastName @booking.GuestFirstName</td>
                 <td>@booking.ExpectedCheckinDate.ToString("dd/MM/yyyy")</td>
                 <td>@booking.ExpectedCheckoutDate.ToString("dd/MM/yyyy")</td>
-                <td>@booking.CheckinDate</td>
-                <td>@booking.CheckoutDate</td>
                 <td>@booking.RoomQuantity</td>
+                <td>@booking.BookingStatus.GetDisplayName()</td>
+                @if (booking.BookingStatus == BookingStatus.Pending)
+                {
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@booking.BookingId">
+                            Tìm phòng
+                        </button>
+                    </td>
+                }
+                else if (booking.BookingStatus == BookingStatus.Confirmed)
+                {
+                    <td>
+                        <form method="post" >
+                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                            <button type="submit" class="btn btn-success btn-sm">Checkin</button>
+                        </form>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                            <button type="submit" class="btn btn-warning btn-sm">Checkout</button>
+                        </form>
+                    </td>
+                }
                 <td>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@booking.BookingId">
-                        Tìm phòng
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#roomDetailSelectionModal-@booking.BookingId">
+                        Chi tiết
                     </button>
                 </td>
-                <td>
-                    <form method="post" asp-page-handler="ConfirmBooking">
-                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
-                        <button type="submit" class="btn btn-success btn-sm">Checkin</button>
-                    </form>
-                </td>
-                <td>
-                    <form method="post" asp-page-handler="ConfirmBooking">
-                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
-                        <button type="submit" class="btn btn-warning btn-sm">Checkout</button>
-                    </form>
-                </td>
             </tr>
-
-
-
 
             <!-- Modal (phải nằm ngoài vòng lặp của bảng) -->
             <div class="modal fade" id="roomSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="roomSelectionModalLabel" aria-hidden="true">
@@ -58,27 +67,89 @@
                         </div>
                         <div class="modal-body">
                             <!-- Form to choose available room -->
-                            <form method="post" action="/admin/confirmBooking">
+                            <form method="post" asp-page-handler="ConfirmBooking">
                                 <div class="form-group">
-                                    <label for="room">Chọn phòng:</label>
-                                    <select class="form-control" id="room" name="roomId">
-                                       @*  <!-- Loop through available rooms (giả sử có danh sách các phòng trống) -->
-                                        @foreach (var room in Model.AvailableRooms)
-                                        {
-                                            <option value="@room.Id">@room.Name</option>
-                                        } *@
-                                    </select>
+                                    <input type="hidden" id="bookingId" name="BookingId" required value="@booking.BookingId" hidden readonly>
+                                    <label for="room">Số phòng:</label>
+                                    @for (var number = 1; number <= booking.RoomQuantity; number++)
+                                    {
+                                        <br />
+                                        <select class="form-control" id="room" name="RoomId">
+                                            @* loop through available rooms  *@
+                                                @foreach (var room in Model.RoomList)
+                                                {
+                                                    @if (booking.TypeId == room.TypeId && room.StatusId == Guid.Parse("3ad2b5c4-cd33-42f1-a030-53a0a213f791"))
+                                                    {
+                                                        <option value="@room.RoomId">@room.Number</option>
+                                                    }
+                                                }
+                                    
+                                        </select>
+                                    }
                                 </div>
-                                <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="roomDetailSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="roomDetailSelectionModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin đặt phòng</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form to choose available room -->
+                            <div class="form-group">
+                                <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
+                                
+                                <label for="guestFirstName">Họ Tên</label>
+                                <input class="form-control" type="text" id="guestLastName" name="GuestLastName" value="@booking.GuestLastName @booking.GuestFirstName" readonly />
+                                
+                                <label for="typeName">Loại phòng đặt</label>
+                                <input class="form-control" type="text" id="typeName" name="TypeName" value="@booking.TypeName" readonly />
+                                
+                                <label for="expectedCheckinDate">Ngày check-in dự kiến</label>
+                                <input class="form-control" type="date" id="expectedCheckinDate" name="ExpectedCheckinDate" value="@booking.ExpectedCheckinDate.ToString("yyyy-MM-dd")" readonly />
+                                
+                                <label for="expectedCheckoutDate">Ngày check-out dự kiến</label>
+                                <input class="form-control" type="date" id="expectedCheckoutDate" name="ExpectedCheckoutDate" value="@booking.ExpectedCheckoutDate.ToString("yyyy-MM-dd")" readonly />
+
+                                <label for="checkinDate">Ngày check-in thực tế</label>
+                                <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty))" readonly />
+
+                                <label for="checkoutDate">Ngày check-out thực tế</label>
+                                <input class="form-control" type="date" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty))" readonly />
+
+                                <label for="totalPrice">Tổng tiền</label>
+                                <input class="form-control" type="number" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
+
+                                <label for="roomQuantity">Số phòng đặt</label>
+                                <input class="form-control" type="number" id="roomQuantity" name="RoomQuantity" value="@booking.RoomQuantity" readonly />
+
+                                <label for="bookingStatus">Trạng thái</label>
+                                <input class="form-control" type="text" id="bookingStatus" name="BookingStatus" value="@booking.BookingStatus.GetDisplayName()" readonly />
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         }
     </tbody>
 </table>

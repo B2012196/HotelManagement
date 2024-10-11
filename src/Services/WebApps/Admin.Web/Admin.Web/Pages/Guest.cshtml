@@ -1,0 +1,25 @@
+﻿@page "/admin/guest"
+@model GuestModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>Ngày sinh</th>
+            <th>Địa chỉ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var guest in Model.GuestList)
+        {
+            <tr>
+                <td>@guest.LastName @guest.FirstName</td>
+                <td>@guest.DateofBirst.ToString("dd/MM/yyyy")</td>
+                <td>@guest.Address</td>
+            </tr>
+        }
+    </tbody>
+</table>

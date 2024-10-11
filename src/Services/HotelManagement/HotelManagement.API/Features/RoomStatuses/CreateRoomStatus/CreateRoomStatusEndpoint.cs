@@ -14,7 +14,7 @@
 
                 var response = result.Adapt<CreateRoomStatusResponse>();
 
-                return Results.Created($"/roomstatus/{response.StatusId}", response);
+                return Results.Created($"/hotels/roomstatus/{response.StatusId}", response);
             })
             .WithName("CreateRoomStatus")
             .Produces<CreateRoomStatusResponse>(StatusCodes.Status201Created)
