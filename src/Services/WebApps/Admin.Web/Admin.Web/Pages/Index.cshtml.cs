@@ -1,37 +1,58 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class IndexModel(IAuthentication authentication) : PageModel
     {
-
         public async Task<IActionResult> OnPostAsync(string usernameLogin, string passwordLogin)
         {
-            var loginData = new Login { UserName = usernameLogin, Password = passwordLogin };
-            var response = await authentication.Login(loginData);
-
-            if (response.IsSuccess)
+            try
             {
-                var token = response.Token.Access_token;
-                // Lưu trữ token vào session
-                HttpContext.Session.SetString("AccessToken", token);
+                var loginData = new Login { UserName = usernameLogin, Password = passwordLogin };
+                var response = await authentication.Login(loginData);
 
-                var storedToken = HttpContext.Session.GetString("AccessToken");
-                if (string.IsNullOrEmpty(storedToken))
+                if (response.IsSuccess)
                 {
-                    Console.WriteLine("Token chưa được lưu vào session");
+                    var token = response.Token.Access_token;
+                    // Lưu trữ token vào session
+                    HttpContext.Session.SetString("AccessToken", token);
+
+                    var storedToken = HttpContext.Session.GetString("AccessToken");
+                    if (string.IsNullOrEmpty(storedToken))
+                    {
+                        Console.WriteLine("Token chưa được lưu vào session");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Token đã được lưu vào session: " + storedToken);
+                    }
+                    // Redirect sau khi đăng nhập thành công
+                }
+
+            }
+            catch(ApiException apiEx)
+            {
+                if(apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorMessage"] = "Tên đăng nhập hoặc mật khẩu không đúng";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorMessage"] = "Không có quyền truy cập";
                 }
                 else
                 {
-                    Console.WriteLine("Token đã được lưu vào session: " + storedToken);
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorMessage"] = "Lỗi hệ thống";
                 }
-                // Redirect sau khi đăng nhập thành công
-                return RedirectToPage("/Index");
             }
-
-            ModelState.AddModelError("", "Invalid login attempt");
-            return Page();
+            catch (Exception ex)
+            {
+                // Xử lý các lỗi khác nếu có
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                TempData["ErrorMessage"] = "Lỗi hệ thống";
+            }
+            return RedirectToPage("/Index");
         }
 
         public async Task<IActionResult> OnPostLogoutAsync()

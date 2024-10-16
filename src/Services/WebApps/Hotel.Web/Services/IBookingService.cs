@@ -5,6 +5,9 @@
         [Get("/bookings/bookings")]
         Task<GetBookingsResponse> GetBookings();
 
+        [Get("/bookings/bookings/guestid/{GuestId}")]
+        Task<GetBookingsResponse> GetBookingsByGuestId(Guid GuestId);
+
         [Post("/bookings/bookings")]
         Task<CreateBookingResponse> CreateBooking(Booking Booking);
 

@@ -8,14 +8,14 @@
         [Post("/bookings/bookings")]
         Task<CreateBookingResponse> CreateBooking(Booking Booking);
 
-        [Put("/bookings/confirm")]
+        [Put("/bookings/bookings/confirm")]
         Task<UpdateBookingConfirmResponse> UpdateBookingConfirm(object obj);
 
-        [Put("/bookings/checkin")]
-        Task<UpdateBookingCheckinResponse> UpdateBookingCheckin(Booking Booking);
+        [Put("/bookings/bookings/checkin")]
+        Task<UpdateBookingCheckinResponse> UpdateBookingCheckin(object obj);
 
-        [Put("/bookings/checkout")]
-        Task<UpdateBookingCheckoutResponse> UpdateBookingCheckout(Booking Booking);
+        [Put("/bookings/bookings/checkout")]
+        Task<UpdateBookingCheckoutResponse> UpdateBookingCheckout(object obj);
 
         [Delete("/bookings/bookings/{BookingId}")]
         Task<DeleteBookingResponse> DeleteBooking(Guid BookingId);

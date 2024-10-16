@@ -1,12 +1,12 @@
 ﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
 {
-    public record UpdateBookingCheckinRequest(Guid BookingId, DateTime CheckinDate);
+    public record UpdateBookingCheckinRequest(Guid BookingId);
     public record UpdateBookingCheckinResponse(bool IsSuccess);
     public class UpdateBookingCheckinEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/bookings/checkin", async (UpdateBookingCheckinRequest request, ISender sender) =>
+            app.MapPut("/bookings/bookings/checkin", async (UpdateBookingCheckinRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateBookingCheckinCommand>();
 

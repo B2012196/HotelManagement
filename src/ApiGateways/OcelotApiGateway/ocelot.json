@@ -44,6 +44,7 @@
         "AllowedScopes": []
       }
     },
+
     //delete
     {
       "DownstreamPathTemplate": "/hotels/{endpoint}/{params}",
@@ -62,7 +63,7 @@
       }
     },
 
-    //-----------//
+    //-----------------------------------------------------------//
     //guest POST, PUT, GET All
     {
       "DownstreamPathTemplate": "/guests/{endpoint}",
@@ -115,7 +116,7 @@
       }
     },
 
-    //-----------//
+    //-----------------------------------------------------------//
     //Staffs POST, PUT, GET All
     {
       "DownstreamPathTemplate": "/staffs/{endpoint}",
@@ -134,7 +135,7 @@
       }
     },
 
-    //-----------//
+    //-----------------------------------------------------------//
     //booking
     {
       "DownstreamPathTemplate": "/bookings/{endpoint}",
@@ -162,7 +163,7 @@
         }
       ],
       "UpstreamPathTemplate": "/bookings/{endpoint}/{params}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [ "DELETE", "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -170,6 +171,24 @@
     },
 
 
+    {
+      "DownstreamPathTemplate": "/bookings/{endpoint1}/{endpoint2}/{params}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6002
+        }
+      ],
+      "UpstreamPathTemplate": "/bookings/{endpoint1}/{endpoint2}/{params}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+
+    //-----------------------------------------------------------//
     ////create account
     {
       "DownstreamPathTemplate": "/authentication/users",
@@ -213,7 +232,7 @@
         "AllowedScopes": []
       }
     },
-    //get by ...
+    //get by, put, delete
     {
       "DownstreamPathTemplate": "/authentication/{endpoint}/{params}",
       "DownstreamScheme": "http",
@@ -224,7 +243,7 @@
         }
       ],
       "UpstreamPathTemplate": "/authentication/{endpoint}/{params}",
-      "UpstreamHttpMethod": [ "GET", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

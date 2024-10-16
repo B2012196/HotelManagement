@@ -2,6 +2,8 @@
 {
     public interface IAuthentication
     {
+        [Get("/authentication/users")]
+        Task<GetUsersResponse> GetUsers();
         [Post("/authentication/login")]
         Task<LoginResponse> Login(Login loginModel);
 

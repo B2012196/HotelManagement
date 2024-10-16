@@ -12,7 +12,7 @@ namespace Hotel.Web.Pages
         : PageModel
     {
         public IEnumerable<HotelModel> HotelList { get; set; } = new List<HotelModel>();
-        public IEnumerable<RoomTypeModel> RoomTypeList { get; set; } = new List<RoomTypeModel>();
+        public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public async Task<IActionResult> OnGetAsync()
         {
             // Kiểm tra xem token có tồn tại trong session không

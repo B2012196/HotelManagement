@@ -1,0 +1,32 @@
+﻿@page "/bookinghistory"
+@model Hotel.Web.Pages.BookinghistoryModel
+@{
+    ViewData["Title"] = "Lịch sử đặt phòng";
+}
+<h4>Lịch sử đặt phòng</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Ngày Check-in dự kiến</th>
+            <th>Ngày Check-out dự kiến</th>
+            <th>Số phòng</th>
+            <th>Trạng thái</th>
+            <th>Ngày Check-in thực tế</th>
+            <th>Ngày Check-out thực tế</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in Model.BookingList)
+        {
+            <tr>
+                <td>@booking.ExpectedCheckinDate.ToString("dd/MM/yyyy")</td>
+                <td>@booking.ExpectedCheckoutDate.ToString("dd/MM/yyyy")</td>
+                <td>@booking.RoomQuantity</td>
+                <td>@booking.BookingStatus.GetDisplayName()</td>
+                <td>@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("dd/MM/yyyy") : string.Empty)</td>
+                <td>@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("dd/MM/yyyy") : string.Empty)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

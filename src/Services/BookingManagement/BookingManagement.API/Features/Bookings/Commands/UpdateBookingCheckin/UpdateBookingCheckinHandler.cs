@@ -1,6 +1,8 @@
-﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
+﻿using BuildingBlocks.Messaging.Events;
+
+namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
 {
-    public record UpdateBookingCheckinCommand(Guid BookingId, DateTime CheckinDate) : ICommand<UpdateBookingCheckinResult>;
+    public record UpdateBookingCheckinCommand(Guid BookingId) : ICommand<UpdateBookingCheckinResult>;
     public record UpdateBookingCheckinResult(bool IsSuccess);
 
     public class UpdateBookingCheckinValidator : AbstractValidator<UpdateBookingCheckinCommand>
@@ -8,11 +10,9 @@
         public UpdateBookingCheckinValidator()
         {
             RuleFor(x => x.BookingId).NotEmpty().WithMessage("BookingId is required.");
-            RuleFor(x => x.CheckinDate).GreaterThanOrEqualTo(DateTime.Now)
-                .WithMessage("Check-in date cannot be in the past.");
         }
     }
-    public class UpdateBookingCheckinHandler(ApplicationDbContext context)
+    public class UpdateBookingCheckinHandler(ApplicationDbContext context, IPublishEndpoint publishEndpoint)
         : ICommandHandler<UpdateBookingCheckinCommand, UpdateBookingCheckinResult>
     {
         public async Task<UpdateBookingCheckinResult> Handle(UpdateBookingCheckinCommand command, CancellationToken cancellationToken)
@@ -23,15 +23,32 @@
                 throw new BookingNotFoundException(command.BookingId);
             }
 
-            booking.CheckinDate = command.CheckinDate;
+            booking.CheckinDate = DateTime.Now;
             booking.BookingStatus = BookingStatus.CheckedIn;
 
-            //event BookingCheckinEvent
+            var bookingrooms = await context.BookingRooms.Where(r => r.BookingId == command.BookingId).ToListAsync(cancellationToken);
+            if (bookingrooms.Any())
+            {
+                var roomId = bookingrooms[0].RoomId;
+                var eventObj = new
+                {
+                    BookingId = command.BookingId,
+                    RoomId = roomId
+                };
+                //event BookingCheckinEvent
+                var eventMessage = eventObj.Adapt<BookingCheckinEvent>();
+                await publishEndpoint.Publish(eventMessage, cancellationToken);
 
-
-            context.Bookings.Update(booking);
-            await context.SaveChangesAsync(cancellationToken);
-            return new UpdateBookingCheckinResult(true);
+                //update database
+                context.Bookings.Update(booking);
+                await context.SaveChangesAsync(cancellationToken);
+                return new UpdateBookingCheckinResult(true);
+            }
+            else
+            {
+                throw new BookingNotFoundException(command.BookingId);
+            }
+            
         }
     }
 }

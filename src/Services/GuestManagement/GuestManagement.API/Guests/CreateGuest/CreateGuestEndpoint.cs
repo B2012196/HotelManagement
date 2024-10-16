@@ -1,7 +1,7 @@
 ﻿namespace GuestManagement.API.Guests.CreateGuest
 {
     public record CreateGuestRequest
-        (Guid UserId, string FirstName, string LastName, DateOnly DateofBirst, string Address);
+        (Guid UserId, string FirstName, string LastName, DateTime DateofBirst, string Address);
 
     public record CreateGuestReponse(Guid GuestId);
     public class CreateGuestEndpoint : ICarterModule

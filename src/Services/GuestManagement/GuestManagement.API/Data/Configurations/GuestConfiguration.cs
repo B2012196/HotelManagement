@@ -7,7 +7,7 @@
             builder.HasKey(g => g.GuestId);
             builder.Property(g => g.FirstName).IsRequired().HasMaxLength(20);
             builder.Property(g => g.LastName ).IsRequired().HasMaxLength(20);
-            builder.Property(g => g.DateofBirst).IsRequired();
+            builder.Property(g => g.DateofBirst).HasColumnType("timestamp without time zone").IsRequired();
             builder.Property(g => g.Address).IsRequired().HasMaxLength(200);
         }
     }

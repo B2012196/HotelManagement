@@ -1,7 +1,7 @@
 ﻿namespace GuestManagement.API.Guests.UpdateGuest
 {
     public record UpdateGuestRequest
-        (Guid GuestId, Guid UserId, string FirstName, string LastName, DateOnly DateofBirst, string Address);
+        (Guid GuestId, string FirstName, string LastName, DateTime DateofBirst, string Address);
     public record UpdateGuestResponse(bool IsSuccess);
     public class UpdateGuestEndpoint : ICarterModule
     {

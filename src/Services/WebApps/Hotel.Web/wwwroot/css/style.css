@@ -2,6 +2,23 @@
 ** Style Simple Ecommerce Theme for Bootstrap 4
 ** Created by T-PHP https://t-php.fr/43-theme-ecommerce-bootstrap-4.html
 */
+
+/* Ẩn menu mặc định */
+.dropdown-menu {
+    left: 0 !important; 
+    right: auto !important; 
+}
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    position: absolute;
+}
+
+.dropdown-toggle::after {
+    display: none !important; 
+}   
 .hover-card {
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
     border: 1px solid #ddd;

@@ -21,7 +21,7 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-
+builder.Services.AddHttpClient();
 //Async communication service
 builder.Services.AddMessageBroker(builder.Configuration);
 

@@ -2,8 +2,19 @@
 
 @if (Model.IsAuthenticated)
 {
-    <form method="post" asp-page-handler="Logout">
-        <button type="submit" class="btn btn-outline-primary">Đăng xuất</button>
+    <div class="dropdown d-inline">
+        <a class="btn btn-outline-secondary" id="accountDropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-chevron-down"></i>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="accountDropdown">
+            <a class="dropdown-item" href="/account">Quản lý tài khoản</a>
+            <a class="dropdown-item" href="/bookinghistory">Lịch sử đặt phòng</a>
+            <a class="dropdown-item" href="/notifications">Quản lý thông báo</a>
+        </div>
+    </div>
+
+    <form method="post" asp-page-handler="Logout" style="margin-left: 10px;" class="d-inline">
+        <button type="submit" class="btn btn-outline-primary col-m">Đăng xuất</button>
     </form>
 }
 else

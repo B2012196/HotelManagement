@@ -8,5 +8,8 @@
         [Post("/authentication/users")]
         Task<CreateUserResponse> CreateUser(UserModel userModel);
 
+        [Put("/authentication/users/password")]
+        Task<UpdatePasswordResponse> UpdatePassword(object obj);
+
     }
 }

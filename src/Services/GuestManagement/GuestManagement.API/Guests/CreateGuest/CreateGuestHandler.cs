@@ -3,7 +3,7 @@
 namespace GuestManagement.API.Guests.CreateGuest
 {
     public record CreateGuestCommand
-        (Guid UserId, string FirstName, string LastName, DateOnly DateofBirst, string Address) 
+        (Guid UserId, string FirstName, string LastName, DateTime DateofBirst, string Address) 
         : ICommand<CreateGuestResult>;
 
     public record CreateGuestResult(Guid GuestId);
@@ -19,7 +19,7 @@ namespace GuestManagement.API.Guests.CreateGuest
 
             RuleFor(x => x.DateofBirst)
                 .Must(BeAValidDate).WithMessage("Date of birth must be a valid date.")
-                .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("Date of birth cannot be in the future.");
+                .LessThanOrEqualTo(DateTime.Now).WithMessage("Date of birth cannot be in the future.");
 
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required");
 
@@ -29,7 +29,7 @@ namespace GuestManagement.API.Guests.CreateGuest
             //RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("A valid email is required");
         }
         // Hàm kiểm tra DateOnly có hợp lệ không
-        private bool BeAValidDate(DateOnly date)
+        private bool BeAValidDate(DateTime date)
         {
             return date != default;
         }

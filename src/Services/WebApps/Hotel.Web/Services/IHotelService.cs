@@ -5,6 +5,8 @@
         //hotel
         [Get("/hotels/hotels")]
         Task<GetHotelsResponse> GetHotels();
+        [Get("/guests/guests/type/{TypeId}")]
+        Task<GetRoomsByTypeResponse> GetRoomtByTypeId(Guid TypeId);
 
         [Post("/hotels/hotels")]
         Task<CreateHotelResponse> CreateHotel(HotelModel Hotel);
@@ -18,12 +20,14 @@
         //roomtype
         [Get("/hotels/roomtypes")]
         Task<GetRoomTypesResponse> GetRoomTypes();
+        [Get("/hotels/roomtypes/id/{TypeId}")]
+        Task<GetRoomTypeByIdResponse> GetRoomTypeById(Guid TypeId);
 
         [Post("/hotels/roomtypes")]
-        Task<CreateRoomTypeResponse> CreateRoomType(RoomTypeModel Type);
+        Task<CreateRoomTypeResponse> CreateRoomType(RoomType Type);
 
         [Put("/hotels/roomtypes")]
-        Task<UpdateRoomTypeResponse> UpdateRoomType(RoomTypeModel Type);
+        Task<UpdateRoomTypeResponse> UpdateRoomType(RoomType Type);
 
         [Delete("/hotels/roomtypes/{RoomtypeId}")]
         Task<DeleteRoomTypeResponse> DeleteRoomType(Guid RoomtypeId);

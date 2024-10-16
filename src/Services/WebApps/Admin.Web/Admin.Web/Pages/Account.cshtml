@@ -1,0 +1,41 @@
+﻿@page "/admin/account"
+@model AccountModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>PhoneNumber</th>
+            <th>FailedLoginAttempt</th>
+            <th>IsActive</th>
+            <th>CreateAt</th>
+            <th>RoleId</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.UserList)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.PhoneNumber</td>
+                <td>@user.FailedLoginAttempt</td>
+                <td>@user.IsActive</td>
+                <td>@user.CreateAt</td>
+                <td>@user.RoleId</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
+                        Cập nhật
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@user.UserName">
+                        Xóa
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

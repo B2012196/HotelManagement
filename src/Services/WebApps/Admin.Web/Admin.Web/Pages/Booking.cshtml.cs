@@ -11,11 +11,27 @@
             {
                 var resultbooking = await bookingService.GetBookings();
                 var bookingViewList = new List<BookingView>();
-
-                foreach (var booking in resultbooking.Bookings)
+                // Tạo danh sách các task cho các API call
+                var guestTasks = resultbooking.Bookings.Select(b => guestService.GetGuestById(b.GuestId)).ToList();
+                var typeTasks = resultbooking.Bookings.Select(b => hotelService.GetRoomTypeById(b.TypeId)).ToList();
+                // Thực hiện tất cả các task đồng thời
+                var guests = await Task.WhenAll(guestTasks);
+                var types = await Task.WhenAll(typeTasks);
+                var bookingsList = resultbooking.Bookings.ToList();
+                for (int i = 0; i < resultbooking.Bookings.Count(); i++)
                 {
-                    var guest = await guestService.GetGuestById(booking.GuestId);
-                    var type = await hotelService.GetRoomTypeById(booking.TypeId);
+                    //var guest = await guestService.GetGuestById(booking.GuestId);
+                    //var type = await hotelService.GetRoomTypeById(booking.TypeId);
+
+                    var booking = bookingsList[i];
+                    var guest = guests[i];
+                    var type = types[i];
+                    if (guest == null || guest.Guest == null || type == null || type.RoomType == null)
+                    {
+                        logger.LogWarning($"Missing data for booking {booking.BookingId}");
+                        continue; // Skip this iteration if any necessary data is missing
+                    }
+
                     var bookingView = new BookingView
                     {
                         BookingId = booking.BookingId,
@@ -29,6 +45,7 @@
                         CheckoutDate = booking.CheckoutDate,
                         RoomQuantity = booking.RoomQuantity,
                         BookingStatus = booking.BookingStatus,
+                        TotalPrice = booking.TotalPrice,
                     };
                     bookingViewList.Add(bookingView);
                 }
@@ -71,5 +88,54 @@
 
             return RedirectToPage("Booking");
         }
+
+        public async Task<IActionResult> OnPostCheckinBookingAsync(string BookingId)
+        {
+            Guid bookingIdGuid;
+            if (!Guid.TryParse(BookingId, out bookingIdGuid))
+            {
+                ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
+                logger.LogInformation("Dữ liệu không hợp lệ.");
+                return Page();
+            }
+
+            var checkin = new
+            {
+                BookingId = bookingIdGuid
+            };
+
+            var resultconfirm = await bookingService.UpdateBookingCheckin(checkin);
+            if (!resultconfirm.IsSuccess)
+            {
+                logger.LogInformation("Error: Cannot update checkin the booking");
+            }
+
+            return RedirectToPage("Booking");
+        }
+
+        public async Task<IActionResult> OnPostCheckoutBookingAsync(string BookingId)
+        {
+            Guid bookingIdGuid;
+            if (!Guid.TryParse(BookingId, out bookingIdGuid))
+            {
+                ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
+                logger.LogInformation("Dữ liệu không hợp lệ.");
+                return Page();
+            }
+
+            var checkin = new
+            {
+                BookingId = bookingIdGuid
+            };
+
+            var resultconfirm = await bookingService.UpdateBookingCheckout(checkin);
+            if (!resultconfirm.IsSuccess)
+            {
+                logger.LogInformation("Error: Cannot update checkout the booking");
+            }
+
+            return RedirectToPage("Booking");
+        }
+
     }
 }

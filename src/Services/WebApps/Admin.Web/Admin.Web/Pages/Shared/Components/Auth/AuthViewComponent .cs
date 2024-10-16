@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Admin.Web.Pages.Shared.Components.Auth
+﻿namespace Admin.Web.Pages.Shared.Components.Auth
 {
-    public class AuthViewComponent(IHttpContextAccessor httpContextAccessor) : ViewComponent
+    public class AuthViewComponent(IHttpContextAccessor httpContextAccessor, IAuthentication authentication) : ViewComponent
     {
         public IViewComponentResult Invoke()
         {

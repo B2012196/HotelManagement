@@ -1,0 +1,112 @@
+﻿@page "/account"
+@model AccountModel
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+}
+
+<div class="container mt-5">
+    <h2>Thông tin tài khoản</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="FirstName">Họ và tên</label>
+                <input type="text" class="form-control" id="FirstName" value="@Model.Guest.FirstName @Model.Guest.LastName" readonly />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Address">Địa chỉ</label>
+                <input type="text" class="form-control" id="Address" value="@Model.Guest.Address" readonly />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="DateofBirth">Ngày sinh</label>
+                <input type="date" class="form-control" id="DateofBirth" value="@Model.Guest.DateofBirst.ToString("yyyy-MM-dd")" readonly />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#updateGuestModal">
+        Chỉnh sửa thông tin
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#updatePasswordModal">
+        Đổi mật khẩu
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="updateGuestModal" tabindex="-1" role="dialog" aria-labelledby="updateGuestModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomSelectionModalLabel">Chỉnh sửa thông tin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="UpdateGuest">
+                    <input type="hidden" name="GuestId" value="@Model.Guest.GuestId" hidden readonly />
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Họ</label>
+                        <input type="text" class="form-control" id="lastName" name="LastName" value="@Model.Guest.LastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">Tên</label>
+                        <input type="text" class="form-control" id="firstName" name="FirstName" value="@Model.Guest.FirstName"  required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dateofBirst" class="form-label">Ngày sinh</label>
+                        <input type="date" class="form-control" id="dateofBirst" name="DateofBirst" value="@Model.Guest.DateofBirst.ToString("yyyy-MM-dd")" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" id="address" name="Address" value="@Model.Guest.Address" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updatePasswordModal" tabindex="-1" role="dialog" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomSelectionModalLabel">Thay đổi mật khẩu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="UpdatePassword">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPasswordAgain" class="form-label">Nhập lại mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPasswordAgain" name="newPasswordAgain" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thay đổi</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

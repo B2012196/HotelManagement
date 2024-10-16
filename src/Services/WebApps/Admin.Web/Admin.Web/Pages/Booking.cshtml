@@ -33,20 +33,21 @@
                 else if (booking.BookingStatus == BookingStatus.Confirmed)
                 {
                     <td>
-                        <form method="post" >
-                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                        <form method="post" asp-page-handler="CheckinBooking">
+                            <input type="hidden" name="bookingId" value="@booking.BookingId" hidden readonly/>
                             <button type="submit" class="btn btn-success btn-sm">Checkin</button>
                         </form>
                     </td>
                 }
-                else
+                else if (booking.BookingStatus == BookingStatus.CheckedIn)
                 {
                     <td>
-                        <form method="post">
-                            <input type="hidden" name="bookingId" value="@booking.BookingId" />
-                            <button type="submit" class="btn btn-warning btn-sm">Checkout</button>
-                        </form>
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#checkoutSelectionModal-@booking.BookingId">Checkout</button>
                     </td>
+                }
+                else
+                {
+
                 }
                 <td>
                     <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#roomDetailSelectionModal-@booking.BookingId">
@@ -125,10 +126,10 @@
                                 <input class="form-control" type="date" id="expectedCheckoutDate" name="ExpectedCheckoutDate" value="@booking.ExpectedCheckoutDate.ToString("yyyy-MM-dd")" readonly />
 
                                 <label for="checkinDate">Ngày check-in thực tế</label>
-                                <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty))" readonly />
+                                <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
                                 <label for="checkoutDate">Ngày check-out thực tế</label>
-                                <input class="form-control" type="date" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty))" readonly />
+                                <input class="form-control" type="date" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
                                 <label for="totalPrice">Tổng tiền</label>
                                 <input class="form-control" type="number" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
@@ -143,13 +144,34 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                <button type="submit" class="btn btn-primary">Xác nhận</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div class="modal fade" id="checkoutSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="checkoutSelectionModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="roomSelectionModalLabel">Xác nhận Checkout</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" asp-page-handler="CheckoutBooking">
+                                <input type="hidden" id="bookingId" name="BookingId" required value="@booking.BookingId" hidden readonly>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </form>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
     </tbody>
 </table>

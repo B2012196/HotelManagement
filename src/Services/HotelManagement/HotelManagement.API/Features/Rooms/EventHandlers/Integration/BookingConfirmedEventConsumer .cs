@@ -1,7 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
-using MassTransit;
-
-namespace HotelManagement.API.Features.Rooms.EventHandlers.Integration
+﻿namespace HotelManagement.API.Features.Rooms.EventHandlers.Integration
 {
     public class BookingConfirmedEventConsumer(IRoomRepository repository)
         : IConsumer<BookingConfirmedEvent>
@@ -10,7 +7,7 @@ namespace HotelManagement.API.Features.Rooms.EventHandlers.Integration
         {
             var eventMessage = context.Message;
 
-            await repository.UpdateRoomStatus(eventMessage.RoomId, context.CancellationToken);
+            await repository.UpdateRoomConfirmStatus(eventMessage.RoomId, context.CancellationToken);
             //return Task.CompletedTask;
         }
     }

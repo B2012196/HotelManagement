@@ -33,7 +33,9 @@ builder.Services.AddRefitClient<IAuthentication>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
-    });
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
+
 builder.Services.AddDistributedMemoryCache(); // Cần thiết cho Session
 builder.Services.AddSession(options =>
 {

@@ -1,6 +1,11 @@
-﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
+﻿using BuildingBlocks.Messaging.Events;
+using MassTransit.Transports;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
+
+namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
 {
-    public record UpdateBookingCheckoutCommand(Guid BookingId, DateTime CheckoutDate)
+    public record UpdateBookingCheckoutCommand(Guid BookingId)
         : ICommand<UpdateBookingCheckoutResult>;
     public record UpdateBookingCheckoutResult(bool IsSuccess);
 
@@ -9,11 +14,10 @@
         public UpdateBookingCheckoutValidator()
         {
             RuleFor(x => x.BookingId).NotEmpty().WithMessage("BookingId is required.");
-            RuleFor(x => x.CheckoutDate).GreaterThanOrEqualTo(DateTime.Now)
-                .WithMessage("Check-out date cannot be in the past.");
         }
     }
-    public class UpdateBookingCheckoutHandler(ApplicationDbContext context)
+    public class UpdateBookingCheckoutHandler(ApplicationDbContext context, IHttpClientFactory httpClientFactory, ILogger<UpdateBookingCheckoutHandler> logger,
+        IPublishEndpoint publishEndpoint)
         : ICommandHandler<UpdateBookingCheckoutCommand, UpdateBookingCheckoutResult>
     {
         public async Task<UpdateBookingCheckoutResult> Handle(UpdateBookingCheckoutCommand command, CancellationToken cancellationToken)
@@ -23,21 +27,49 @@
             {
                 throw new BookingNotFoundException(command.BookingId);
             }
-
-            booking.CheckoutDate = command.CheckoutDate;
-            if (booking.CheckinDate.HasValue && booking.CheckoutDate.HasValue)
+            //update checkout
+            booking.CheckoutDate = DateTime.Now;
+            //request price and update statusbooking
+            var client = httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"http://hotelmanagement.api:8080/hotels/roomtypes/id/{booking.TypeId}");
+            if (response.IsSuccessStatusCode)
             {
-                booking.TotalPrice = CalculateTotalPrice(booking.CheckinDate.Value, booking.CheckoutDate.Value, 120000);
+                var roomTypeResponse = await response.Content.ReadFromJsonAsync<RoomTypeResponseDTO>();
+                var roomType = roomTypeResponse?.RoomType;
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                logger.LogInformation($"Response JSON: {jsonResponse}");
+                if (roomType != null)
+                {
+                    logger.LogInformation("start totalprice");
+                    if (booking.CheckinDate.HasValue && booking.CheckoutDate.HasValue)
+                    {
+                        logger.LogInformation("Price"+roomType.pricePerNight);
+                        booking.TotalPrice = CalculateTotalPrice(booking.CheckinDate.Value, booking.CheckoutDate.Value, roomType.pricePerNight);
+                        logger.LogInformation("Price" + booking.TotalPrice);
+                    }
+                    booking.BookingStatus = BookingStatus.CheckedOut;
+
+                    var bookingrooms = await context.BookingRooms.Where(r => r.BookingId == command.BookingId).ToListAsync(cancellationToken);
+                    if (bookingrooms.Any())
+                    {
+                        var roomId = bookingrooms[0].RoomId;
+                        var eventObj = new
+                        {
+                            BookingId = command.BookingId,
+                            RoomId = roomId
+                        };
+                        //event BookingCheckoutEvent
+                        var eventMessage = eventObj.Adapt<BookingCheckoutEvent>();
+                        await publishEndpoint.Publish(eventMessage, cancellationToken);
+
+                        context.Bookings.Update(booking);
+                        await context.SaveChangesAsync(cancellationToken);
+
+                        return new UpdateBookingCheckoutResult(true);
+                    }
+                }
             }
-            booking.BookingStatus = BookingStatus.CheckedOut;
-
-            //event BookingCheckoutEvent
-
-
-            context.Bookings.Update(booking);
-            await context.SaveChangesAsync(cancellationToken);
-
-            return new UpdateBookingCheckoutResult(true);
+            return new UpdateBookingCheckoutResult(false);
         }
 
         public decimal CalculateTotalPrice(DateTime checkinDate, DateTime checkoutDate, decimal roomPricePerDay)

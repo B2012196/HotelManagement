@@ -1,7 +1,7 @@
 ﻿namespace GuestManagement.API.Guests.UpdateGuest
 {
     public record UpdateGuestCommand
-        (Guid GuestId, Guid UserId, string FirstName, string LastName, DateOnly DateofBirst, string Address)
+        (Guid GuestId, string FirstName, string LastName, DateTime DateofBirst, string Address)
         : ICommand<UpdateGuestResult>;
     public record UpdateGuestResult(bool IsSuccess);
 
@@ -10,7 +10,6 @@
         public UpdateGuestCommandValidator()
         {
             RuleFor(x => x.GuestId).NotEmpty().WithMessage("Guest ID is required");
-            RuleFor(x => x.UserId).NotEmpty().WithMessage("User ID is required");
             RuleFor(x => x.FirstName).NotEmpty().WithMessage("First name is required");
             RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required");
             RuleFor(x => x.DateofBirst).NotEmpty().WithMessage("Date of birth is required");
@@ -28,7 +27,6 @@
 
             var result = await repository.GetGuestById(command.GuestId, cancellationToken);
 
-            result.UserId = command.UserId;
             result.FirstName = command.FirstName;
             result.LastName = command.LastName;
             result.DateofBirst = command.DateofBirst;
