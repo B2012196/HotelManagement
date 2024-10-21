@@ -15,7 +15,7 @@ global using Mapster;
 global using System.Text.Json.Serialization;
 global using BuildingBlocks.Exceptions;
 global using StaffManagement.API.Exceptions;
-
+global using StaffManagement.API.Features.Staffs.Repositories;
 
 
 

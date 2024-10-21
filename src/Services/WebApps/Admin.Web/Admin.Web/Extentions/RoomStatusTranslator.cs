@@ -9,6 +9,7 @@
             { "Occupied", "Đã có người" },
             { "Cleaning", "Đang dọn dẹp" },
             { "Maintenance", "Bảo trì" }
+
         };
 
         public static string Translate(this string englishStatus)

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Authentication.API.Models
+﻿namespace Authentication.API.Models
 {
     public class Role
     {

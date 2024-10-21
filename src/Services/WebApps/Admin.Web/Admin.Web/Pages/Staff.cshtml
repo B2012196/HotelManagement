@@ -57,7 +57,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin phòng</h5>
+                                <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin nhân viên</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -75,7 +75,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="staffDateofBirst" class="form-label">Ngày sinh</label>
-                                        <input type="date" class="form-control" id="staffDateofBirst" name="DateofBirst" required value="@staff.DateofBirst">
+                                        <input type="date" class="form-control" id="staffDateofBirst" name="DateofBirst" required value="@staff.DateofBirst.ToString("yyyy-MM-dd")">
                                     </div>
                                     <div class="mb-3">
                                         <label for="staffSalary" class="form-label">Lương</label>
@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="staffHireDate" class="form-label">Ngày thuê</label>
-                                        <input type="date" class="form-control" id="staffHireDate" name="HireDate" required value="@staff.HireDate">
+                                        <input type="date" class="form-control" id="staffHireDate" name="HireDate" required value="@staff.HireDate.ToString("yyyy-MM-dd")">
                                     </div>
 
                                     <div class="modal-footer">

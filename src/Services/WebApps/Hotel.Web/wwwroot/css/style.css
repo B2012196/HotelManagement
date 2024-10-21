@@ -4,9 +4,34 @@
 */
 
 /* Ẩn menu mặc định */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+}
+.container-fluid
+{
+    height: auto;
+}
 .dropdown-menu {
-    left: 0 !important; 
-    right: auto !important; 
+    left: 0 !important;
+    right: auto !important;
 }
 .dropdown:hover .dropdown-menu {
     display: block;
@@ -18,88 +43,4 @@
 
 .dropdown-toggle::after {
     display: none !important; 
-}   
-.hover-card {
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
-    border: 1px solid #ddd;
-    overflow: hidden; /* Đảm bảo nội dung bên trong không tràn ra ngoài khung */
-}
-
-.hover-card:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng khi hover */
-        border-color: #007bff; /* Đổi màu khung viền khi hover */
-    }
-
-.img-container {
-    overflow: hidden; /* Ẩn phần ảnh bị phóng to vượt quá khung */
-}
-
-.hover-card img {
-    transition: transform 0.3s ease;
-}
-.hover-card:hover img {
-    transform: scale(1.1); /* Zoom ảnh lên thêm 10% */
-}
-
-.custom-img {
-    width: 100%; /* Chiếm toàn bộ chiều rộng của card */
-    height: 300px; /* Đặt chiều cao cố định */
-    object-fit: cover; /* Đảm bảo ảnh không bị méo */
-}
-
-.bloc_left_price {
-    color: #c01508;
-    text-align: center;
-    font-weight: bold;
-    font-size: 150%;
-}
-.category_block li:hover {
-    background-color: #007bff;
-}
-.category_block li:hover a {
-    color: #ffffff;
-}
-.category_block li a {
-    color: #343a40;
-}
-.add_to_cart_block .price {
-    color: #c01508;
-    text-align: center;
-    font-weight: bold;
-    font-size: 200%;
-    margin-bottom: 0;
-}
-.add_to_cart_block .price_discounted {
-    color: #343a40;
-    text-align: center;
-    text-decoration: line-through;
-    font-size: 140%;
-}
-.product_rassurance {
-    padding: 10px;
-    margin-top: 15px;
-    background: #ffffff;
-    border: 1px solid #6c757d;
-    color: #6c757d;
-}
-.product_rassurance .list-inline {
-    margin-bottom: 0;
-    text-transform: uppercase;
-    text-align: center;
-}
-.product_rassurance .list-inline li:hover {
-    color: #343a40;
-}
-.reviews_product .fa-star {
-    color: gold;
-}
-.pagination {
-    margin-top: 20px;
-}
-footer {
-    background: #343a40;
-    padding: 40px;
-}
-footer a {
-    color: #f8f9fa!important
 }

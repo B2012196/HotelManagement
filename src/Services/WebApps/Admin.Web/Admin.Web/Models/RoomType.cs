@@ -15,5 +15,7 @@
     public record GetRoomTypeByIdResponse(RoomType RoomType);
     public record CreateRoomTypeResponse(Guid TypeId);
     public record UpdateRoomTypeResponse(bool IsSuccess);
+    public record UploadRoomTypeImageResponse(bool IsSuccess);
     public record DeleteRoomTypeResponse(bool IsSuccess);
+
 }

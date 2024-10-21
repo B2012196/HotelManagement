@@ -25,7 +25,7 @@
         }
       ],
       "UpstreamPathTemplate": "/hotels/{endpoint1}/{endpoint2}/{params}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamHttpMethod": [ "GET", "PUT" ]
     },
 
     {

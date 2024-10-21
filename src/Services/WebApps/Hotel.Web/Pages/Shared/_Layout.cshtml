@@ -53,6 +53,12 @@
                                         <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
                                         <label class="form-check-label" for="rememberMe">Nhớ mật khẩu</label>
                                     </div>
+                                    @if (TempData["ErrorMessage"] != null)
+                                    {
+                                        <div class="alert alert-danger" role="alert">
+                                            @TempData["ErrorMessage"]
+                                        </div>
+                                    }
                                     <button type="submit" class="btn btn-primary">Đăng nhập</button>
                                 </form>
 
@@ -186,6 +192,15 @@
     <script src="//code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" type="text/javascript"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            var errorMessage = '@TempData["ErrorMessage"]';
+            if (errorMessage) {
+                $('#loginModal').modal('show');  // Hiển thị lại modal nếu có lỗi
+                $('#errorMessage').text(errorMessage).removeClass('d-none');
+            }
+        });
+    </script>
 </body>
 </html>
 

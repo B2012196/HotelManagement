@@ -3,39 +3,247 @@
 @{
     ViewData["Title"] = "Trang chủ";
 }
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>UserName</th>
-            <th>Email</th>
-            <th>PhoneNumber</th>
-            <th>FailedLoginAttempt</th>
-            <th>IsActive</th>
-            <th>CreateAt</th>
-            <th>RoleId</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.UserList)
-        {
+@if (TempData["ErrorApiException"] != null)
+{
+    <br />
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorApiException"]
+    </div>
+}
+else
+{
+    <h3>Quản lý tài khoản</h3>
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>@user.UserName</td>
-                <td>@user.Email</td>
-                <td>@user.PhoneNumber</td>
-                <td>@user.FailedLoginAttempt</td>
-                <td>@user.IsActive</td>
-                <td>@user.CreateAt</td>
-                <td>@user.RoleId</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
-                        Cập nhật
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@user.UserName">
-                        Xóa
-                    </button>
-                </td>
+                <th>Tên tài khoản</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.UserViewList)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@user.RoleName</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
+                            Cập nhật
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@user.UserName">
+                            Xóa
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#userDetailSelectionModal-@user.UserName">
+                            Chi tiết
+                        </button>
+                    </td>
+                </tr>
+
+                <div class="modal fade" id="userDetailSelectionModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userDetailSelectionModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin tài khoản</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form to choose available room -->
+                                <div class="form-group">
+
+                                    <label for="username">Tên tài khoản</label>
+                                    <input class="form-control" type="text" id="username" value="@user.UserName" readonly />
+
+                                    <label for="email">Email</label>
+                                    <input class="form-control" type="text" id="email" value="@user.Email" readonly />
+
+                                    <label for="phoneNumber">Số điện thoại</label>
+                                    <input class="form-control" type="text" id="phoneNumber" value="@user.PhoneNumber" readonly />
+
+                                    <label for="failedLogin">Số lần đăng nhập thất bại</label>
+                                    <input class="form-control" type="number" id="failedLogin" value="@user.FailedLoginAttempt" readonly />
+
+                                    <label for="active">Trạng thái</label>
+                                    <input class="form-control" type="text" id="active" value="@(user.IsActive == true ? "Đang hoạt động" : "Khóa")" readonly />
+
+                                    <label for="createdDate">Ngày tạo</label>
+                                    <input class="form-control" type="date" id="createdDate" value="@user.CreateAt.ToString("yyyy-MM-dd")" readonly />
+
+                                    <label for="role">Vai trò</label>
+                                    <input class="form-control" type="text" id="role" value="@user.RoleName" readonly />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addUserModal">
+        Thêm tài khoản nhân viên
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userSelectionModalLabel">Thêm phòng mới</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-page-handler="AddUser">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Tên tài khoản</label>
+                            <input type="text" class="form-control" id="userName" name="UserName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="Password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="email" name="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phonenumber" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phonenumber" name="Phonenumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Vai trò</label>
+                            <select class="form-control" id="role" name="Role">
+                                @foreach (var role in Model.RoleList)
+                                {
+                                    <option value="@role.RoleId">@role.RoleName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Thêm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <h3 class="mt-3">Quản lý vai trò</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Vai trò</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model.RoleList)
+            {
+                <tr>
+                    <td>@role.RoleName</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roleSelectionModal-@role.RoleId">
+                            Cập nhật
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm ml-2" data-toggle="modal" data-target="#roleSelectionDeleteModal-@role.RoleId">
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+
+                <div class="modal fade" id="roleSelectionModal-@role.RoleId" tabindex="-1" role="dialog" aria-labelledby="roleSelectionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="roleSelectionModalLabel">Thông tin phòng</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" asp-page-handler="UpdateRole">
+                                    <input type="text" id="roleId" name="RoleId" required value="@role.RoleId" hidden readonly>
+                                    <div class="mb-3">
+                                        <label for="roleName" class="form-label">Tên vai trò</label>
+                                        <input type="text" class="form-control" id="roleName" name="RoleName" required value="@role.RoleName">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="roleSelectionDeleteModal-@role.RoleId" tabindex="-1" role="dialog" aria-labelledby="roleSelectionDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="roomSelectionModalLabel">Bạn có chắc chắn muốn xóa?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" asp-page-handler="DeleteRole">
+                                    <input type="text" id="roleId" name="RoleId" required value="@role.RoleId" hidden readonly>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addRoleModal">
+        Thêm vai trò
+    </button>
+    <!-- Add Modal -->
+    <div class="modal fade" id="addRoleModal" tabindex="-1" role="dialog" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roleSelectionModalLabel">Thêm vai trò mới</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-page-handler="AddRole">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Tên vai trò</label>
+                            <input type="text" class="form-control" id="rolenName" name="RoleName" required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Thêm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

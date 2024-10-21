@@ -45,12 +45,12 @@
             return date != default;
         }
     }
-    public class UpdateStaffHandler(ApplicationDbContext context)
+    public class UpdateStaffHandler(IStaffRepository repository)
         : ICommandHandler<UpdateStaffCommand, UpdateStaffResult>
     {
         public async Task<UpdateStaffResult> Handle(UpdateStaffCommand command, CancellationToken cancellationToken)
         {
-            var staff = await context.Staffs.SingleOrDefaultAsync(s => s.StaffId == command.StaffId, cancellationToken);
+            var staff = await repository.GetStaffById(command.StaffId, cancellationToken);
 
             if (staff is null)
             {
@@ -66,10 +66,8 @@
             staff.Address = command.Address;
             staff.HireDate = command.HireDate;
 
-            context.Staffs.Update(staff);
-            await context.SaveChangesAsync(cancellationToken);
-
-            return new UpdateStaffResult(true);
+            var result = await repository.UpdateStaff(staff, cancellationToken);
+            return new UpdateStaffResult(result);
 
         }
     }

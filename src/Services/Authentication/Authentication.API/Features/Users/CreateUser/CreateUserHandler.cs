@@ -22,6 +22,13 @@
 
             context.Users.Add(user);
             await context.SaveChangesAsync(cancellationToken);
+            
+            var role = await context.Roles.SingleOrDefaultAsync(r => r.RoleId == user.RoleId, cancellationToken);
+
+            if(role != null && role.RoleName == "Admin")
+            {
+
+            }
 
             return new CreateUserResult(command.RoleId);
         }

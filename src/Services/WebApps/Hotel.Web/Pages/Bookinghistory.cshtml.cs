@@ -1,48 +1,74 @@
 ﻿namespace Hotel.Web.Pages
 {
-    public class BookinghistoryModel(IBookingService bookingService, IGuestService guestService, IHotelService hotelService) : PageModel
+    public class BookinghistoryModel(IBookingService bookingService, IGuestService guestService, 
+        IHotelService hotelService, ILogger<BookinghistoryModel> logger) : PageModel
     {
         public IEnumerable<BookingView> BookingList { get; set; } = new List<BookingView>();
         public async Task<IActionResult> OnGetAsync()
         {
-
-            var token = HttpContext.Session.GetString("AccessToken");
-            if (token != null)
+            try
             {
-                string userId = GetUserIdFromToken(token);
-                if (userId != null)
+                var token = HttpContext.Session.GetString("AccessToken");
+                if (token != null)
                 {
-                    var resultstaff = await guestService.GetGuestByUserId(Guid.Parse(userId));
-                    if(resultstaff != null)
+                    string userId = GetUserIdFromToken(token);
+                    if (userId != null)
                     {
-                        var resultbookings = await bookingService.GetBookingsByGuestId(resultstaff.Guest.GuestId);
-                        if(resultbookings != null)
+                        //get guest by userid
+                        var resultstaff = await guestService.GetGuestByUserId(Guid.Parse(userId));
+                        if (resultstaff != null)
                         {
-                            var bookingViewList = new List<BookingView>();
-                            foreach (var booking in resultbookings.Bookings)
+                            //get bookings by guestid
+                            var resultbookings = await bookingService.GetBookingsByGuestId(resultstaff.Guest.GuestId);
+                            if (resultbookings != null)
                             {
-                                var guest = await guestService.GetGuestById(booking.GuestId);
-                                var type = await hotelService.GetRoomTypeById(booking.TypeId);
-                                var bookingView = new BookingView
+                                var bookingViewList = new List<BookingView>();
+                                //danh sach task api
+                                var guestTasks = resultbookings.Bookings.Select(b => guestService.GetGuestById(b.GuestId)).ToList();
+                                var typeTasks = resultbookings.Bookings.Select(b => hotelService.GetRoomTypeById(b.TypeId)).ToList();
+                                //thuc hien task dong thoi
+                                var guests = await Task.WhenAll(guestTasks);
+                                var types = await Task.WhenAll(typeTasks);
+                                //chuyen tu IEnumrable -> List
+                                var bookingsList = resultbookings.Bookings.ToList();
+
+                                for (int i = 0; i < resultbookings.Bookings.Count(); i++)
                                 {
-                                    BookingId = booking.BookingId,
-                                    TypeId = booking.TypeId,
-                                    TypeName = type.RoomType.Name,
-                                    GuestFirstName = guest.Guest.FirstName,
-                                    GuestLastName = guest.Guest.LastName,
-                                    ExpectedCheckinDate = booking.ExpectedCheckinDate,
-                                    ExpectedCheckoutDate = booking.ExpectedCheckoutDate,
-                                    CheckinDate = booking.CheckinDate,
-                                    CheckoutDate = booking.CheckoutDate,
-                                    RoomQuantity = booking.RoomQuantity,
-                                    BookingStatus = booking.BookingStatus,
-                                };
-                                bookingViewList.Add(bookingView);
+                                    var booking = bookingsList[i];
+                                    var guest = guests[i];
+                                    var type = types[i];
+                                    if (guest == null || guest.Guest == null || type == null || type.RoomType == null)
+                                    {
+                                        logger.LogWarning($"Missing data for booking {booking.BookingId}");
+                                        continue; // Skip this iteration if any necessary data is missing
+                                    }
+
+                                    var bookingView = new BookingView
+                                    {
+                                        BookingId = booking.BookingId,
+                                        TypeId = booking.TypeId,
+                                        TypeName = type.RoomType.Name,
+                                        GuestFirstName = guest.Guest.FirstName,
+                                        GuestLastName = guest.Guest.LastName,
+                                        ExpectedCheckinDate = booking.ExpectedCheckinDate,
+                                        ExpectedCheckoutDate = booking.ExpectedCheckoutDate,
+                                        CheckinDate = booking.CheckinDate,
+                                        CheckoutDate = booking.CheckoutDate,
+                                        RoomQuantity = booking.RoomQuantity,
+                                        BookingStatus = booking.BookingStatus,
+                                        TotalPrice = booking.TotalPrice,
+                                    };
+                                    bookingViewList.Add(bookingView);
+                                }
+                                BookingList = bookingViewList;
                             }
-                            BookingList = bookingViewList;
                         }
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+                logger.LogInformation($"{ex.Message}");
             }
             return Page();
         }

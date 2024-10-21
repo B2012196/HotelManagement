@@ -30,10 +30,14 @@
         Task<GetRoomTypeByIdResponse> GetRoomTypeById(Guid TypeId);
 
         [Post("/hotels/roomtypes")]
-        Task<CreateRoomTypeResponse> CreateRoomType(RoomType Type);
+        Task<CreateRoomTypeResponse> CreateRoomType(object obj);
 
         [Put("/hotels/roomtypes")]
-        Task<UpdateRoomTypeResponse> UpdateRoomType(RoomType Type);
+        Task<UpdateRoomTypeResponse> UpdateRoomType(object obj);
+
+        [Multipart]
+        [Put("/hotels/roomtypes/upload-image/{TypeId}")]
+        Task<UploadRoomTypeImageResponse> UploadImageRoomType(Guid TypeId, [AliasAs("File")] StreamPart file);
 
         [Delete("/hotels/roomtypes/{RoomtypeId}")]
         Task<DeleteRoomTypeResponse> DeleteRoomType(Guid RoomtypeId);
@@ -45,10 +49,10 @@
         Task<GetRoomStatusByIdResponse> GetRoomStatusById(Guid StatusId);
 
         [Post("/hotels/roomstatus")]
-        Task<CreateRoomStatusResponse> CreateRoomStatus(Room Room);
+        Task<CreateRoomStatusResponse> CreateRoomStatus(object obj);
 
         [Put("/hotels/roomstatus")]
-        Task<UpdateRoomStatusResponse> UpdateRoomStatus(Room Room);
+        Task<UpdateRoomStatusResponse> UpdateRoomStatus(RoomStatus RoomStatus);
 
         [Delete("/hotels/roomstatus/{StatusId}")]
         Task<DeleteRoomStatusResponse> DeleteRoomStatus(Guid StatusId);

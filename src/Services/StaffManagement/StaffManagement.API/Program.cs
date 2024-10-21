@@ -1,3 +1,5 @@
+using StaffManagement.API.Features.Staffs.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //add services to the container
@@ -21,6 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);

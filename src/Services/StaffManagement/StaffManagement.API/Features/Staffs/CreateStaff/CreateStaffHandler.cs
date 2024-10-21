@@ -1,4 +1,6 @@
-﻿namespace StaffManagement.API.Features.Staffs.CreateStaff
+﻿using StaffManagement.API.Features.Staffs.Repositories;
+
+namespace StaffManagement.API.Features.Staffs.CreateStaff
 {
     public record CreateStaffCommand
         (Guid UserId, Guid HotelId, string FirstName, string LastName, decimal Salary, DateOnly DateofBirst,
@@ -43,7 +45,7 @@
             return date != default;
         }
     }
-    public class CreateStaffHandler(ApplicationDbContext context)
+    public class CreateStaffHandler(IStaffRepository staffRepository)
         : ICommandHandler<CreateStaffCommand, CreateStaffResult>
     {
         public async Task<CreateStaffResult> Handle(CreateStaffCommand command, CancellationToken cancellationToken)
@@ -61,10 +63,9 @@
                 HireDate = command.HireDate
             };
 
-            context.Staffs.Add(staff);
-            await context.SaveChangesAsync(cancellationToken);
+            var result = await staffRepository.CreateStaff(staff, cancellationToken);
 
-            return new CreateStaffResult(staff.StaffId);
+            return new CreateStaffResult(result);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 @if (Model.IsAuthenticated)
 {
-    <form method="post" asp-page-handler="Logout">
+    <form method="post" asp-page="Index" asp-page-handler="Logout">
         <button type="submit" class="btn btn-outline-primary">Đăng xuất</button>
     </form>
 }

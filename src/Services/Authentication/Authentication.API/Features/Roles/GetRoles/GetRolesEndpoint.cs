@@ -3,7 +3,7 @@
     public record GetRolesResponse(IEnumerable<Role> Roles);
     public class GetRolesEndpoint : ICarterModule
     {
-        public async void AddRoutes(IEndpointRouteBuilder app)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
             app.MapGet("/authentication/roles", async (ISender sender) =>
             {

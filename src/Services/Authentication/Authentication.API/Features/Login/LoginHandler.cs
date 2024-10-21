@@ -1,4 +1,6 @@
-﻿namespace Authentication.API.Features.Login
+﻿using System.Threading;
+
+namespace Authentication.API.Features.Login
 {
     public record LoginCommand(string UserName, string Password) : ICommand<LoginResult>;
     public record LoginResult(TokenModel Token, bool IsSuccess);
@@ -9,6 +11,7 @@
         {
 
             var user = await context.Users.SingleOrDefaultAsync(u => u.UserName == command.UserName, cancellationToken);
+
             if (user != null)
             {
                 if (!user.IsActive)
@@ -20,8 +23,13 @@
 
                 if (IsSuccess)
                 {
-                    var token = await GenerateJwtToken(user, command.Password);
-                    return new LoginResult(token, true);
+                    var role = await context.Roles.SingleOrDefaultAsync(r => r.RoleId == user.RoleId, cancellationToken);
+                    if(role != null)
+                    {
+                        var token = await GenerateJwtToken(user, role.RoleName, command.Password);
+                        return new LoginResult(token, true);
+                    }
+                    throw new UserNotFoundException(command.UserName);
                 }
                 else
                 {
@@ -41,10 +49,8 @@
 
         }
 
-        public async Task<TokenModel> GenerateJwtToken(User user, string password)
+        public async Task<TokenModel> GenerateJwtToken(User user, string RoleName, string password)
         {
-                
-
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKeyHotelwebsite14"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
@@ -53,7 +59,9 @@
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("userid", user.UserId.ToString()), // Claim userid (giả sử `user.Id` là Guid)
                 new Claim("username", user.UserName), // Claim thêm thông tin username
+                new Claim(ClaimTypes.Role, RoleName),
             };
+
             var token = new JwtSecurityToken(
                 issuer: "https://localhost:5056",
                 claims: claims,

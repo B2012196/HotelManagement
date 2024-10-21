@@ -6,19 +6,16 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/hotels/roomtypes/{typeId}/upload-image", async (Guid typeId, IFormFile file, ISender sender) =>
+            app.MapPut("/hotels/roomtypes/upload-image/{TypeId}", async (Guid TypeId, IFormFile File, ISender sender) =>
             {
-                //var request = new UploadRoomTypeImageRequest(typeId, file);
-
-                //var command = request.Adapt<UploadRoomTypeImageCommand>(typeId, file);
-
-                var result = await sender.Send(new UploadRoomTypeImageCommand(typeId, file));
+                var result = await sender.Send(new UploadRoomTypeImageCommand(TypeId, File));
 
                 var response = result.Adapt<UploadRoomTypeImageResponse>();
 
                 return Results.Ok(response);
             })
             .DisableAntiforgery()
+            .Accepts<IFormFile>("multipart/form-data")
             .WithName("Upload RoomTypeImage")
             .Produces<UploadRoomTypeImageResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

@@ -24,7 +24,6 @@
                     {
                         Console.WriteLine("Token đã được lưu vào session: " + storedToken);
                     }
-                    // Redirect sau khi đăng nhập thành công
                 }
 
             }
@@ -52,7 +51,7 @@
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 TempData["ErrorMessage"] = "Lỗi hệ thống";
             }
-            return RedirectToPage("/Index");
+            return Page();
         }
 
         public async Task<IActionResult> OnPostLogoutAsync()
