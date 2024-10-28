@@ -1,11 +1,6 @@
-﻿using Hotel.Web.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.IdentityModel.Tokens.Jwt;
-
-namespace Hotel.Web.Pages
+﻿namespace Hotel.Web.Pages
 {
-    public class BookingModel(IGuestService guestService, IBookingService bookingService, ILogger<IndexModel> logger) : PageModel
+    public class BookingModel(IAuthentication authentication,IGuestService guestService, IBookingService bookingService, ILogger<IndexModel> logger) : PageModel
     {
         [BindProperty(SupportsGet = true)]
         public string RoomType { get; set; }
@@ -17,8 +12,10 @@ namespace Hotel.Web.Pages
         public DateTime ExpectedCheckOutDate { get; set; }
         [BindProperty(SupportsGet = true)]
         public int RoomQuantity { get; set; }
+        public UserDto User { get; set; } = new UserDto();
+        public Guest Guest { get; set; } = new Guest();
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             string roomName = string.Empty;
             Console.WriteLine(RoomType);
@@ -38,7 +35,30 @@ namespace Hotel.Web.Pages
                     break;
             }
 
-            RoomTypeName = roomName;        }
+            RoomTypeName = roomName;
+
+            var token = HttpContext.Session.GetString("AccessToken");
+            if (token != null)
+            {
+                string userId = GetUserIdFromToken(token);
+                if (userId != null)
+                {
+                    Console.WriteLine($"User ID: {userId}");
+                    //get guest
+                    var resultGetGuest = await guestService.GetGuestByUserId(Guid.Parse(userId));
+                    //get user
+                    var resultGetUser = await authentication.GetUserByUserId(Guid.Parse(userId));
+
+                    if (resultGetGuest != null && resultGetUser != null)
+                    {
+                        Guest = resultGetGuest.Guest;
+                        User = resultGetUser.User;
+                    }
+                }
+            }
+
+            return Page();
+        }
 
         public async Task<IActionResult> OnPostBookingAsync()
         {
@@ -60,7 +80,6 @@ namespace Hotel.Web.Pages
                         break;
                 }
 
-                Console.WriteLine(RoomTypeConfirm);
                 var token = HttpContext.Session.GetString("AccessToken");
                 if (token != null)
                 {
@@ -68,12 +87,15 @@ namespace Hotel.Web.Pages
                     if (userId != null)
                     {
                         Console.WriteLine($"User ID: {userId}");
-                        var result = await guestService.GetGuestByUserId(Guid.Parse(userId));
-
-                        if (result != null)
+                        //get guest
+                        var resultGetGuest = await guestService.GetGuestByUserId(Guid.Parse(userId));
+                        //get user
+                        var resultGetUser = await authentication.GetUserByUserId(Guid.Parse(userId));
+                        
+                        if (resultGetGuest != null && resultGetUser != null)
                         {
-                            Console.WriteLine(result.Guest.GuestId);
-                            Console.WriteLine(RoomTypeConfirm +" -- "+ ExpectedCheckInDate + " -- " + ExpectedCheckOutDate + " -- " + RoomQuantity);
+                            Guest = resultGetGuest.Guest;
+                            User = resultGetUser.User;
                             // Kiểm tra RoomTypeConfirm có giá trị hay không trước khi parse
                             if (!string.IsNullOrEmpty(RoomTypeConfirm))
                             {
@@ -81,7 +103,7 @@ namespace Hotel.Web.Pages
                                 var booking = new Booking
                                 {
                                     BookingId = Guid.Empty,
-                                    GuestId = result.Guest.GuestId,
+                                    GuestId = resultGetGuest.Guest.GuestId,
                                     TypeId = Guid.Parse(RoomTypeConfirm), // Chỉ parse nếu RoomTypeConfirm không null
                                     ExpectedCheckinDate = ExpectedCheckInDate,
                                     ExpectedCheckoutDate = ExpectedCheckOutDate,
@@ -109,7 +131,7 @@ namespace Hotel.Web.Pages
                         }
                         else
                         {
-                            Console.WriteLine("Result null: " + result);
+                            Console.WriteLine("Result null: " + resultGetGuest);
                         }
                     }
                     else

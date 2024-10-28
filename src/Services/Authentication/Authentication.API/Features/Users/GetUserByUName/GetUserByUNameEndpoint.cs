@@ -6,7 +6,7 @@ namespace Authentication.API.Features.Users.GetUserByUName
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/authentication/users/{username}", async (string username, ISender sender) =>
+            app.MapGet("/authentication/users/username/{username}", async (string username, ISender sender) =>
             {
                 var result = await sender.Send(new GetUserByUNameQuery(username));
 
@@ -14,11 +14,11 @@ namespace Authentication.API.Features.Users.GetUserByUName
 
                 return Results.Ok(response);
             })
-            .WithName("GetGuestByUserId")
+            .WithName("GetGuestByUserName")
             .Produces<GetUserByUNameResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithSummary("Get Guest By UserId")
-            .WithDescription("Get Guest By UserId");
+            .WithSummary("Get Guest By UserName")
+            .WithDescription("Get Guest By UserName");
         }
     }
 }

@@ -91,25 +91,51 @@ namespace Hotel.Web.Pages
 
         public async Task<IActionResult> OnPostRegisterAsync(string username, string email, string phone, string password, string confirmPassword)
         {
-
-            var registerUser = new UserModel
+            try
             {
-                RoleId = Guid.Parse("7b7aef39-b16f-415e-bbba-3b8a77bef68d"),
-                UserName = username,
-                Email = email,
-                PhoneNumber = phone,
-                Password = password,
-            };
+                if (password == confirmPassword)
+                {
+                    var registerUser = new User
+                    {
+                        RoleId = Guid.Parse("97864e5a-0172-49fe-9c42-abb9e90ad022"),
+                        UserName = username,
+                        Email = email,
+                        PhoneNumber = phone,
+                        Password = password,
+                    };
 
-            var response = await authentication.CreateUser(registerUser);
-
-            if (response != null)
-            {
-                return RedirectToPage("/Index");
+                    var response = await authentication.CreateUser(registerUser);
+                }
+                    
             }
-
-            ModelState.AddModelError("", "error register");
-            return Page();
+            catch (ApiException apiEx)
+            {
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching guests: {ex.Message}");
+            }
+            return RedirectToPage("Index");
         }
 
 

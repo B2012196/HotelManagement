@@ -8,17 +8,11 @@ services:
   bookingdb:
     image: postgres
 
-  paymentdb:
+  financedb:
     image: postgres
 
   staffdb:
     image: postgres
-
-  notificationdb:
-    image: mongo
-  
-  mongo-express:
-    image: mongo-express
 
   messagebroker:
     image: rabbitmq:management
@@ -44,23 +38,11 @@ services:
       context: .
       dockerfile: Services/BookingManagement/BookingManagement.API/Dockerfile
 
-  paymentmanagement.api:
-    image: ${DOCKER_REGISTRY-}paymentmanagementapi
-    build:
-      context: .
-      dockerfile: Services/PaymentManagement/PaymentManagement.API/Dockerfile
-
   staffmanagement.api:
     image: ${DOCKER_REGISTRY-}staffmanagementapi
     build:
       context: .
       dockerfile: Services/StaffManagement/StaffManagement.API/Dockerfile
-
-  notificationmanagement.api:
-    image: ${DOCKER_REGISTRY-}notificationmanagementapi
-    build:
-      context: .
-      dockerfile: Services/NotificationManagement/NotificationManagement.API/Dockerfile
 
   authentication.api:
     image: ${DOCKER_REGISTRY-}authenticationapi
@@ -72,9 +54,8 @@ volumes:
   postgres_hotelmanagement:    
   postgres_guest:
   postgres_booking:
-  postgres_payment:
+  postgres_finance:
   postgres_staff:
-  mongo_notification:
   postgres_authentication:
 
 

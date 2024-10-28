@@ -1,41 +1,52 @@
-﻿namespace Admin.Web.Pages
+﻿using Microsoft.Extensions.Logging;
+
+namespace Admin.Web.Pages
 {
     public class BookingModel(IBookingService bookingService, IGuestService guestService, IHotelService hotelService, ILogger<BookingModel> logger) : PageModel
     {
         public IEnumerable<BookingView> BookingList { get; set; } = new List<BookingView>();
         public IEnumerable<Guest> GuestList { get; set; } = new List<Guest>();
         public IEnumerable<Room> RoomList { get; set; } = new List<Room>();
+        public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
+        public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
+        public Room BRoom { get; set; } = new Room();
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
+                //get all booking
                 var resultbooking = await bookingService.GetBookings();
-                var bookingViewList = new List<BookingView>();
-                // Tạo danh sách các task cho các API call
-                var guestTasks = resultbooking.Bookings.Select(b => guestService.GetGuestById(b.GuestId)).ToList();
-                var typeTasks = resultbooking.Bookings.Select(b => hotelService.GetRoomTypeById(b.TypeId)).ToList();
-                // Thực hiện tất cả các task đồng thời
-                var guests = await Task.WhenAll(guestTasks);
-                var types = await Task.WhenAll(typeTasks);
-                var bookingsList = resultbooking.Bookings.ToList();
-                for (int i = 0; i < resultbooking.Bookings.Count(); i++)
-                {
-                    var booking = bookingsList[i];
-                    var guest = guests[i];
-                    var type = types[i];
-                    if (guest == null || guest.Guest == null || type == null || type.RoomType == null)
-                    {
-                        logger.LogWarning($"Missing data for booking {booking.BookingId}");
-                        continue; // Skip this iteration if any necessary data is missing
-                    }
 
+                //get all guest
+                var resultguest = await guestService.GetGuests();
+                GuestList = resultguest.Guests;
+
+                //get all roomtype
+                var resultroomtype = await hotelService.GetRoomTypes();
+                RoomTypeList = resultroomtype.RoomTypes;
+
+                //get all room
+                var resultroom = await hotelService.GetRooms();
+                RoomList = resultroom.Rooms;
+
+                //get all bookingroom
+                var resultbroom = await bookingService.GetBookingRooms();
+                BookingRoomList = resultbroom.BookingRooms;
+
+
+                var bookingViewList = new List<BookingView>();
+               
+                foreach (var booking in resultbooking.Bookings)
+                {
+                    var typename = RoomTypeList.SingleOrDefault(r => r.TypeId == booking.TypeId);
+                    var guestname = GuestList.SingleOrDefault(g => g.GuestId == booking.GuestId);
                     var bookingView = new BookingView
                     {
                         BookingId = booking.BookingId,
                         TypeId = booking.TypeId,
-                        TypeName = type.RoomType.Name,
-                        GuestFirstName = guest.Guest.FirstName,
-                        GuestLastName = guest.Guest.LastName,
+                        TypeName = typename.Name,
+                        GuestFirstName = guestname.FirstName,
+                        GuestLastName = guestname.LastName,
                         ExpectedCheckinDate = booking.ExpectedCheckinDate,
                         ExpectedCheckoutDate = booking.ExpectedCheckoutDate,
                         CheckinDate = booking.CheckinDate,
@@ -44,13 +55,18 @@
                         BookingStatus = booking.BookingStatus,
                         TotalPrice = booking.TotalPrice,
                     };
+
+                    var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
+
+                    var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
+                    if(roomnumber != null)
+                    {
+                        bookingView.RoomNumber = roomnumber.Number;
+                    }
+
                     bookingViewList.Add(bookingView);
                 }
                 BookingList = bookingViewList;
-
-                var resultroom = await hotelService.GetRooms();
-                RoomList = resultroom.Rooms;
-
             }
             catch (ApiException apiEx)
             {
@@ -84,26 +100,51 @@
 
         public async Task<IActionResult> OnPostConfirmBookingAsync(string BookingId, string RoomId)
         {
-            Guid bookingIdGuid;
-            Guid roomIdGuid;
-            if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(RoomId, out roomIdGuid))
+            try
             {
-                ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
-                logger.LogInformation("Dữ liệu không hợp lệ.");
-                return Page();
+                Guid bookingIdGuid;
+                Guid roomIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(RoomId, out roomIdGuid))
+                {
+                    ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
+                }
+
+                var confirm = new
+                {
+                    BookingId = bookingIdGuid,
+                    RoomId = roomIdGuid
+                };
+
+                var resultconfirm = await bookingService.UpdateBookingConfirm(confirm);
             }
-
-            var confirm = new
+            catch (ApiException apiEx)
             {
-                BookingId = bookingIdGuid,
-                RoomId = roomIdGuid
-            };
-
-            var resultconfirm = await bookingService.UpdateBookingConfirm(confirm);
-
-            if(!resultconfirm.IsSuccess)
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                }
+            }
+            catch (Exception ex)
             {
-                logger.LogInformation("Error: Cannot update confirm the booking");
+                logger.LogError($"Error fetching guests: {ex.Message}");
             }
 
             return RedirectToPage("Booking");

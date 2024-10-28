@@ -1,5 +1,3 @@
-using StaffManagement.API.Features.Staffs.Repositories;
-
 var builder = WebApplication.CreateBuilder(args);
 
 //add services to the container
@@ -20,6 +18,9 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+
+//Async communication service
+builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();

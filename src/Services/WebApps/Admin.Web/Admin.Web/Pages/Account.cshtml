@@ -29,7 +29,7 @@ else
                     <td>@user.UserName</td>
                     <td>@user.Email</td>
                     <td>@user.PhoneNumber</td>
-                    <td>@user.RoleName</td>
+                    <td>@user.RoleName.RoleTranslate()</td>
                     <td>
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
                             Cập nhật
@@ -123,14 +123,14 @@ else
                         </div>
                         <div class="mb-3">
                             <label for="phonenumber" class="form-label">Số điện thoại</label>
-                            <input type="text" class="form-control" id="phonenumber" name="Phonenumber" required>
+                            <input type="text" class="form-control" id="phonenumber" name="PhoneNumber" required>
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Vai trò</label>
-                            <select class="form-control" id="role" name="Role">
+                            <select class="form-control" id="role" name="RoleId">
                                 @foreach (var role in Model.RoleList)
                                 {
-                                    <option value="@role.RoleId">@role.RoleName</option>
+                                    <option value="@role.RoleId">@role.RoleName.RoleTranslate()</option>
                                 }
                             </select>
                         </div>
@@ -156,7 +156,7 @@ else
             @foreach (var role in Model.RoleList)
             {
                 <tr>
-                    <td>@role.RoleName</td>
+                    <td>@role.RoleName.RoleTranslate()</td>
                     <td>
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roleSelectionModal-@role.RoleId">
                             Cập nhật

@@ -232,7 +232,7 @@
         "AllowedScopes": []
       }
     },
-    //get by, put, delete
+    //get all, put, delete
     {
       "DownstreamPathTemplate": "/authentication/{endpoint}/{params}",
       "DownstreamScheme": "http",
@@ -244,6 +244,22 @@
       ],
       "UpstreamPathTemplate": "/authentication/{endpoint}/{params}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/authentication/{endpoint1}/{endpoint2}/{params}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6006
+        }
+      ],
+      "UpstreamPathTemplate": "/authentication/{endpoint1}/{endpoint2}/{params}",
+      "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

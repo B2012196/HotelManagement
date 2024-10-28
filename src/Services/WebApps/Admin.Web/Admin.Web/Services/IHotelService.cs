@@ -6,10 +6,13 @@
         [Get("/hotels/rooms")]
         Task<GetRoomsResponse> GetRooms();
 
-        [Get("/guests/guests/ava/{TypeId}")]
+        [Get("/hotels/rooms/roomid/{RoomId}")]
+        Task<GetRoomByIdResponse> GetRoomtByRoomId(Guid RoomId);
+
+        [Get("/hotels/rooms/ava/{TypeId}")]
         Task<GetRoomsAvaResponse> GetRoomtavaByTypeId(Guid TypeId);
 
-        [Get("/guests/guests/type/{TypeId}")]
+        [Get("/hotels/rooms/type/{TypeId}")]
         Task<GetRoomsByTypeResponse> GetRoomtByTypeId(Guid TypeId);
 
         [Post("/hotels/rooms")]

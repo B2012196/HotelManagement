@@ -15,7 +15,7 @@
 
                 var response = result.Adapt<CreateBookingResponse>();
 
-                return Results.Created($"/bookings/{response.BookingId}", response);
+                return Results.Created($"/bookings/bookings/{response.BookingId}", response);
             })
             .WithName("CreateBooking")
             .Produces<CreateBookingResponse>(StatusCodes.Status201Created)

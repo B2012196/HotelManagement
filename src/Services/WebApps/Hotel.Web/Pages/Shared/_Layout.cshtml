@@ -40,7 +40,7 @@
                             </div>
                             <div class="modal-body">
 
-                                <form method="post">
+                                <form method="post" asp-page="Index">
                                     <div class="form-group">
                                         <label for="usernameLogin">Tên đăng nhập</label>
                                         <input type="text" class="form-control" id="usernameLogin" name="usernameLogin" placeholder="Nhập tên đăng nhập" required>
@@ -90,7 +90,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form method="post" asp-page-handler="Register">
+                                <form method="post" asp-page="Index" asp-page-handler="Register">
                                     <div class="form-group">
                                         <label for="username">Tên đăng nhập</label>
                                         <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập">

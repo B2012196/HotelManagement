@@ -83,7 +83,7 @@ namespace Admin.Web.Pages
                 if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
                     Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Error: Not Found Content";
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
                 }
                 else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -199,6 +199,60 @@ namespace Admin.Web.Pages
             }
             return RedirectToPage("Account");
 
+
+        }
+
+        public async Task<IActionResult> OnPostAddUserAsync(string RoleId, string UserName, string Email, string PhoneNumber, string Password)
+        {
+            try
+            {
+                Guid roleIdGuid;
+                if (!Guid.TryParse(RoleId, out roleIdGuid))
+                {
+                    ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return RedirectToPage("Account");
+                }
+
+                var user = new User
+                {
+                    RoleId = roleIdGuid,
+                    UserName = UserName,
+                    Email = Email,
+                    PhoneNumber = PhoneNumber,
+                    Password = Password
+                };
+
+                var resultCreateUser = await authentication.CreateUser(user);
+            }
+            catch (ApiException apiEx)
+            {
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error: {ex.Message}");
+            }
+            return RedirectToPage("Account");
 
         }
     }

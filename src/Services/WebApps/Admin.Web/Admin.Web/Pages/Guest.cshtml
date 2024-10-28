@@ -3,49 +3,59 @@
 @{
     ViewData["Title"] = "Trang chủ";
 }
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Họ tên</th>
-            <th>Ngày sinh</th>
-            <th>Địa chỉ</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var guest in Model.GuestList)
-        {
+@if (TempData["ErrorApiException"] != null)
+{
+    <br />
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorApiException"]
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>@guest.LastName @guest.FirstName</td>
-                <td>@guest.DateofBirst.ToString("dd/MM/yyyy")</td>
-                <td>@guest.Address</td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@guest.GuestId">
-                        Xóa
-                    </button>
-                </td>
-                <div class="modal fade" id="roomSelectionDeleteModal-@guest.GuestId" tabindex="-1" role="dialog" aria-labelledby="guestSelectionDeleteModal" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="roomSelectionModalLabel">Bạn có chắc chắn muốn xóa?</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="post" asp-page-handler="DeleteStaff">
-                                    <input type="text" id="roomId" name="RoomId" required value="@guest.GuestId" hidden readonly>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Xác nhận</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                    </div>
-                                </form>
+                <th>Họ tên</th>
+                <th>Ngày sinh</th>
+                <th>Địa chỉ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var guest in Model.GuestList)
+            {
+                <tr>
+                    <td>@guest.LastName @guest.FirstName</td>
+                    <td>@guest.DateofBirst.ToString("dd/MM/yyyy")</td>
+                    <td>@guest.Address</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@guest.GuestId">
+                            Xóa
+                        </button>
+                    </td>
+                    <div class="modal fade" id="roomSelectionDeleteModal-@guest.GuestId" tabindex="-1" role="dialog" aria-labelledby="guestSelectionDeleteModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="roomSelectionModalLabel">Bạn có chắc chắn muốn xóa?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="DeleteStaff">
+                                        <input type="text" id="roomId" name="RoomId" required value="@guest.GuestId" hidden readonly>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

@@ -20,9 +20,9 @@ global using Microsoft.IdentityModel.Tokens;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Text;
-
-
-
+global using BuildingBlocks.Messaging.Events;
+global using BuildingBlocks.Messaging.MassTransit;
+global using MassTransit;
 
 
 

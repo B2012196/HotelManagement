@@ -1,7 +1,7 @@
 ﻿namespace BookingManagement.API.Features.BookingRooms.CreateBookingRoom
 {
     public record CreateBookingRoomCommand(Guid BookingId, Guid RoomId) : ICommand<CreateBookingRoomResult>;
-    public record CreateBookingRoomResult(bool IsSuccess);
+    public record CreateBookingRoomResult(bool IsSuccess, Guid RoomId);
     public class CreateBookingRoomHandler(ApplicationDbContext context)
         : ICommandHandler<CreateBookingRoomCommand, CreateBookingRoomResult>
     {
@@ -16,7 +16,7 @@
             context.BookingRooms.Add(bookingroom);
             await context.SaveChangesAsync(cancellationToken);
 
-            return new CreateBookingRoomResult(true);
+            return new CreateBookingRoomResult(true, bookingroom.RoomId);
 
         }
     }

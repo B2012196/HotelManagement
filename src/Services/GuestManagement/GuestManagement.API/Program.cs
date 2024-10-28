@@ -2,6 +2,7 @@ using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Messaging.MassTransit;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 //add services to the container
@@ -24,12 +25,14 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
+//Async communication service
+builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
+
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddScoped<IGuestRepository, GuestRepository>();
-//Async communication service
-builder.Services.AddMessageBroker(builder.Configuration);
+
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 

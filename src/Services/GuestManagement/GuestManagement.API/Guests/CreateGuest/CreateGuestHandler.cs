@@ -1,6 +1,4 @@
-﻿using GuestManagement.API.Guests.Repository;
-
-namespace GuestManagement.API.Guests.CreateGuest
+﻿namespace GuestManagement.API.Guests.CreateGuest
 {
     public record CreateGuestCommand
         (Guid UserId, string FirstName, string LastName, DateTime DateofBirst, string Address) 
@@ -22,11 +20,6 @@ namespace GuestManagement.API.Guests.CreateGuest
                 .LessThanOrEqualTo(DateTime.Now).WithMessage("Date of birth cannot be in the future.");
 
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required");
-
-            //RuleFor(x => x.Phone).NotEmpty().WithMessage("Phone number is required")
-            //    .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Phone number is not valid");
-
-            //RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("A valid email is required");
         }
         // Hàm kiểm tra DateOnly có hợp lệ không
         private bool BeAValidDate(DateTime date)

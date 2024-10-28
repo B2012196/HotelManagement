@@ -35,17 +35,17 @@ services:
     volumes:
       - postgres_booking:/var/lib/postgresql/data/  
     
-  paymentdb:
-    container_name: paymentdb
+  financedb:
+    container_name: financedb
     environment:
-      - POSTGRES_USER=paymentpostgres
-      - POSTGRES_PASSWORD=paymentpostgres
-      - POSTGRES_DB=PaymentDb
+      - POSTGRES_USER=financepostgres
+      - POSTGRES_PASSWORD=financepostgres
+      - POSTGRES_DB=FinanceDb
     restart: always
     ports:
         - "5438:5432"
     volumes:
-      - postgres_payment:/var/lib/postgresql/data/
+      - postgres_finance:/var/lib/postgresql/data/
 
   staffdb:
     container_name: staffdb
@@ -58,32 +58,6 @@ services:
       - "5439:5432"
     volumes:
       - postgres_staff:/var/lib/postgresql/data/
-
-  notificationdb:
-    container_name: notificationdb
-    environment:
-       MONGO_INITDB_ROOT_USERNAME: notificationmongo
-       MONGO_INITDB_ROOT_PASSWORD: notificationmongo
-    restart: always
-    ports:
-      - "27018:27017" 
-    volumes:
-      - mongo_notification:/data/db
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  mongo-express:
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: notificationmongo
-      ME_CONFIG_MONGODB_ADMINPASSWORD: notificationmongo
-      ME_CONFIG_MONGODB_URL: mongodb://notificationmongo:notificationmongo@notificationdb:27017/
-      ME_CONFIG_BASICAUTH: "false"
 
   messagebroker:
     container_name: messagebroker
@@ -112,7 +86,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=hotelmanagementdb;Port=5432;Database=HotelmanagementDb;User Id=hotelpostgres;Password=hotelpostgres;Include Error Detail=true
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
@@ -124,13 +97,11 @@ services:
       - "6000:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   guestmanagement.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=guestdb;Port=5432;Database=GuestDb;User Id=guestpostgres;Password=guestpostgres;Include Error Detail=true
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
@@ -142,13 +113,11 @@ services:
       - "6001:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   bookingmanagement.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=bookingdb;Port=5432;Database=BookingDb;User Id=bookingpostgres;Password=bookingpostgres;Include Error Detail=true
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
@@ -160,21 +129,6 @@ services:
       - messagebroker
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  paymentmanagement.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      # - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Database=Server=paymentdb;Port=5432;Database=PaymentDb;User Id=paymentpostgres;Password=paymentpostgres;Include Error Detail=true
-    ports:
-      - "6003:8080"
-    depends_on:
-      - paymentdb
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   staffmanagement.api:
     environment:
@@ -182,25 +136,15 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=staffdb;Port=5432;Database=StaffDb;User Id=staffpostgres;Password=staffpostgres;Include Error Detail=true
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
     ports:
       - "6004:8080"
       # - "8081"
     depends_on:
       - staffdb
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  notificationmanagement.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      # - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Database=mongodb://notificationmongo:notificationmongo@notificationdb:27017
-    ports:
-      - "6005:8080"
-    depends_on:
-      - notificationdb
+      - messagebroker
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -211,10 +155,14 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=authenticationdb;Port=5432;Database=AuthenticationDb;User Id=authenticationpostgres;Password=authenticationpostgres;Include Error Detail=true
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
     ports:
       - "6006:8080"
     depends_on:
       - authenticationdb
+      - messagebroker
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

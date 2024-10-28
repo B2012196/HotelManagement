@@ -32,6 +32,9 @@
         [Delete("/hotels/roomtypes/{RoomtypeId}")]
         Task<DeleteRoomTypeResponse> DeleteRoomType(Guid RoomtypeId);
 
+        //room
+        [Get("/hotels/rooms")]
+        Task<GetRoomsResponse> GetRooms();
 
     }
 }

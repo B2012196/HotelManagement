@@ -37,6 +37,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian tồn tại của session
     options.Cookie.HttpOnly = true; // Đảm bảo cookie session chỉ được truy cập qua HTTP
     options.Cookie.IsEssential = true; // Cần thiết nếu sử dụng cookie yêu cầu sự đồng ý của người dùng
+    options.Cookie.Name = "GuestSession";
 });
 
 builder.Services.AddRazorPages();

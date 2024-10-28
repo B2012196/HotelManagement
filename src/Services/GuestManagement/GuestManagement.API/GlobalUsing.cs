@@ -11,6 +11,9 @@ global using BuildingBlocks.Behaviors;
 global using FluentValidation;
 global using Carter;
 global using GuestManagement.API.Guests.Repository;
+global using BuildingBlocks.Messaging.Events;
+global using MassTransit;
+
 
 
 

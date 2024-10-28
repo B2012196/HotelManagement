@@ -4,6 +4,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
 {
     public record UpdateBookingConfirmRequest(Guid BookingId, Guid RoomId);
     public record UpdateBookingConfirmResponse(bool IsSuccess);
+    public record CreateBookingRoomResponse(bool IsSuccess, Guid RoomId);
     public class UpdateBookingConfirmEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
@@ -21,13 +22,13 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
                     //Tạo BookingRoom
                     var command2 = request.Adapt<CreateBookingRoomCommand>();
                     var result2 = await sender.Send(command2);
-                    var response2 = result2.Adapt<UpdateBookingConfirmResponse>();
+                    var responseCreateBRoom = result2.Adapt<CreateBookingRoomResponse>();
+                    return Results.Ok(responseCreateBRoom);
                 }
-
-                return Results.Ok(response);
+                return Results.BadRequest();
             })
             .WithName("UpdateBookingConfirm")
-            .Produces<UpdateBookingConfirmResponse>(StatusCodes.Status200OK)
+            .Produces<CreateBookingRoomResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Update Booking")
             .WithDescription("Update Booking");

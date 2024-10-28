@@ -13,6 +13,7 @@
         public DateTime? CheckoutDate { get; set; }
         public decimal? TotalPrice { get; set; }
         public int RoomQuantity { get; set; }
+        public string RoomNumber { get; set; }
         public BookingStatus BookingStatus { get; set; }
     }
 

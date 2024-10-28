@@ -14,6 +14,7 @@
         public decimal? TotalPrice { get; set; }
         public int RoomQuantity { get; set; }
         public BookingStatus BookingStatus { get; set; }
+        public string RoomNumber { get; set; }
     }
 
     public class Booking
@@ -31,7 +32,7 @@
     }
     public record GetBookingsResponse(IEnumerable<Booking> Bookings);
     public record CreateBookingResponse(Guid BookingId);
-    public record UpdateBookingConfirmResponse(bool IsSuccess);
+    public record UpdateBookingConfirmResponse(bool IsSuccess, Guid RoomId);
     public record UpdateBookingCheckinResponse(bool IsSuccess);
     public record UpdateBookingCheckoutResponse(bool IsSuccess);
     public record DeleteBookingResponse(bool IsSuccess);

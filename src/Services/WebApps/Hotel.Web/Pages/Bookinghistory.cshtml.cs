@@ -4,10 +4,20 @@
         IHotelService hotelService, ILogger<BookinghistoryModel> logger) : PageModel
     {
         public IEnumerable<BookingView> BookingList { get; set; } = new List<BookingView>();
+        public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
+        public IEnumerable<Room> RoomList { get; set; } = new List<Room>();
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
+                //get all bookingroom
+                var resultbroom = await bookingService.GetBookingRooms();
+                BookingRoomList = resultbroom.BookingRooms;
+
+                //get all room
+                var resultroom = await hotelService.GetRooms();
+                RoomList = resultroom.Rooms;
+
                 var token = HttpContext.Session.GetString("AccessToken");
                 if (token != null)
                 {
@@ -58,6 +68,15 @@
                                         BookingStatus = booking.BookingStatus,
                                         TotalPrice = booking.TotalPrice,
                                     };
+
+                                    var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
+
+                                    var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
+                                    if (roomnumber != null)
+                                    {
+                                        bookingView.RoomNumber = roomnumber.Number;
+                                    }
+
                                     bookingViewList.Add(bookingView);
                                 }
                                 BookingList = bookingViewList;
