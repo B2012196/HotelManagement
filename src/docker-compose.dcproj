@@ -8,6 +8,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <DockerServiceName>hotelmanagement.api</DockerServiceName>
+    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

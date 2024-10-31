@@ -19,8 +19,14 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
+//http
+builder.Services.AddHttpClient();
+
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+//Async communication service
+builder.Services.AddMessageBroker(builder.Configuration);
 
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);

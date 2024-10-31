@@ -134,20 +134,17 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      # - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=staffdb;Port=5432;Database=StaffDb;User Id=staffpostgres;Password=staffpostgres;Include Error Detail=true
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
     ports:
       - "6004:8080"
-      # - "8081"
     depends_on:
       - staffdb
       - messagebroker
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   authentication.api:
     environment:
@@ -166,3 +163,20 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  financemanagement.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__Database=Server=financedb;Port=5432;Database=FinanceDb;User Id=financepostgres;Password=financepostgres;Include Error Detail=true
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
+    ports:
+      - "6003:8080"
+    depends_on:
+      - financedb
+      - messagebroker
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+

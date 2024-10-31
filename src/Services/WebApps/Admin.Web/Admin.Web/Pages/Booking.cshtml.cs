@@ -1,12 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Admin.Web.Services;
 
 namespace Admin.Web.Pages
 {
-    public class BookingModel(IBookingService bookingService, IGuestService guestService, IHotelService hotelService, ILogger<BookingModel> logger) : PageModel
+    public class BookingModel(IBookingService bookingService, IGuestService guestService, IHotelService hotelService, IFinanceService financeService,
+        ILogger<BookingModel> logger) : PageModel
     {
         public IEnumerable<BookingView> BookingList { get; set; } = new List<BookingView>();
         public IEnumerable<Guest> GuestList { get; set; } = new List<Guest>();
         public IEnumerable<Room> RoomList { get; set; } = new List<Room>();
+        public IEnumerable<Service> ServiceList { get; set; } = new List<Service>();
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
         public Room BRoom { get; set; } = new Room();
@@ -33,6 +35,10 @@ namespace Admin.Web.Pages
                 var resultbroom = await bookingService.GetBookingRooms();
                 BookingRoomList = resultbroom.BookingRooms;
 
+                //get all service
+                var resultServices = await financeService.GetServices();
+                ServiceList = resultServices.Services;
+
 
                 var bookingViewList = new List<BookingView>();
                
@@ -45,6 +51,7 @@ namespace Admin.Web.Pages
                         BookingId = booking.BookingId,
                         TypeId = booking.TypeId,
                         TypeName = typename.Name,
+                        GuestId = booking.GuestId,
                         GuestFirstName = guestname.FirstName,
                         GuestLastName = guestname.LastName,
                         ExpectedCheckinDate = booking.ExpectedCheckinDate,
@@ -152,51 +159,158 @@ namespace Admin.Web.Pages
 
         public async Task<IActionResult> OnPostCheckinBookingAsync(string BookingId)
         {
-            Guid bookingIdGuid;
-            if (!Guid.TryParse(BookingId, out bookingIdGuid))
+            try
             {
-                ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
-                logger.LogInformation("Dữ liệu không hợp lệ.");
-                return Page();
+                Guid bookingIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid))
+                {
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
+                }
+
+                var checkin = new
+                {
+                    BookingId = bookingIdGuid
+                };
+
+                var resultconfirm = await bookingService.UpdateBookingCheckin(checkin);
+            }
+            catch(ApiException apiEx)
+            {
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching guests: {ex.Message}");
             }
 
-            var checkin = new
-            {
-                BookingId = bookingIdGuid
-            };
-
-            var resultconfirm = await bookingService.UpdateBookingCheckin(checkin);
-            if (!resultconfirm.IsSuccess)
-            {
-                logger.LogInformation("Error: Cannot update checkin the booking");
-            }
 
             return RedirectToPage("Booking");
         }
 
         public async Task<IActionResult> OnPostCheckoutBookingAsync(string BookingId)
         {
-            Guid bookingIdGuid;
-            if (!Guid.TryParse(BookingId, out bookingIdGuid))
+            try
             {
-                ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
-                logger.LogInformation("Dữ liệu không hợp lệ.");
-                return Page();
+                Guid bookingIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid))
+                {
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
+                }
+
+                var checkin = new
+                {
+                    BookingId = bookingIdGuid
+                };
+
+                var resultconfirm = await bookingService.UpdateBookingCheckout(checkin);
             }
-
-            var checkin = new
+            catch (ApiException apiEx)
             {
-                BookingId = bookingIdGuid
-            };
-
-            var resultconfirm = await bookingService.UpdateBookingCheckout(checkin);
-            if (!resultconfirm.IsSuccess)
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                }
+            }
+            catch (Exception ex)
             {
-                logger.LogInformation("Error: Cannot update checkout the booking");
+                logger.LogError($"Error fetching guests: {ex.Message}");
             }
 
             return RedirectToPage("Booking");
         }
 
+        public async Task<IActionResult> OnPostAddServiceAsync(string BookingId, string ServiceId, int ServiceNumber)
+        {
+            try
+            {
+                Guid bookingIdGuid, serviceIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(ServiceId, out serviceIdGuid))
+                {
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
+                }
+
+                var booking = BookingList.SingleOrDefault(b => b.BookingId == bookingIdGuid);
+
+                var objAddService = new
+                {
+                    BookingId = bookingIdGuid,
+                    GuestId = booking.GuestId,
+                    ServiceId = serviceIdGuid,
+                    Numberofservice = ServiceNumber
+                };
+
+                var resultOrdering = await financeService.CreateOrdering(objAddService);
+
+            }
+            catch (ApiException apiEx)
+            {
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                }
+                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching guests: {ex.Message}");
+            }
+
+
+
+            return RedirectToPage("Booking");
+        }
     }
 }

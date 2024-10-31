@@ -13,6 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/FinanceManagement/FinanceManagement.API/FinanceManagement.API.csproj", "Services/FinanceManagement/FinanceManagement.API/"]
+COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 RUN dotnet restore "./Services/FinanceManagement/FinanceManagement.API/FinanceManagement.API.csproj"
 COPY . .
 WORKDIR "/src/Services/FinanceManagement/FinanceManagement.API"

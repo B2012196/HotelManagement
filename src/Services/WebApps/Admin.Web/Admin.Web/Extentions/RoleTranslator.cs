@@ -14,10 +14,10 @@
         {
             if (RoleTranslations.TryGetValue(englishStatus, out var vietnameseStatus))
             {
-                Console.WriteLine(vietnameseStatus);
+                //Console.WriteLine(vietnameseStatus);
                 return vietnameseStatus;
             }
-            Console.WriteLine(englishStatus);
+            //Console.WriteLine(englishStatus);
             return englishStatus; // Trả về trạng thái gốc nếu không tìm thấy
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Services.CreateService
 {
-    public record CreateServiceRequest(string ServiceName);
+    public record CreateServiceRequest(string ServiceName, decimal ServicePrice);
     public record CreateServiceResponse(Guid ServiceId);
     public class CreateServiceEndpoint : ICarterModule
     {

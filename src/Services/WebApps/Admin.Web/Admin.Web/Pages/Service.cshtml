@@ -1,0 +1,127 @@
+﻿@page "/admin/service"
+@model ServiceModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+@if (TempData["ErrorApiException"] != null)
+{
+    <br />
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorApiException"]
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tên dịch vụ</th>
+                <th>Đơn giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var service in Model.ServiceList)
+            {
+                <tr>
+                    <td>@service.ServiceName.ServiceNameTranslate()</td>
+                    <td>@service.ServicePrice</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#serviceSelectionModal-@service.ServiceId">
+                            Cập nhật
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#serviceSelectionDeleteModal-@service.ServiceId">
+                            Xóa
+                        </button>
+                    </td>
+
+                    <div class="modal fade" id="serviceSelectionDeleteModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionDeleteModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="roomSelectionModalLabel">Bạn có chắc chắn muốn xóa?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="DeleteService">
+                                        <input type="text" id="serviceId" name="ServiceId" required value="@service.ServiceId" hidden readonly>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="serviceSelectionModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="serviceSelectionModalLabel">Thông tin dịch vụ</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="UpdateService">
+                                        <input type="text" id="serviceId" name="ServiceId" required value="@service.ServiceId" hidden readonly>
+                                        <div class="mb-3">
+                                            <label for="serviceName" class="form-label">Tên dịch vụ</label>
+                                            <input type="text" class="form-control" id="serviceName" name="ServiceName" required value="@service.ServiceName">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="servicePrice" class="form-label">Đơn giá</label>
+                                            <input type="number" class="form-control" id="servicePrice" name="ServicePrice" required value="@service.ServicePrice">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Lưu</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
+        Thêm dịch vụ
+    </button>
+
+    <div class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomSelectionModalLabel">Thêm dịch vụ mới</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-page-handler="AddService">
+                        <div class="mb-3">
+                            <label for="serviceName" class="form-label">Tên dịch vụ</label>
+                            <input type="text" class="form-control" id="serviceName" name="ServiceName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="servicePrice" class="form-label">Đơn giá</label>
+                            <input type="number" class="form-control" id="servicePrice" name="ServicePrice" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

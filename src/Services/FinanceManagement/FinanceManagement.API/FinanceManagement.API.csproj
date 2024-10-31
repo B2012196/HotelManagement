@@ -7,6 +7,7 @@
     <UserSecretsId>c06eb24b-af53-4c56-acde-bb614083679f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\OrderingDetails\EventHandlers\Integration\" />
     <Folder Include="Features\Orderings\UpdateOrdering\" />
   </ItemGroup>
 

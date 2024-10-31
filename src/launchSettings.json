@@ -4,12 +4,12 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "hotelmanagementdb": "StartWithoutDebugging",
         "hotelmanagement.api": "StartDebugging",
         "guestmanagement.api": "StartDebugging",
         "bookingmanagement.api": "StartDebugging",
         "staffmanagement.api": "StartDebugging",
-        "authentication.api": "StartDebugging"
+        "authentication.api": "StartDebugging",
+        "financemanagement.api": "StartDebugging"
       }
     }
   }

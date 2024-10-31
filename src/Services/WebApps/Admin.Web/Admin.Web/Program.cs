@@ -23,6 +23,12 @@ builder.Services.AddRefitClient<IStaffService>()
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
     }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
+builder.Services.AddRefitClient<IFinanceService>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
 builder.Services.AddRefitClient<IHotelService>()
     .ConfigureHttpClient(c =>
     {

@@ -73,10 +73,6 @@ namespace Admin.Web.Pages
                 };
 
                 var resultCreateRoom = await hotelService.CreateRoom(room);
-                if (resultCreateRoom == null)
-                {
-                    logger.LogInformation("Error: Cannot create the room");
-                }
             }
             catch (ApiException apiEx)
             {

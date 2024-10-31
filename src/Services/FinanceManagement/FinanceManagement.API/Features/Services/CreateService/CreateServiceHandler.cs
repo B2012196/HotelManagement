@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Services.CreateService
 {
-    public record CreateServiceCommand(string ServiceName) : ICommand<CreateServiceResult>;
+    public record CreateServiceCommand(string ServiceName, decimal ServicePrice) : ICommand<CreateServiceResult>;
     public record CreateServiceResult(Guid ServiceId);
     public class CreateServiceHandler(ApplicationDbContext context)
         : ICommandHandler<CreateServiceCommand, CreateServiceResult>
@@ -11,6 +11,7 @@
             {
                 ServiceId = Guid.NewGuid(),
                 ServiceName = command.ServiceName,
+                ServicePrice = command.ServicePrice
             };
 
             context.Services.Add(service);

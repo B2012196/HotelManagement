@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Services.UpdateService
 {
-    public record UpdateServiceRequest(Guid ServiceId, string ServiceName);
+    public record UpdateServiceRequest(Guid ServiceId, string ServiceName, decimal ServicePrice);
     public record UpdateServiceResponse(bool IsSuccess);
     public class UpdateServiceEndpoint : ICarterModule
     {

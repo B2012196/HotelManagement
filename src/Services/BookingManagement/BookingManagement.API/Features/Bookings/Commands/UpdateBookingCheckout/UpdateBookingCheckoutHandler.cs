@@ -1,7 +1,4 @@
 ﻿using BuildingBlocks.Messaging.Events;
-using MassTransit.Transports;
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
 
 namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
 {
@@ -36,8 +33,8 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
             {
                 var roomTypeResponse = await response.Content.ReadFromJsonAsync<RoomTypeResponseDTO>();
                 var roomType = roomTypeResponse?.RoomType;
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                logger.LogInformation($"Response JSON: {jsonResponse}");
+                //var jsonResponse = await response.Content.ReadAsStringAsync();
+                //logger.LogInformation($"Response JSON: {jsonResponse}");
                 if (roomType != null)
                 {
                     logger.LogInformation("start totalprice");
