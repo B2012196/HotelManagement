@@ -1,4 +1,4 @@
-﻿using Admin.Web.Services;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Admin.Web.Pages
 {
@@ -62,7 +62,7 @@ namespace Admin.Web.Pages
                         BookingStatus = booking.BookingStatus,
                         TotalPrice = booking.TotalPrice,
                     };
-
+                    logger.LogWarning(""+bookingView.TotalPrice);
                     var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
 
                     var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
@@ -256,23 +256,22 @@ namespace Admin.Web.Pages
             return RedirectToPage("Booking");
         }
 
-        public async Task<IActionResult> OnPostAddServiceAsync(string BookingId, string ServiceId, int ServiceNumber)
+        public async Task<IActionResult> OnPostAddServiceAsync(string BookingId, string GuestId, string ServiceId, int ServiceNumber)
         {
             try
             {
-                Guid bookingIdGuid, serviceIdGuid;
-                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(ServiceId, out serviceIdGuid))
+                Guid bookingIdGuid, serviceIdGuid, guestIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(ServiceId, out serviceIdGuid) ||
+                    !Guid.TryParse(GuestId, out guestIdGuid))
                 {
                     logger.LogInformation("Dữ liệu không hợp lệ.");
                     return Page();
                 }
-
-                var booking = BookingList.SingleOrDefault(b => b.BookingId == bookingIdGuid);
-
+                logger.LogWarning(""+DateTime.Now);
                 var objAddService = new
                 {
                     BookingId = bookingIdGuid,
-                    GuestId = booking.GuestId,
+                    GuestId = guestIdGuid,
                     ServiceId = serviceIdGuid,
                     Numberofservice = ServiceNumber
                 };

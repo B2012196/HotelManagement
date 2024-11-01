@@ -12,7 +12,7 @@
         public DateTime ExpectedCheckoutDate { get; set; }
         public DateTime? CheckinDate { get; set; }
         public DateTime? CheckoutDate { get; set; }
-        public decimal? TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public int RoomQuantity { get; set; }
         public BookingStatus BookingStatus { get; set; }
         public string RoomNumber { get; set; }
@@ -27,7 +27,7 @@
         public DateTime ExpectedCheckoutDate { get; set; }
         public DateTime? CheckinDate { get; set; }
         public DateTime? CheckoutDate { get; set; }
-        public decimal? TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public int RoomQuantity { get; set; }
         public BookingStatus BookingStatus { get; set; }
     }
