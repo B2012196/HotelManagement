@@ -50,7 +50,7 @@
                 
             }
 
-            return new CreateUserResult(command.RoleId);
+            return new CreateUserResult(user.UserId);
         }
     }
 }

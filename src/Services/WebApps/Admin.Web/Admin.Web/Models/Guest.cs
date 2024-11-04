@@ -12,6 +12,7 @@
 
     public record GetGuestsResponse(IEnumerable<Guest> Guests);
     public record GetGuestByIdResponse(Guest Guest);
+    public record GetGuestByUserIdReponse(Guest Guest);
     public record CreateGuestReponse(Guid GuestId);
     public record UpdateGuestResponse(bool IsSuccess);
     public record DeleteGuestResponse(bool IsSuccess);

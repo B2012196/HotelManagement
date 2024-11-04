@@ -5,9 +5,9 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/authentication/users/{username}", async (string username, ISender sender) =>
+            app.MapDelete("/authentication/users/{id}", async (Guid id, ISender sender) =>
             {
-                var result = await sender.Send(new DeleteUserCommand(username));
+                var result = await sender.Send(new DeleteUserCommand(id));
 
                 var response = result.Adapt<DeleteUserResponse>();
 

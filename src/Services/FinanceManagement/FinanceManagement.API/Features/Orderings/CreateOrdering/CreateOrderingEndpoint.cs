@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Orderings.CreateOrdering
 {
-    public record CreateOrderingRequest(Guid BookingId, Guid GuestId, Guid ServiceId, int Numberofservice);
+    public record CreateOrderingRequest(Guid BookingId, Guid GuestId);
     public record CreateOrderingResponse(Guid OrderingId);
     public class CreateOrderingEndpoint : ICarterModule
     {

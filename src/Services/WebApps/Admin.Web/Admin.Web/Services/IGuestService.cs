@@ -8,6 +8,9 @@
         [Get("/guests/guests/id/{GuestId}")]
         Task<GetGuestByIdResponse> GetGuestById(Guid GuestId);
 
+        [Get("/guests/guests/userid/{UserId}")]
+        Task<GetGuestByUserIdReponse> GetGuestByUserId(Guid UserId);
+
         [Post("/guests/guests")]
         Task<CreateGuestReponse> CreatetGuest(Guest Guest);
 

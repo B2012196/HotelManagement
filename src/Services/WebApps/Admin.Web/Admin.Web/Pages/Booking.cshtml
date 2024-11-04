@@ -138,8 +138,9 @@ else
                                     else if (booking.BookingStatus == BookingStatus.Confirmed)
                                     {
                                         <form method="post" asp-page-handler="CheckinBooking">
-                                             <input type="hidden" name="bookingId" value="@booking.BookingId" hidden readonly />
-                                             <button type="submit" class="btn btn-outline-success btn-sm">Checkin</button>
+                                             <input type="hidden" name="BookingId" value="@booking.BookingId" hidden readonly />
+                                             <input type="hidden" name="GuestId" value="@booking.GuestId" hidden readonly />
+                                            <button type="submit" class="btn btn-outline-success btn-sm m-2 ml-3">Checkin</button>
                                         </form>
                                     }
                                     else if (booking.BookingStatus == BookingStatus.CheckedIn)
@@ -171,7 +172,7 @@ else
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <!-- Form to choose available room -->
+
                                 <form method="post" asp-page-handler="AddService">
                                     <div class="form-group row">
                                         <div class="col-md-6">
@@ -229,4 +230,77 @@ else
             }
         </tbody>
     </table>
+
+    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addBookingModal">
+        Đặt phòng
+    </button>
+    <div class="modal fade" id="addBookingModal" tabindex="-1" role="dialog" aria-labelledby="addBookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookingModalLabel">Đặt phòng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form method="post" asp-page-handler="AddBooking">
+                        <div class="form-group row">
+                            <div class="col-md-6 r">
+                                <div class="mb-3">
+                                    <label for="phoneNumber" class="form-label">Số điện thoại khách hàng</label>
+                                    <input type="text" class="form-control" id="phoneNumber" name="PhoneNumber" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label">Họ khách hàng</label>
+                                    <input type="text" class="form-control" id="lastName" name="LastName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">Tên khách hàng</label>
+                                    <input type="text" class="form-control" id="firstName" name="FirstName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dateofBirth" class="form-label">Ngày sinh</label>
+                                    <input type="date" class="form-control" id="dateofBirth" name="DateofBirth" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Địa chỉ</label>
+                                    <input type="text" class="form-control" id="address" name="Address" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roomType" class="form-label">Loại phòng</label>
+                                    <select class="form-control" id="roomType" name="RoomType">
+                                        <option value="1b0b63e1-96de-4ca8-8fc2-82a319bb896a">Phòng Deluxe King</option>
+                                        <option value="54b8d4d6-c9c6-4cbb-85eb-2f41d516cedf">Phòng Deluxe Twin</option>
+                                        <option value="da78d03e-7c63-43eb-847c-8683c2e6545b">Phòng Deluxe Triple</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomQuantity" class="form-label">Số phòng đặt</label>
+                                    <input type="number" class="form-control" id="roomQuantity" name="RoomQuantity" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="checkInDate">Ngày nhận phòng</label>
+                                    <input type="date" class="form-control" id="checkInDate" name="CheckInDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="checkOutDate">Ngày trả phòng</label>
+                                    <input type="date" class="form-control" id="checkOutDate" name="CheckOutDate" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Đặt</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
 }

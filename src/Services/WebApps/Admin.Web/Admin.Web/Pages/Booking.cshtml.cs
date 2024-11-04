@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
-    public class BookingModel(IBookingService bookingService, IGuestService guestService, IHotelService hotelService, IFinanceService financeService,
+    public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
+        IFinanceService financeService,
         ILogger<BookingModel> logger) : PageModel
     {
         public IEnumerable<BookingView> BookingList { get; set; } = new List<BookingView>();
@@ -18,34 +17,47 @@ namespace Admin.Web.Pages
             {
                 //get all booking
                 var resultbooking = await bookingService.GetBookings();
-
+                logger.LogWarning("booking");
                 //get all guest
                 var resultguest = await guestService.GetGuests();
-                GuestList = resultguest.Guests;
-
+                logger.LogWarning("guest");
                 //get all roomtype
                 var resultroomtype = await hotelService.GetRoomTypes();
-                RoomTypeList = resultroomtype.RoomTypes;
-
+                logger.LogWarning("roomtype");
                 //get all room
                 var resultroom = await hotelService.GetRooms();
-                RoomList = resultroom.Rooms;
-
+                logger.LogWarning("room");
                 //get all bookingroom
                 var resultbroom = await bookingService.GetBookingRooms();
-                BookingRoomList = resultbroom.BookingRooms;
-
+                logger.LogWarning("bookingroom");
                 //get all service
                 var resultServices = await financeService.GetServices();
+                logger.LogWarning("service");
+                if (resultbooking == null || resultguest == null || resultroomtype == null || resultroom == null ||
+                    resultbroom == null || resultServices == null)
+                {
+                    logger.LogWarning("null do get all");
+                    TempData["ErrorApiException"] = "null do get all";
+                    return Page();
+                }
+                GuestList = resultguest.Guests;
+                RoomTypeList = resultroomtype.RoomTypes;
+                RoomList = resultroom.Rooms;
+                BookingRoomList = resultbroom.BookingRooms;
                 ServiceList = resultServices.Services;
 
-
                 var bookingViewList = new List<BookingView>();
-               
+
                 foreach (var booking in resultbooking.Bookings)
                 {
                     var typename = RoomTypeList.SingleOrDefault(r => r.TypeId == booking.TypeId);
                     var guestname = GuestList.SingleOrDefault(g => g.GuestId == booking.GuestId);
+                    if (guestname == null || typename == null)
+                    {
+                        logger.LogWarning("Guest or Type are null");
+                        return Page();
+                    }
+                    logger.LogWarning("Guest or Type are not null");
                     var bookingView = new BookingView
                     {
                         BookingId = booking.BookingId,
@@ -62,41 +74,24 @@ namespace Admin.Web.Pages
                         BookingStatus = booking.BookingStatus,
                         TotalPrice = booking.TotalPrice,
                     };
-                    logger.LogWarning(""+bookingView.TotalPrice);
+                    logger.LogWarning("" + bookingView.TotalPrice);
                     var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
-
-                    var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
-                    if(roomnumber != null)
+                    if (booking != null)
                     {
-                        bookingView.RoomNumber = roomnumber.Number;
-                    }
+                        var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
+                        if (roomnumber != null)
+                        {
+                            bookingView.RoomNumber = roomnumber.Number;
+                        }
 
-                    bookingViewList.Add(bookingView);
+                        bookingViewList.Add(bookingView);
+                    }
                 }
                 BookingList = bookingViewList;
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
@@ -113,7 +108,6 @@ namespace Admin.Web.Pages
                 Guid roomIdGuid;
                 if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(RoomId, out roomIdGuid))
                 {
-                    ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
                     logger.LogInformation("Dữ liệu không hợp lệ.");
                     return Page();
                 }
@@ -128,26 +122,7 @@ namespace Admin.Web.Pages
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
@@ -157,12 +132,12 @@ namespace Admin.Web.Pages
             return RedirectToPage("Booking");
         }
 
-        public async Task<IActionResult> OnPostCheckinBookingAsync(string BookingId)
+        public async Task<IActionResult> OnPostCheckinBookingAsync(string BookingId, string GuestId)
         {
             try
             {
-                Guid bookingIdGuid;
-                if (!Guid.TryParse(BookingId, out bookingIdGuid))
+                Guid bookingIdGuid, guestIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(GuestId, out guestIdGuid))
                 {
                     logger.LogInformation("Dữ liệu không hợp lệ.");
                     return Page();
@@ -174,29 +149,19 @@ namespace Admin.Web.Pages
                 };
 
                 var resultconfirm = await bookingService.UpdateBookingCheckin(checkin);
+
+                var objCreateOrdering = new
+                {
+                    BookingId = bookingIdGuid,
+                    GuestId = guestIdGuid
+                };
+
+                var resultCreateOrdering = await financeService.CreateOrdering(objCreateOrdering);
+
             }
             catch(ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
@@ -227,26 +192,7 @@ namespace Admin.Web.Pages
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
@@ -267,7 +213,6 @@ namespace Admin.Web.Pages
                     logger.LogInformation("Dữ liệu không hợp lệ.");
                     return Page();
                 }
-                logger.LogWarning(""+DateTime.Now);
                 var objAddService = new
                 {
                     BookingId = bookingIdGuid,
@@ -281,25 +226,94 @@ namespace Admin.Web.Pages
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                HandleApiException(apiEx);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching guests: {ex.Message}");
+            }
+
+            return RedirectToPage("Booking");
+        }
+
+        public async Task<IActionResult> OnPostAddBookingAsync(string PhoneNumber, string LastName, string FirstName, string Address, DateTime DateofBirth,
+            string RoomType, int RoomQuantity, DateTime ExpectedCheckInDate, DateTime ExpectedCheckOutDate)
+        {
+            try
+            {
+                Guid roomTypeIdGuid;
+                if (!Guid.TryParse(RoomType, out roomTypeIdGuid))
                 {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
                 }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                //if Kiem tra chưa có tài khoản thì tạo
+                var resultGetUser = await authentication.GetUserByPhone(PhoneNumber);
+                //tim thay user
+                if(resultGetUser != null)
                 {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                    //tao booking
                 }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                
+            }
+            catch (ApiException apiEx)
+            {
+                try
                 {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                    if (apiEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+
+                        Guid roleIdGuid, roomTypeIdGuid;
+                        if (!Guid.TryParse("97864e5a-0172-49fe-9c42-abb9e90ad022", out roleIdGuid) || !Guid.TryParse(RoomType, out roomTypeIdGuid))
+                        {
+                            logger.LogInformation("Dữ liệu không hợp lệ.");
+                            return Page();
+                        }
+                        //create user
+                        var user = new User
+                        {
+                            RoleId = roleIdGuid,
+                            UserName = string.Empty,
+                            Email = string.Empty,
+                            PhoneNumber = PhoneNumber,
+                            Password = string.Empty
+                        };
+                        var resultCreateUser = await authentication.CreateUser(user);
+
+                        //create guest
+                        var resultGetGuestByUserId = await guestService.GetGuestByUserId(resultCreateUser.UserId);
+                        var guest = new Guest
+                        {
+                            GuestId = resultGetGuestByUserId.Guest.GuestId,
+                            UserId = resultCreateUser.UserId,
+                            FirstName = FirstName,
+                            LastName = LastName,
+                            DateofBirst = DateofBirth,
+                            Address = Address
+                        };
+                        var resultUpdateGuest = await guestService.UpdateGuest(guest);
+
+                        //tạo booking
+                        var booking = new Booking
+                        {
+                            BookingId = Guid.Empty,
+                            GuestId = resultGetGuestByUserId.Guest.GuestId,
+                            TypeId = roomTypeIdGuid, 
+                            ExpectedCheckinDate = ExpectedCheckInDate,
+                            ExpectedCheckoutDate = ExpectedCheckOutDate,
+                            RoomQuantity = RoomQuantity
+                        };
+
+                        var resultCreateBooking = await bookingService.CreateBooking(booking);
+                    }
+                    else
+                    {
+                        HandleApiException(apiEx);
+                    }
                 }
-                else
+                catch (ApiException apiEx2)
                 {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                    HandleApiException(apiEx2);
                 }
             }
             catch (Exception ex)
@@ -307,9 +321,34 @@ namespace Admin.Web.Pages
                 logger.LogError($"Error fetching guests: {ex.Message}");
             }
 
-
-
             return RedirectToPage("Booking");
         }
+
+        private void HandleApiException(ApiException apiEx)
+        {
+            switch (apiEx.StatusCode)
+            {
+                case System.Net.HttpStatusCode.BadRequest:
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                    break;
+
+                case System.Net.HttpStatusCode.Unauthorized:
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                    break;
+
+                case System.Net.HttpStatusCode.Forbidden:
+                    Console.WriteLine("Forbidden: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                    break;
+
+                default:
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                    break;
+            }
+        }
+
     }
 }
