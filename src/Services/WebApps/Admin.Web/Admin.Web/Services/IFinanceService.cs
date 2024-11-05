@@ -2,9 +2,13 @@
 {
     public interface IFinanceService
     {
-        //ordering
-        [Post("/finance/orderings")]
-        Task<CreateOrderingResponse> CreateOrdering(object obj);
+        //invoice
+        [Post("/finance/invoices")]
+        Task<CreateInvoiceResponse> CreateOrdering(object obj);
+
+        //invoicedetail
+        [Post("/finance/invoicedetails")]
+        Task<CreateInvoiceResponse> Createinvoicedetail(object obj);
 
         //service
         [Get("/finance/services")]

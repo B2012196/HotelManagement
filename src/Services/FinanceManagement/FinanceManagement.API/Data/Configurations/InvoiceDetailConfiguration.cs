@@ -1,10 +1,10 @@
 ﻿namespace FinanceManagement.API.Data.Configurations
 {
-    public class OrderingDetailConfiguration : IEntityTypeConfiguration<OrderingDetail>
+    public class InvoiceDetailConfiguration : IEntityTypeConfiguration<InvoiceDetail>
     {
-        public void Configure(EntityTypeBuilder<OrderingDetail> builder)
+        public void Configure(EntityTypeBuilder<InvoiceDetail> builder)
         {
-            builder.HasKey(o => o.OrderingId);
+            builder.HasKey(o => o.InvoiceId);
 
             builder.Property(o => o.ServiceId)
                    .IsRequired();
@@ -15,12 +15,12 @@
             builder.Property(o => o.TotalPrice)
                .HasColumnType("decimal(12,2)");
 
-            builder.HasOne(od => od.Ordering)
-                   .WithMany(o => o.OrderingDetails)
-                   .HasForeignKey(od => od.OrderingId);
+            builder.HasOne(od => od.Invoice)
+                   .WithMany(o => o.InvoiceDetails)
+                   .HasForeignKey(od => od.InvoiceId);
 
             builder.HasOne(od => od.Service)
-                   .WithMany(s => s.OrderingDetails)
+                   .WithMany(s => s.InvoiceDetails)
                    .HasForeignKey(od => od.ServiceId);
         }
     }

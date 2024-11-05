@@ -6,7 +6,7 @@
         {
             builder.HasKey(p => p.PaymentId);
 
-            builder.Property(p => p.OrderingId)
+            builder.Property(p => p.InvoiceId)
                    .IsRequired();
 
             builder.Property(p => p.PaymentMethodId)
@@ -17,9 +17,9 @@
             builder.Property(p => p.Amount)
                .HasColumnType("decimal(12,2)");
 
-            builder.HasOne(p => p.Ordering)
+            builder.HasOne(p => p.Invoice)
                    .WithMany(o => o.Payments)
-                   .HasForeignKey(p => p.OrderingId);
+                   .HasForeignKey(p => p.InvoiceId);
 
             builder.HasOne(p => p.PaymentMethod)
                    .WithMany(pm => pm.Payments)

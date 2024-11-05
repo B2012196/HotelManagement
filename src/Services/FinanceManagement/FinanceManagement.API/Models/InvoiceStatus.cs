@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Models
 {
-    public enum OrderingStatus
+    public enum InvoiceStatus
     {
         Pending = 1,         // Hóa đơn đang chờ xử lý
         Paid = 2,            // Hóa đơn đã thanh toán

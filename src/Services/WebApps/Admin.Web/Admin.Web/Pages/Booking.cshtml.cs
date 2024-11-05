@@ -1,4 +1,6 @@
-﻿namespace Admin.Web.Pages
+﻿using Microsoft.Extensions.Logging;
+
+namespace Admin.Web.Pages
 {
     public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
         IFinanceService financeService,
@@ -75,17 +77,22 @@
                         TotalPrice = booking.TotalPrice,
                     };
                     logger.LogWarning("" + bookingView.TotalPrice);
+
+                    logger.LogWarning(booking.BookingId + "");
+
                     var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
-                    if (booking != null)
+                    if (booking.BookingStatus != BookingStatus.Pending)
                     {
+                        logger.LogWarning(bookingroom[0].RoomId + "");
                         var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
+
                         if (roomnumber != null)
                         {
                             bookingView.RoomNumber = roomnumber.Number;
                         }
-
-                        bookingViewList.Add(bookingView);
                     }
+
+                    bookingViewList.Add(bookingView);
                 }
                 BookingList = bookingViewList;
             }
@@ -318,7 +325,7 @@
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
 
             return RedirectToPage("Booking");

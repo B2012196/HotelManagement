@@ -8,6 +8,6 @@ namespace FinanceManagement.API.Models
         public decimal ServicePrice { get; set; }
 
         [JsonIgnore]
-        public ICollection<OrderingDetail> OrderingDetails { get; set; }
+        public ICollection<InvoiceDetail> InvoiceDetails { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Payments.CreatePayment
 {
-    public record CreatePaymentCommand(Guid OrderingId, Guid PaymentMethodId) : ICommand<CreatePaymentResult>;
+    public record CreatePaymentCommand(Guid InvoiceId, Guid PaymentMethodId) : ICommand<CreatePaymentResult>;
     public record CreatePaymentResult(Guid PaymentId);
     public class CreatePaymentHandler(ApplicationDbContext context)
         : ICommandHandler<CreatePaymentCommand, CreatePaymentResult>
@@ -10,7 +10,7 @@
             var payment = new Payment
             {
                 PaymentId = Guid.NewGuid(),
-                OrderingId = command.OrderingId,
+                InvoiceId = command.InvoiceId,
                 PaymentMethodId = command.PaymentMethodId,
                 Amount = 0,
                 CreateAt = DateTime.Now

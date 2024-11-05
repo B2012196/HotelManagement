@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinanceManagement.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241028173646_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241105180424_second")]
+    partial class second
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,9 +25,9 @@ namespace FinanceManagement.API.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FinanceManagement.API.Models.Ordering", b =>
+            modelBuilder.Entity("FinanceManagement.API.Models.Invoice", b =>
                 {
-                    b.Property<Guid>("OrderingId")
+                    b.Property<Guid>("InvoiceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -40,20 +40,20 @@ namespace FinanceManagement.API.Data.Migrations
                     b.Property<Guid>("GuestId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("OrderingStatus")
+                    b.Property<int>("InvoiceStatus")
                         .HasColumnType("integer");
 
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(12,2)");
 
-                    b.HasKey("OrderingId");
+                    b.HasKey("InvoiceId");
 
-                    b.ToTable("Orderings");
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("FinanceManagement.API.Models.InvoiceDetail", b =>
                 {
-                    b.Property<Guid>("OrderingId")
+                    b.Property<Guid>("InvoiceId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Numberofservice")
@@ -65,7 +65,7 @@ namespace FinanceManagement.API.Data.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(12,2)");
 
-                    b.HasKey("OrderingId");
+                    b.HasKey("InvoiceId");
 
                     b.HasIndex("ServiceId");
 
@@ -84,7 +84,7 @@ namespace FinanceManagement.API.Data.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("OrderingId")
+                    b.Property<Guid>("InvoiceId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("PaymentMethodId")
@@ -92,7 +92,7 @@ namespace FinanceManagement.API.Data.Migrations
 
                     b.HasKey("PaymentId");
 
-                    b.HasIndex("OrderingId");
+                    b.HasIndex("InvoiceId");
 
                     b.HasIndex("PaymentMethodId");
 
@@ -134,9 +134,9 @@ namespace FinanceManagement.API.Data.Migrations
 
             modelBuilder.Entity("FinanceManagement.API.Models.InvoiceDetail", b =>
                 {
-                    b.HasOne("FinanceManagement.API.Models.Ordering", "Ordering")
+                    b.HasOne("FinanceManagement.API.Models.Invoice", "Invoice")
                         .WithMany("InvoiceDetails")
-                        .HasForeignKey("OrderingId")
+                        .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -146,16 +146,16 @@ namespace FinanceManagement.API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Ordering");
+                    b.Navigation("Invoice");
 
                     b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FinanceManagement.API.Models.Payment", b =>
                 {
-                    b.HasOne("FinanceManagement.API.Models.Ordering", "Ordering")
+                    b.HasOne("FinanceManagement.API.Models.Invoice", "Invoice")
                         .WithMany("Payments")
-                        .HasForeignKey("OrderingId")
+                        .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -165,12 +165,12 @@ namespace FinanceManagement.API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Ordering");
+                    b.Navigation("Invoice");
 
                     b.Navigation("PaymentMethod");
                 });
 
-            modelBuilder.Entity("FinanceManagement.API.Models.Ordering", b =>
+            modelBuilder.Entity("FinanceManagement.API.Models.Invoice", b =>
                 {
                     b.Navigation("InvoiceDetails");
 

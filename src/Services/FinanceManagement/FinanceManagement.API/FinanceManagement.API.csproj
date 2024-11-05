@@ -28,8 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\OrderingDetails\EventHandlers\Integration\" />
-    <Folder Include="Features\Orderings\UpdateOrdering\" />
+    <Folder Include="Features\Invoices\UpdateOrdering\" />
   </ItemGroup>
 
 </Project>

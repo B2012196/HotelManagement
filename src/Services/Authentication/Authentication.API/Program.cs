@@ -21,6 +21,9 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
+//http
+builder.Services.AddHttpClient();
+
 //Async communication service
 builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 

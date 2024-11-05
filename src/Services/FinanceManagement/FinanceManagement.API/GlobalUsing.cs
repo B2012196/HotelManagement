@@ -17,7 +17,6 @@ global using FinanceManagement.API.Exceptions;
 global using BuildingBlocks.Messaging.Events;
 global using MassTransit;
 global using BuildingBlocks.Messaging.MassTransit;
-global using FinanceManagement.API.Features.OrderingDetails.Repositories;
 
 
 

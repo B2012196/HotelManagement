@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Payments.CreatePayment
 {
-    public record CreatePaymentRequest(Guid OrderingId, Guid PaymentMethodId);
+    public record CreatePaymentRequest(Guid InvoiceId, Guid PaymentMethodId);
     public record CreatePaymentResponse(Guid PaymentId);
     public class CreatePaymentEndpoint : ICarterModule
     {

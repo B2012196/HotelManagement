@@ -1,8 +1,8 @@
 ﻿namespace FinanceManagement.API.Models
 {
-    public class OrderingDetail
+    public class InvoiceDetail
     {
-        public Guid OrderingId { get; set; }
+        public Guid InvoiceId { get; set; }
         public Guid ServiceId { get; set; }
         public int Numberofservice { get; set; }
         public decimal TotalPrice { get; set; }
@@ -11,6 +11,6 @@
         public Service Service { get; set; }
 
         [JsonIgnore]
-        public Ordering Ordering { get; set; }
+        public Invoice Invoice { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace FinanceManagement.API.Exceptions
 {
-    public class OrderingNotFoundException : NotFoundException
+    public class InvoiceNotFoundException : NotFoundException
     {
-        public OrderingNotFoundException(Guid Id) : base("Ordering", Id)
+        public InvoiceNotFoundException(Guid Id) : base("Invoice", Id)
         {
 
         }
