@@ -21,7 +21,17 @@ namespace FinanceManagement.API.Features.InvoiceDetails.CreateInvoiceDetail
                 TotalPrice = command.Numberofservice * service.ServicePrice
             };
 
+            var invoice = await context.Invoices.SingleOrDefaultAsync(i => i.InvoiceId == command.InvoiceId, cancellationToken);
+            if (invoice == null)
+            {
+                throw new InvoiceNotFoundException(command.InvoiceId);
+            }
+
+            invoice.TotalPrice += invoiceDetail.TotalPrice;
+
             context.InvoiceDetails.Add(invoiceDetail);
+            context.Invoices.Update(invoice);
+
             await context.SaveChangesAsync(cancellationToken);
 
             return new CreateInvoiceDetailResult(true);

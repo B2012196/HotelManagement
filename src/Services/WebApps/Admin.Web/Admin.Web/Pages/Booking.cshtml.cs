@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
         IFinanceService financeService,
@@ -163,7 +161,7 @@ namespace Admin.Web.Pages
                     GuestId = guestIdGuid
                 };
 
-                var resultCreateOrdering = await financeService.CreateOrdering(objCreateOrdering);
+                var resultCreateOrdering = await financeService.CreateInvoice(objCreateOrdering);
 
             }
             catch(ApiException apiEx)
@@ -209,27 +207,28 @@ namespace Admin.Web.Pages
             return RedirectToPage("Booking");
         }
 
-        public async Task<IActionResult> OnPostAddServiceAsync(string BookingId, string GuestId, string ServiceId, int ServiceNumber)
+        public async Task<IActionResult> OnPostAddServiceAsync(string BookingId, string ServiceId, int ServiceNumber)
         {
             try
             {
-                Guid bookingIdGuid, serviceIdGuid, guestIdGuid;
-                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(ServiceId, out serviceIdGuid) ||
-                    !Guid.TryParse(GuestId, out guestIdGuid))
+                Guid bookingIdGuid, serviceIdGuid;
+                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(ServiceId, out serviceIdGuid))
                 {
                     logger.LogInformation("Dữ liệu không hợp lệ.");
                     return Page();
                 }
-                var objAddService = new
+                //get invoice by bookingId
+                var resultGetInvoice = await financeService.GetInvoiceByBookingId(bookingIdGuid);
+
+                var detail = new InvoiceDetail
                 {
-                    BookingId = bookingIdGuid,
-                    GuestId = guestIdGuid,
+                    InvoiceId = resultGetInvoice.Invoice.InvoiceId,
                     ServiceId = serviceIdGuid,
-                    Numberofservice = ServiceNumber
+                    Numberofservice = ServiceNumber,
+                    TotalPrice = 0,
                 };
 
-                var resultOrdering = await financeService.CreateOrdering(objAddService);
-
+                var resultOrdering = await financeService.CreateInvoiceDetail(detail);
             }
             catch (ApiException apiEx)
             {
@@ -239,8 +238,7 @@ namespace Admin.Web.Pages
             {
                 logger.LogError($"Error fetching guests: {ex.Message}");
             }
-
-            return RedirectToPage("Booking");
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAddBookingAsync(string PhoneNumber, string LastName, string FirstName, string Address, DateTime DateofBirth,

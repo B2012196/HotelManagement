@@ -7,6 +7,8 @@
         public int Numberofservice { get; set; }
         public decimal TotalPrice { get; set; }
     }
+
+    public record GetInvoiceDetailsResponse(IEnumerable<InvoiceDetail> InvoiceDetails);
     public record CreateInvoiceDetailResponse(bool IsSuccess);
 
 }

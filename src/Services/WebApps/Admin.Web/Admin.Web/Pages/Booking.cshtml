@@ -54,7 +54,7 @@ else
                             <div class="modal-body">
                                 <!-- Form to choose available room -->
                                 <div class="form-group row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
 
                                         <label for="guestFirstName">Họ Tên</label>
@@ -73,7 +73,7 @@ else
                                         <input class="form-control" type="text" id="bookingStatus" name="BookingStatus" value="@booking.BookingStatus.GetDisplayName()" readonly />
                                     
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label for="checkinDate">Ngày check-in thực tế</label>
                                         <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
@@ -84,11 +84,6 @@ else
                                         <input class="form-control" type="number" id="roomQuantity" name="RoomQuantity" value="@booking.RoomQuantity" readonly />
 
                                         <label for="totalPrice">Tổng tiền phòng</label>
-                                        <input class="form-control" type="text" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5>Dịch vụ đã sử dụng</h5>
-                                        <label for="totalPrice">Tổng tiền dịch vụ</label>
                                         <input class="form-control" type="text" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
                                     </div>
 
@@ -110,7 +105,7 @@ else
                                     else if (booking.BookingStatus == BookingStatus.CheckedIn)
                                     {
                                         <button type="button" class="btn btn-outline-primary btn-sm m-2 ml-3" data-toggle="modal" data-target="#serviceSelectionModal-@booking.BookingId">
-                                            Dịch vụ
+                                            Thêm dịch vụ
                                         </button>
                                         <button type="button" class="btn btn-outline-warning btn-sm m-2" data-toggle="modal" data-target="#checkoutSelectionModal-@booking.BookingId">
                                             Checkout
@@ -184,7 +179,6 @@ else
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <input type="hidden" id="bookingId" name="BookingId" required value="@booking.BookingId" hidden readonly>
-                                            <input type="hidden" id="guestId" name="GuestId" required value="@booking.GuestId" hidden readonly>
                                             <label for="service">Tên dịch vụ</label>
                                             <select class="form-control" id="serviceId" name="ServiceId">
                                                 @foreach (var service in Model.ServiceList)
@@ -251,7 +245,6 @@ else
                     </button>
                 </div>
                 <div class="modal-body">
-
                     <form method="post" asp-page-handler="AddBooking">
                         <div class="form-group row">
                             <div class="col-md-6 r">

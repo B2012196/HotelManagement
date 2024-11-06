@@ -1,0 +1,95 @@
+﻿@page "/admin/invoice"
+@model InvoiceModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+@if (TempData["ErrorApiException"] != null)
+{
+    <br />
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorApiException"]
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Họ tên</th>
+                <th>Số phòng</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var invoice in Model.InvoiceViewList)
+            {
+                <tr>
+                    <td>@invoice.GuestName</td>
+                    <td>@invoice.RoomNumber</td>
+                    <td>@invoice.InvoiceStatus</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#invoiceDetailSelectionModal-@invoice.InvoiceId">
+                            Chi tiết
+                        </button>
+                    </td>
+                </tr>
+                //chi tiet booking
+                <div class="modal fade" id="invoiceDetailSelectionModal-@invoice.InvoiceId" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailSelectionModal" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="invoiceDetailSelectionModalLabel">Thông tin hóa đơn</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form to choose available room -->
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <h5>Thông tin đặt phòng</h5>
+                                        <input type="hidden" id="invoiceId" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
+
+                                        <label for="guestName">Họ Tên</label>
+                                        <input class="form-control" type="text" id="guestName" name="GuestName" value="@invoice.GuestName" readonly />
+
+                                        <label for="roomNumber">Số phòng</label>
+                                        <input class="form-control" type="text" id="roomNumber" name="RoomNumber" value="@invoice.RoomNumber" readonly />
+
+                                        <label for="invoiceStatus">Ngày checkin</label>
+                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@invoice.InvoiceStatus" readonly />
+
+                                        <label for="invoiceStatus">Ngày checkout</label>
+                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@invoice.InvoiceStatus" readonly />
+
+                                        <label for="invoiceStatus">Tổng phí phòng</label>
+                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@invoice.InvoiceStatus" readonly />
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Dịch vụ đã sử dụng</h5>
+                                        <label for="serviceName">Dịch vụ</label>
+                                        <input class="form-control" type="text" id="serviceName" name="ServiceName"
+                                               value="@invoice.ServiceName.ServiceNameTranslate() - @invoice.ServiceNumber - Giá: @invoice.ServicePrice.ToString("N0") - Thành tiền: @invoice.TotalServiceUsed.ToString("N0")" readonly />
+
+                                        <label for="serviceName">Tổng phí sử dụng dịch vụ</label>
+                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@invoice.ServiceName" readonly />
+
+                                        <label for="serviceName">Tổng hóa đơn</label>
+                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@invoice.ServiceName" readonly />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            }
+        </tbody>
+    </table>
+}

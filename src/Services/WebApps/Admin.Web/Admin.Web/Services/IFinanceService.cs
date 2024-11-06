@@ -4,11 +4,20 @@
     {
         //invoice
         [Post("/finance/invoices")]
-        Task<CreateInvoiceResponse> CreateOrdering(object obj);
+        Task<CreateInvoiceResponse> CreateInvoice(object obj);
+
+        [Get("/finance/invoices/bookingid/{BookingId}")]
+        Task<GetInvoiceByBookingIdResponse> GetInvoiceByBookingId(Guid BookingId);
+        
+        [Get("/finance/invoices")]
+        Task<GetInvoicesResponse> GetInvoices();
 
         //invoicedetail
+        [Get("/finance/invoicedetails")]
+        Task<GetInvoiceDetailsResponse> GetInvoiceDetails();
+
         [Post("/finance/invoicedetails")]
-        Task<CreateInvoiceResponse> Createinvoicedetail(object obj);
+        Task<CreateInvoiceDetailResponse> CreateInvoiceDetail(InvoiceDetail invoiceDetail);
 
         //service
         [Get("/finance/services")]
