@@ -4,7 +4,7 @@
     {
         public void Configure(EntityTypeBuilder<InvoiceDetail> builder)
         {
-            builder.HasKey(o => o.InvoiceId);
+            builder.HasKey(i => i.DetailId);
 
             builder.Property(o => o.ServiceId)
                    .IsRequired();

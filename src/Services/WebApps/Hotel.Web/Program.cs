@@ -1,5 +1,4 @@
-﻿using Hotel.Web.Services;
-
+﻿
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -42,6 +41,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddRazorPages();
 
+//vnpay
 var app = builder.Build();
 app.UseStaticFiles();
 // Configure the HTTP request pipeline.

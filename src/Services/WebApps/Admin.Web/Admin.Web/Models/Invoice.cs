@@ -13,15 +13,24 @@
     public class InvoiceView
     {
         public Guid InvoiceId { get; set; }
+        public DateTime? CheckinDate { get; set; }
+        public DateTime? CheckoutDate { get; set; }
+        public decimal? TotalBooking { get; set; }
         public string GuestName { get; set; }
         public string RoomNumber { get; set; }
+        public List<InvoiceServiceView> InvoiceServiceViews { get; set; }
+        public decimal? TotalServiceUsed { get; set; }
+        public DateTime CreateAt { get; set; }
+        public InvoiceStatus InvoiceStatus { get; set; }
+        public decimal? TotalPrice { get; set; }
+    }
+
+    public class InvoiceServiceView
+    {
         public string ServiceName { get; set; }
         public int ServiceNumber { get; set; }
         public decimal ServicePrice { get; set; }
         public decimal TotalServiceUsed { get; set; }
-        public DateTime CreateAt { get; set; }
-        public InvoiceStatus InvoiceStatus { get; set; }
-        public decimal? TotalPrice { get; set; }
     }
 
     public record GetInvoicesResponse(IEnumerable<Invoice> Invoices);

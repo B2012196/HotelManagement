@@ -58,29 +58,36 @@ else
                                         <input class="form-control" type="text" id="roomNumber" name="RoomNumber" value="@invoice.RoomNumber" readonly />
 
                                         <label for="invoiceStatus">Ngày checkin</label>
-                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@invoice.InvoiceStatus" readonly />
+                                        <input class="form-control" type="date" id="invoiceStatus" name="InvoiceStatus" value="@(invoice.CheckinDate.HasValue ? invoice.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
                                         <label for="invoiceStatus">Ngày checkout</label>
-                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@invoice.InvoiceStatus" readonly />
+                                        <input class="form-control" type="date" id="invoiceStatus" name="InvoiceStatus" value="@(invoice.CheckoutDate.HasValue ? invoice.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
                                         <label for="invoiceStatus">Tổng phí phòng</label>
-                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@invoice.InvoiceStatus" readonly />
+                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@((invoice.TotalBooking.HasValue ? invoice.TotalBooking.Value.ToString("N0") : ""))" readonly /> 
 
                                     </div>
                                     <div class="col-md-6">
                                         <h5>Dịch vụ đã sử dụng</h5>
-                                        <label for="serviceName">Dịch vụ</label>
-                                        <input class="form-control" type="text" id="serviceName" name="ServiceName"
-                                               value="@invoice.ServiceName.ServiceNameTranslate() - @invoice.ServiceNumber - Giá: @invoice.ServicePrice.ToString("N0") - Thành tiền: @invoice.TotalServiceUsed.ToString("N0")" readonly />
+                                        @foreach (var detail in invoice.InvoiceServiceViews)
+                                        {
+                                            <label for="serviceName">Dịch vụ</label>
+                                            <input class="form-control" type="text" id="serviceName" name="ServiceName"
+                                                   value="@detail.ServiceName.ServiceNameTranslate() - @detail.ServiceNumber - Giá: @detail.ServicePrice.ToString("N0") - Thành tiền: @detail.TotalServiceUsed.ToString("N0")" readonly />
+                                        }
 
-                                        <label for="serviceName">Tổng phí sử dụng dịch vụ</label>
-                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@invoice.ServiceName" readonly />
+                                        <label for="totalServiceUsed">Tổng phí sử dụng dịch vụ</label>
+                                        <input class="form-control" type="text" id="totalServiceUsed" name="TotalServiceUsed" value="@((invoice.TotalServiceUsed.HasValue ? invoice.TotalServiceUsed.Value.ToString("N0") : ""))" readonly />
 
                                         <label for="serviceName">Tổng hóa đơn</label>
-                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@invoice.ServiceName" readonly />
+                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@invoice.TotalPrice" readonly />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
+                                    <form method="post" asp-page-handler="PayInvoice">
+                                        <input type="hidden" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
+                                        <button type="submit" class="btn btn-outline-success btn-sm m-2 ml-3">Thanh toán</button>
+                                    </form>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                 </div>
                             </div>

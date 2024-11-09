@@ -1,4 +1,5 @@
 ﻿using Admin.Web.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Admin.Web.Pages
 {
@@ -67,6 +68,9 @@ namespace Admin.Web.Pages
                                 InvoiceId = invoice.InvoiceId,
                                 GuestName = guest.LastName + " " +guest.FirstName,
                                 InvoiceStatus = invoice.InvoiceStatus,
+                                CheckinDate = booking.CheckinDate,
+                                CheckoutDate = booking.CheckoutDate,
+                                TotalBooking = booking.TotalPrice,
                                 TotalPrice = invoice.TotalPrice,
                             };
                             var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
@@ -81,16 +85,26 @@ namespace Admin.Web.Pages
                                     invoiceView.RoomNumber = roomnumber.Number;
                                 }
                             }
-                            var detail = InvoiceDetailList.Where(d => d.InvoiceId == invoice.InvoiceId).ToList();
-                            var service = ServiceList.SingleOrDefault(s => s.ServiceId == detail[0].ServiceId);
-                            invoiceView.ServiceNumber = detail[0].Numberofservice;
-                            if (service != null)
+                            var details = InvoiceDetailList.Where(d => d.InvoiceId == invoice.InvoiceId).ToList();
+                            var invoiceServiceViews = new List<InvoiceServiceView>();
+                            invoiceView.TotalServiceUsed = 0;
+                            foreach (var detail in details)
                             {
-                                invoiceView.ServiceName = service.ServiceName;
-                                invoiceView.ServicePrice = service.ServicePrice;
-                            }
+                                var invoiceServiceView = new InvoiceServiceView();
 
-                            invoiceView.TotalServiceUsed = invoiceView.ServicePrice * invoiceView.ServiceNumber;
+                                invoiceServiceView.ServiceNumber = detail.Numberofservice;
+                                var service = ServiceList.SingleOrDefault(s => s.ServiceId == detail.ServiceId);
+                                if (service != null)
+                                {
+                                    invoiceServiceView.ServiceName = service.ServiceName;
+                                    invoiceServiceView.ServicePrice = service.ServicePrice;
+                                }
+                                invoiceServiceView.TotalServiceUsed = invoiceServiceView.ServicePrice * invoiceServiceView.ServiceNumber;
+                                invoiceView.TotalServiceUsed += invoiceServiceView.TotalServiceUsed;
+                                logger.LogWarning(invoiceView.TotalServiceUsed+""); 
+                                invoiceServiceViews.Add(invoiceServiceView);    
+                            }                                
+                            invoiceView.InvoiceServiceViews = invoiceServiceViews;
 
                             invoiceViews.Add(invoiceView);
                         }
@@ -109,6 +123,36 @@ namespace Admin.Web.Pages
             return Page();  
         }
 
+        public async Task<IActionResult> OnPostPayInvoiceAsync(string InvoiceId)
+        {
+            try
+            {
+                Guid invoiceIdGuid;
+                if (!Guid.TryParse(InvoiceId, out invoiceIdGuid))
+                {
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
+                }
+                Guid paymentMethodId = Guid.Parse("ed82b3a3-69ec-475e-961f-ba1a854d0348");
+                var obj = new
+                {
+                    InvoiceId = invoiceIdGuid,
+                    PaymentMethodId = paymentMethodId
+                };
+
+                var resultCreatePayment = await financeService.CreatePayment(obj);
+                return Redirect(resultCreatePayment.PaymentUrl);
+            }
+            catch (ApiException apiEx)
+            {
+                HandleApiException(apiEx);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching guests: {ex.Message}");
+            }
+            return RedirectToPage("Invoice");
+        }
 
         private void HandleApiException(ApiException apiEx)
         {

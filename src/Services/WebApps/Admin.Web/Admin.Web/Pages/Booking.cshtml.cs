@@ -238,7 +238,7 @@
             {
                 logger.LogError($"Error fetching guests: {ex.Message}");
             }
-            return Page();
+            return RedirectToPage("Booking");
         }
 
         public async Task<IActionResult> OnPostAddBookingAsync(string PhoneNumber, string LastName, string FirstName, string Address, DateTime DateofBirth,

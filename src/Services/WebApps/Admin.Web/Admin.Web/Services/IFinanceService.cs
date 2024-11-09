@@ -31,5 +31,12 @@
 
         [Delete("/finance/services/{ServiceId}")]
         Task<DeleteServiceResponse> DeleteService(Guid ServiceId);
+
+        //payment
+        [Post("/finance/payments")]
+        Task<CreatePaymentResponse> CreatePayment(object obj);
+
+        [Post("/finance/vnpay")]
+        Task<PaymentExecuteResponse> PaymentExecute(PaymentExecuteRequest request);
     }
 }

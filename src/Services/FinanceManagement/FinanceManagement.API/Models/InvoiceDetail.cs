@@ -2,6 +2,7 @@
 {
     public class InvoiceDetail
     {
+        public Guid DetailId { get; set; }
         public Guid InvoiceId { get; set; }
         public Guid ServiceId { get; set; }
         public int Numberofservice { get; set; }

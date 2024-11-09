@@ -1,0 +1,15 @@
+﻿@page
+@model PaymentCallBackModel
+@{
+    ViewData["Title"] = "Kết quả thanh toán";
+}
+<h2>Kết quả Thanh Toán</h2>
+
+@if (Model.IsPaymentSuccessful)
+{
+    <p>Thanh toán thành công! Cảm ơn bạn đã sử dụng dịch vụ.</p>
+}
+else
+{
+    <p>Thanh toán thất bại hoặc không hợp lệ. Vui lòng thử lại.</p>
+}

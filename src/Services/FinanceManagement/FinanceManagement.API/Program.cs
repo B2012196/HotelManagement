@@ -1,4 +1,6 @@
 
+using FinanceManagement.API.Features.VnPay;
+
 var builder = WebApplication.CreateBuilder(args);
 //add services to the container
 var assembly = typeof(Program).Assembly;
@@ -22,6 +24,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //http
 builder.Services.AddHttpClient();
 
+builder.Services.AddHttpContextAccessor();
+
 //exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
@@ -30,6 +34,10 @@ builder.Services.AddMessageBroker(builder.Configuration);
 
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
+
+//vnpay
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
+
 var app = builder.Build();
 
 //configure the HTTP request pipeline 

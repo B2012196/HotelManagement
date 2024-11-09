@@ -15,6 +15,7 @@ namespace FinanceManagement.API.Features.InvoiceDetails.CreateInvoiceDetail
             }
             var invoiceDetail = new InvoiceDetail
             {
+                DetailId = Guid.NewGuid(),
                 InvoiceId = command.InvoiceId,
                 ServiceId = command.ServiceId,
                 Numberofservice = command.Numberofservice,

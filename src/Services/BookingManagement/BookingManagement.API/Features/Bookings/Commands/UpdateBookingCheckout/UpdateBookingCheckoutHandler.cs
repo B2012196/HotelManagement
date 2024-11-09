@@ -33,8 +33,6 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
             {
                 var roomTypeResponse = await response.Content.ReadFromJsonAsync<RoomTypeResponseDTO>();
                 var roomType = roomTypeResponse?.RoomType;
-                //var jsonResponse = await response.Content.ReadAsStringAsync();
-                //logger.LogInformation($"Response JSON: {jsonResponse}");
                 if (roomType != null)
                 {
                     logger.LogInformation("start totalprice");
@@ -58,6 +56,16 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
                         //event BookingCheckoutEvent
                         var eventMessage = eventObj.Adapt<BookingCheckoutEvent>();
                         await publishEndpoint.Publish(eventMessage, cancellationToken);
+
+                        var eventPriceObj = new
+                        {
+                            BookingId = command.BookingId,
+                            TotalPrice = booking.TotalPrice
+                        };
+                        //event InvoiceTotalPrice
+                        var eventMessage2 = eventPriceObj.Adapt<InvoiceTotalPriceEvent>();
+                        await publishEndpoint.Publish(eventMessage2, cancellationToken);
+
 
                         context.Bookings.Update(booking);
                         await context.SaveChangesAsync(cancellationToken);
