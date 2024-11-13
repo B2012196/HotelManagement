@@ -24,6 +24,12 @@ builder.Services.AddRefitClient<IBookingService>()
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
     }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
+builder.Services.AddRefitClient<IFinanceService>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
+    }).AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
 builder.Services.AddRefitClient<IAuthentication>()
     .ConfigureHttpClient(c =>
     {

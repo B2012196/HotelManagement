@@ -8,7 +8,7 @@
             {
                 throw new ArgumentException("Thông tin thanh toán không hợp lệ.");
             }
-            var tick = DateTime.Now.Ticks.ToString();
+            //var tick = DateTime.Now.Ticks.ToString();
 
             var vnpay = new VnPayLibrary();
             vnpay.AddRequestData("vnp_Version", config["VnPay:Version"]!);
@@ -22,7 +22,7 @@
             vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + model.InvoiceId);
             vnpay.AddRequestData("vnp_OrderType", "other");
             vnpay.AddRequestData("vnp_ReturnUrl", config["VnPay:ReturnUrl"]!);
-            vnpay.AddRequestData("vnp_TxnRef", tick);
+            vnpay.AddRequestData("vnp_TxnRef", model.InvoiceId.ToString());
 
             var paymentUrl = vnpay.CreateRequestUrl(config["VnPay:BaseUrl"]!, config["VnPay:HashSecret"]!);
 
@@ -36,7 +36,7 @@
 
             foreach(var (key, value) in collections)
             {
-                if(!string.IsNullOrEmpty(key) && key.StartsWith("Vnp"))
+                if(!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
                 {
                     vnpay.AddResponseData(key, value.ToString());
                     logger.LogWarning("vnpay "+key + " - " + value.ToString());
@@ -44,10 +44,10 @@
             }
 
             // Kiểm tra và chuyển đổi các giá trị an toàn
-            long vnp_InvoiceId = 0;
+            Guid vnp_InvoiceId = Guid.Empty;
             long vnp_TransactionId = 0;
 
-            if (long.TryParse(vnpay.GetResponseData("VnpTxnRef"), out var invoiceId))
+            if (Guid.TryParse(vnpay.GetResponseData("vnp_TxnRef"), out var invoiceId))
             {
                 vnp_InvoiceId = invoiceId;
             }
@@ -57,7 +57,7 @@
                 logger.LogWarning("vnp_TxnRef không có giá trị hợp lệ.");
             }
 
-            if (long.TryParse(vnpay.GetResponseData("VnpTransactionStatus"), out var transactionId))
+            if (long.TryParse(vnpay.GetResponseData("vnp_TransactionStatus"), out var transactionId))
             {
                 vnp_TransactionId = transactionId;
             }
@@ -66,12 +66,14 @@
                 // Log lỗi hoặc xử lý khi không có giá trị hợp lệ
                 logger.LogWarning("vnp_TransactionNo không có giá trị hợp lệ.");
             }
-            var vnp_SecureHash = collections.FirstOrDefault(s => s.Key == "VnpSecureHash").Value;
-            var vnp_ResponseCode = vnpay.GetResponseData("VnpResponseCode");
-            var vnp_InvoiceInfo = vnpay.GetResponseData("VnpInvoiceInfo");
+            var vnp_SecureHash = collections.FirstOrDefault(s => s.Key == "vnp_SecureHash").Value;
+            var vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
+            var vnp_InvoiceInfo = vnpay.GetResponseData("vnp_InvoiceInfo");
 
             logger.LogWarning("HashSecret: " + vnp_SecureHash + "  " + config["VnPay:HashSecret"]!);
+
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, config["VnPay:HashSecret"]!);
+
             logger.LogWarning("checkSignature: " + checkSignature);
             if (!checkSignature)
             {
@@ -86,7 +88,7 @@
                 Success = true,
                 PaymentMethod = "VnPay",
                 InvoiceDescription = vnp_InvoiceInfo,
-                InvoiceId = vnp_InvoiceId.ToString(),
+                InvoiceId = vnp_InvoiceId,
                 TransactionId = vnp_TransactionId.ToString(),
                 Token = vnp_SecureHash,
                 VnPayResponseCode = vnp_ResponseCode,

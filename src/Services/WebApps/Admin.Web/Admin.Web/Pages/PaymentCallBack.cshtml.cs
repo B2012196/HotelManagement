@@ -12,34 +12,34 @@ namespace Admin.Web.Pages
             // Chuyển đổi IQueryCollection từ Request.Query thành Dictionary<string, string>
             var paymentRequest = new PaymentExecuteRequest
             {
-                VnpAmount = Request.Query["vnp_Amount"]!,
-                VnpBankCode = Request.Query["vnp_BankCode"]!,
-                VnpBankTranNo = Request.Query["vnp_BankTranNo"]!,
-                VnpCardType = Request.Query["vnp_CardType"]!,
-                VnpOrderInfo = Request.Query["vnp_OrderInfo"]!,
-                VnpPayDate = Request.Query["vnp_PayDate"]!,
-                VnpResponseCode = Request.Query["vnp_ResponseCode"]!,
-                VnpTmnCode = Request.Query["vnp_TmnCode"]!,
-                VnpTransactionNo = Request.Query["vnp_TransactionNo"]!,
-                VnpTransactionStatus = Request.Query["vnp_TransactionStatus"]!,
-                VnpTxnRef = Request.Query["vnp_TxnRef"]!,
-                VnpSecureHash = Request.Query["vnp_SecureHash"]!
+                vnp_Amount = Request.Query["vnp_Amount"]!,
+                vnp_BankCode = Request.Query["vnp_BankCode"]!,
+                vnp_BankTranNo = Request.Query["vnp_BankTranNo"]!,
+                vnp_CardType = Request.Query["vnp_CardType"]!,
+                vnp_OrderInfo = Request.Query["vnp_OrderInfo"]!,
+                vnp_PayDate = Request.Query["vnp_PayDate"]!,
+                vnp_ResponseCode = Request.Query["vnp_ResponseCode"]!,
+                vnp_TmnCode = Request.Query["vnp_TmnCode"]!,
+                vnp_TransactionNo = Request.Query["vnp_TransactionNo"]!,
+                vnp_TransactionStatus = Request.Query["vnp_TransactionStatus"]!,
+                vnp_TxnRef = Request.Query["vnp_TxnRef"]!,
+                vnp_SecureHash = Request.Query["vnp_SecureHash"]!
             };
 
             // Sử dụng ILogger để log ra các giá trị của paymentRequest
             logger.LogInformation("Payment Request Values:");
-            logger.LogInformation("VnpAmount: {VnpAmount}", paymentRequest.VnpAmount);
-            logger.LogInformation("VnpBankCode: {VnpBankCode}", paymentRequest.VnpBankCode);
-            logger.LogInformation("VnpBankTranNo: {VnpBankTranNo}", paymentRequest.VnpBankTranNo);
-            logger.LogInformation("VnpCardType: {VnpCardType}", paymentRequest.VnpCardType);
-            logger.LogInformation("VnpOrderInfo: {VnpOrderInfo}", paymentRequest.VnpOrderInfo);
-            logger.LogInformation("VnpPayDate: {VnpPayDate}", paymentRequest.VnpPayDate);
-            logger.LogInformation("VnpResponseCode: {VnpResponseCode}", paymentRequest.VnpResponseCode);
-            logger.LogInformation("VnpTmnCode: {VnpTmnCode}", paymentRequest.VnpTmnCode);
-            logger.LogInformation("VnpTransactionNo: {VnpTransactionNo}", paymentRequest.VnpTransactionNo);
-            logger.LogInformation("VnpTransactionStatus: {VnpTransactionStatus}", paymentRequest.VnpTransactionStatus);
-            logger.LogInformation("VnpTxnRef: {VnpTxnRef}", paymentRequest.VnpTxnRef);
-            logger.LogInformation("VnpSecureHash: {VnpSecureHash}", paymentRequest.VnpSecureHash);
+            logger.LogInformation("VnpAmount: {VnpAmount}", paymentRequest.vnp_Amount);
+            logger.LogInformation("VnpBankCode: {VnpBankCode}", paymentRequest.vnp_BankCode);
+            logger.LogInformation("VnpBankTranNo: {VnpBankTranNo}", paymentRequest.vnp_BankTranNo);
+            logger.LogInformation("VnpCardType: {VnpCardType}", paymentRequest.vnp_CardType);
+            logger.LogInformation("VnpOrderInfo: {VnpOrderInfo}", paymentRequest.vnp_OrderInfo);
+            logger.LogInformation("VnpPayDate: {VnpPayDate}", paymentRequest.vnp_PayDate);
+            logger.LogInformation("VnpResponseCode: {VnpResponseCode}", paymentRequest.vnp_ResponseCode);
+            logger.LogInformation("VnpTmnCode: {VnpTmnCode}", paymentRequest.vnp_TmnCode);
+            logger.LogInformation("VnpTransactionNo: {VnpTransactionNo}", paymentRequest.vnp_TransactionNo);
+            logger.LogInformation("VnpTransactionStatus: {VnpTransactionStatus}", paymentRequest.vnp_TransactionStatus);
+            logger.LogInformation("VnpTxnRef: {VnpTxnRef}", paymentRequest.vnp_TxnRef);
+            logger.LogInformation("VnpSecureHash: {VnpSecureHash}", paymentRequest.vnp_SecureHash);
 
             // Gọi FinanceService để xác thực và xử lý kết quả giao dịch
             var response = await financeService.PaymentExecute(paymentRequest);

@@ -7,7 +7,10 @@
         {
             var eventMessage = context.Message;
 
-            await repository.UpdateRoomConfirmStatus(eventMessage.RoomId, context.CancellationToken);
+            foreach(var roomid in eventMessage.RoomIds)
+            {
+                await repository.UpdateRoomConfirmStatus(roomid, context.CancellationToken);
+            }
             //return Task.CompletedTask;
         }
     }

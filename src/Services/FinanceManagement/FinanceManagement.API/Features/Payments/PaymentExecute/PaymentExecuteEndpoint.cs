@@ -2,9 +2,9 @@
 
 namespace FinanceManagement.API.Features.Payments.PaymentExecute
 {
-    public record PaymentExecuteRequest(string VnpAmount, string VnpBankCode, string VnpBankTranNo, string VnpCardType, 
-        string VnpOrderInfo, string VnpPayDate, string VnpResponseCode, string VnpTmnCode, string VnpTransactionNo, 
-        string VnpTransactionStatus, string VnpTxnRef, string VnpSecureHash);
+    public record PaymentExecuteRequest(string vnp_Amount, string vnp_BankCode, string vnp_BankTranNo, string vnp_CardType, 
+        string vnp_OrderInfo, string vnp_PayDate, string vnp_ResponseCode, string vnp_TmnCode, string vnp_TransactionNo, 
+        string vnp_TransactionStatus, string vnp_TxnRef, string vnp_SecureHash);
     public record PaymentExecuteResponse(VnPaymentResponseModel VnPaymentResponseModel);
     public class PaymentExecuteEndpoint(IVnPayService vnPayService, ILogger<PaymentExecuteEndpoint> logger) : ICarterModule
     {
@@ -18,12 +18,12 @@ namespace FinanceManagement.API.Features.Payments.PaymentExecute
                     return Results.Problem("Request là null.", statusCode: StatusCodes.Status500InternalServerError);
                 }
 
-                // Ghi log các thuộc tính bắt đầu bằng "Vnp" trong PaymentExecuteRequest
+                // Ghi log các thuộc tính bắt đầu bằng "vnp_" trong PaymentExecuteRequest
                 var properties = typeof(PaymentExecuteRequest).GetProperties();
                 foreach (var prop in properties)
                 {
                     var value = prop.GetValue(request)?.ToString();
-                    if (!string.IsNullOrEmpty(prop.Name) && prop.Name.StartsWith("Vnp") && value != null)
+                    if (!string.IsNullOrEmpty(prop.Name) && prop.Name.StartsWith("vnp_") && value != null)
                     {
                         logger.LogWarning("Key: {Key}, Value: {Value}", prop.Name, value);
                     }

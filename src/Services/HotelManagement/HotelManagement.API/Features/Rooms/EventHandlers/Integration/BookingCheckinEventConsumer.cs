@@ -6,7 +6,10 @@ namespace HotelManagement.API.Features.Rooms.EventHandlers.Integration
         public async Task Consume(ConsumeContext<BookingCheckinEvent> context)
         {
             var eventMessage = context.Message;
-            await repository.UpdateRoomCheckinStatus(eventMessage.RoomId, context.CancellationToken);
+            foreach(var roomid in eventMessage.RoomIds)
+            {
+                await repository.UpdateRoomCheckinStatus(roomid, context.CancellationToken);
+            }
         }
     }
 }

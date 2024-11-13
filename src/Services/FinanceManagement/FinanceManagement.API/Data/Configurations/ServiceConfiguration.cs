@@ -9,8 +9,7 @@
             builder.Property(s => s.ServiceName)
                    .IsRequired();
 
-            builder.Property(o => o.ServicePrice)
-               .HasColumnType("decimal(12,2)");
+            builder.Property(o => o.ServicePrice);
         }
     }
 }

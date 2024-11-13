@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FinanceManagement.API.Features.VnPay
 {
-    public class VnPayLibrary
+    public class VnPayLibrary()
     {
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
@@ -61,9 +61,10 @@ namespace FinanceManagement.API.Features.VnPay
         #region Response process
         public bool ValidateSignature(string inputHash, string secretKey)
         {
-            var rspRaw = GetResponseData();
+            var rspRaw = GetResponseData(); // Hàm này trả về dữ liệu phản hồi dưới dạng một chuỗi đã được mã hóa URL.
             var myChecksum = Utils.HmacSHA512(secretKey, rspRaw);
             return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
+
         }
 
         private string GetResponseData()
@@ -74,9 +75,9 @@ namespace FinanceManagement.API.Features.VnPay
                 _responseData.Remove("vnp_SecureHashType");
             }
 
-            if (_responseData.ContainsKey("VnpSecureHash"))
+            if (_responseData.ContainsKey("vnp_SecureHash"))
             {
-                _responseData.Remove("VnpSecureHash");
+                _responseData.Remove("vnp_SecureHash");
             }
 
             foreach (var (key, value) in _responseData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
@@ -90,6 +91,7 @@ namespace FinanceManagement.API.Features.VnPay
                 data.Remove(data.Length - 1, 1);
             }
 
+            Console.WriteLine("data: "+data.ToString());
             return data.ToString();
         }
         #endregion
@@ -111,7 +113,7 @@ namespace FinanceManagement.API.Features.VnPay
                     hash.Append(theByte.ToString("x2"));
                 }
             }
-
+            Console.WriteLine("hmac: " + hash.ToString());
             return hash.ToString();
         }
 

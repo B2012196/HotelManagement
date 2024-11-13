@@ -1,10 +1,8 @@
-﻿using BookingManagement.API.Features.BookingRooms.CreateBookingRoom;
-
-namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
+﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
 {
-    public record UpdateBookingConfirmRequest(Guid BookingId, Guid RoomId);
+    public record UpdateBookingConfirmRequest(Guid BookingId, List<Guid> RoomIds);
     public record UpdateBookingConfirmResponse(bool IsSuccess);
-    public record CreateBookingRoomResponse(bool IsSuccess, Guid RoomId);
+    public record CreateBookingRoomResponse(bool IsSuccess, List<Guid> RoomIds);
     public class UpdateBookingConfirmEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)

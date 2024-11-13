@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Invoices.CreateInvoice
 {
-    public record CreateInvoiceRequest(Guid BookingId, Guid GuestId);
+    public record CreateInvoiceRequest(Guid BookingId, Guid GuestId, bool IsStatus);
     public record CreateInvoiceResponse(Guid InvoiceId);
     public class CreateInvoiceEndpoint : ICarterModule
     {

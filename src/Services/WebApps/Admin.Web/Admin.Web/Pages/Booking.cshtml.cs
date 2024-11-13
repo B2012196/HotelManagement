@@ -1,4 +1,6 @@
-﻿namespace Admin.Web.Pages
+﻿using System.Net.NetworkInformation;
+
+namespace Admin.Web.Pages
 {
     public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
         IFinanceService financeService,
@@ -78,15 +80,18 @@
 
                     logger.LogWarning(booking.BookingId + "");
 
-                    var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
+                    var bookingrooms = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
                     if (booking.BookingStatus != BookingStatus.Pending)
                     {
-                        logger.LogWarning(bookingroom[0].RoomId + "");
-                        var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
-
-                        if (roomnumber != null)
+                        bookingView.RoomNumber = "";
+                        foreach (var bookroom in bookingrooms)
                         {
-                            bookingView.RoomNumber = roomnumber.Number;
+                            var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookroom.RoomId);
+
+                            if (roomnumber != null)
+                            {
+                                bookingView.RoomNumber += roomnumber.Number + " ";
+                            }
                         }
                     }
 
@@ -105,22 +110,14 @@
             return Page();
         }
 
-        public async Task<IActionResult> OnPostConfirmBookingAsync(string BookingId, string RoomId)
+        public async Task<IActionResult> OnPostConfirmBookingAsync(Guid BookingId, List<Guid> RoomIds)
         {
             try
             {
-                Guid bookingIdGuid;
-                Guid roomIdGuid;
-                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(RoomId, out roomIdGuid))
-                {
-                    logger.LogInformation("Dữ liệu không hợp lệ.");
-                    return Page();
-                }
-
                 var confirm = new
                 {
-                    BookingId = bookingIdGuid,
-                    RoomId = roomIdGuid
+                    BookingId = BookingId,
+                    RoomIds = RoomIds
                 };
 
                 var resultconfirm = await bookingService.UpdateBookingConfirm(confirm);
@@ -131,41 +128,40 @@
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
 
             return RedirectToPage("Booking");
         }
 
-        public async Task<IActionResult> OnPostCheckinBookingAsync(string BookingId, string GuestId)
+        public async Task<IActionResult> OnPostCheckinBookingAsync(Guid BookingId, Guid GuestId)
         {
             try
             {
-                Guid bookingIdGuid, guestIdGuid;
-                if (!Guid.TryParse(BookingId, out bookingIdGuid) || !Guid.TryParse(GuestId, out guestIdGuid))
-                {
-                    logger.LogInformation("Dữ liệu không hợp lệ.");
-                    return Page();
-                }
-
                 var checkin = new
                 {
-                    BookingId = bookingIdGuid
+                    BookingId = BookingId
                 };
 
                 var resultconfirm = await bookingService.UpdateBookingCheckin(checkin);
 
-                var objCreateOrdering = new
-                {
-                    BookingId = bookingIdGuid,
-                    GuestId = guestIdGuid
-                };
-
-                var resultCreateOrdering = await financeService.CreateInvoice(objCreateOrdering);
+                //kiem tra co invoice chua, neu co khong can tao invoice, dua vao get by BookingId
+                var resultGetInvByBook = await financeService.GetInvoiceByBookingId(BookingId);
 
             }
             catch(ApiException apiEx)
             {
+                if(apiEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    var objCreateInvoice = new
+                    {
+                        BookingId = BookingId,
+                        GuestId = GuestId,
+                        IsStatus = false
+                    };
+                    //create invoice
+                    var resultCreateInvoice = await financeService.CreateInvoice(objCreateInvoice);
+                }
                 HandleApiException(apiEx);
             }
             catch (Exception ex)

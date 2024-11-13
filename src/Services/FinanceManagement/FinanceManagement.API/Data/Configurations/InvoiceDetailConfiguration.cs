@@ -12,8 +12,7 @@
             builder.Property(o => o.Numberofservice)
                    .IsRequired();
 
-            builder.Property(o => o.TotalPrice)
-               .HasColumnType("decimal(12,2)");
+            builder.Property(o => o.TotalPrice);
 
             builder.HasOne(od => od.Invoice)
                    .WithMany(o => o.InvoiceDetails)

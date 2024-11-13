@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Invoices.DeleteInvoice
 {
-    public record DeleteInvoiceResponse(bool IsSuccess);
+    public record DeleteInvoiceResponse(bool IsSuccess, Guid BookingId);
     public class DeleteInvoiceEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)

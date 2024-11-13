@@ -3,6 +3,6 @@
     public record BookingCheckoutEvent : IntegrationEvent
     {
         public Guid BookingId { get; set; }
-        public Guid RoomId { get; set; }
+        public List<Guid> RoomIds { get; set; }
     }
 }

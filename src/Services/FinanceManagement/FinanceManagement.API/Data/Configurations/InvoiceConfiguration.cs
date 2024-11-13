@@ -16,8 +16,7 @@
 
             builder.Property(o => o.InvoiceStatus).HasConversion<int>().IsRequired();
 
-            builder.Property(o => o.TotalPrice)
-               .HasColumnType("decimal(12,2)");
+            builder.Property(o => o.TotalPrice);
         }
     }
 }

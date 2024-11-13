@@ -9,5 +9,5 @@
         public DateTime CreateAt { get; set; }
     }
 
-    public record CreatePaymentResponse(Guid PaymentId, string PaymentUrl);
+    public record CreatePaymentResponse(string PaymentUrl, Guid PaymentId);
 }

@@ -52,7 +52,6 @@ else
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <!-- Form to choose available room -->
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
@@ -137,11 +136,10 @@ else
                                     <div class="form-group">
                                         <input type="hidden" id="bookingId" name="BookingId" required value="@booking.BookingId" hidden readonly>
                                         <label for="room">Số phòng:</label>
-                                        @for (var number = 1; number <= booking.RoomQuantity; number++)
+                                        @for (var number = 0; number < booking.RoomQuantity; number++)
                                         {
                                             <br />
-                                            <select class="form-control" id="room" name="RoomId">
-                                                @* loop through available rooms  *@
+                                            <select class="form-control" id="room_@number" name="RoomIds[]">
                                                 @foreach (var room in Model.RoomList)
                                                 {
                                                     @if (booking.TypeId == room.TypeId && room.StatusId == Guid.Parse("3ad2b5c4-cd33-42f1-a030-53a0a213f791"))

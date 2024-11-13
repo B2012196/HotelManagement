@@ -9,7 +9,15 @@ html, body {
     margin: 0;
     padding: 0;
 }
-
+.navbar-dark {
+    color: rgb(0 0 0);
+}
+.navbar-custom-text {
+    color: rgb(0 0 0);
+}
+.bg-light-custom {
+    background-color: #b6edba;
+}
 body {
     display: flex;
     flex-direction: column;

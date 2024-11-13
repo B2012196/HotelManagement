@@ -1,10 +1,6 @@
-﻿using BuildingBlocks.Messaging.Events;
-using MassTransit;
-
-namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
+﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
 {
-    public record UpdateBookingConfirmCommand
-        (Guid BookingId, Guid RoomId) : ICommand<UpdateBookingConfirmResult>;
+    public record UpdateBookingConfirmCommand(Guid BookingId, List<Guid> RoomIds) : ICommand<UpdateBookingConfirmResult>;
     public record UpdateBookingConfirmResult(bool IsSuccess);
 
     public class UpdateBookingConfirmValidator : AbstractValidator<UpdateBookingConfirmCommand>
@@ -12,7 +8,6 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingConfirm
         public UpdateBookingConfirmValidator()
         {
             RuleFor(x => x.BookingId).NotEmpty().WithMessage("BookingId is required.");
-            RuleFor(x => x.RoomId).NotEmpty().WithMessage("RoomId is required.");
         }
     }
     public class UpdateBookingConfirmHandler(ApplicationDbContext context, IPublishEndpoint publishEndpoint)

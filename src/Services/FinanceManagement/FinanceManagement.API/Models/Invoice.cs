@@ -7,7 +7,7 @@
         public Guid GuestId { get; set;}
         public DateTime CreateAt { get; set; }
         public InvoiceStatus InvoiceStatus { get; set; }
-        public decimal? TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
 
         [JsonIgnore]
         public ICollection<InvoiceDetail> InvoiceDetails { get; set; }

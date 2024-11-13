@@ -14,8 +14,7 @@
 
             builder.Property(p => p.CreateAt).HasColumnType("timestamp without time zone").IsRequired();
 
-            builder.Property(p => p.Amount)
-               .HasColumnType("decimal(12,2)");
+            builder.Property(p => p.Amount);
 
             builder.HasOne(p => p.Invoice)
                    .WithMany(o => o.Payments)

@@ -22,19 +22,25 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
             {
                 throw new BookingNotFoundException(command.BookingId);
             }
-
+            //change date and status
             booking.CheckinDate = DateTime.Now;
             booking.BookingStatus = BookingStatus.CheckedIn;
+
 
             var bookingrooms = await context.BookingRooms.Where(r => r.BookingId == command.BookingId).ToListAsync(cancellationToken);
             if (bookingrooms.Any())
             {
-                var roomId = bookingrooms[0].RoomId;
+                List<Guid> RoomIds = new List<Guid>();
+                foreach (var bookroom in bookingrooms)
+                {
+                    RoomIds.Add(bookroom.RoomId);
+                }
                 var eventObj = new
                 {
                     BookingId = command.BookingId,
-                    RoomId = roomId
+                    RoomIds = RoomIds
                 };
+
                 //event BookingCheckinEvent
                 var eventMessage = eventObj.Adapt<BookingCheckinEvent>();
                 await publishEndpoint.Publish(eventMessage, cancellationToken);

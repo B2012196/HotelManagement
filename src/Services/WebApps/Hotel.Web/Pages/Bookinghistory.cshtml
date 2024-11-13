@@ -42,7 +42,7 @@ else
                 </tr>
 
                 <div class="modal fade" id="roomDetailSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="roomDetailSelectionModal" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin đặt phòng</h5>
@@ -52,36 +52,40 @@ else
                             </div>
                             <div class="modal-body">
                                 <!-- Form to choose available room -->
-                                <div class="form-group">
-                                    <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
 
-                                    <label for="guestFirstName">Họ Tên</label>
-                                    <input class="form-control" type="text" id="guestLastName" name="GuestLastName" value="@booking.GuestLastName @booking.GuestFirstName" readonly />
+                                        <label for="guestFirstName">Họ Tên</label>
+                                        <input class="form-control" type="text" id="guestLastName" name="GuestLastName" value="@booking.GuestLastName @booking.GuestFirstName" readonly />
 
-                                    <label for="typeName">Loại phòng đặt</label>
-                                    <input class="form-control" type="text" id="typeName" name="TypeName" value="@booking.TypeName" readonly />
+                                        <label for="typeName">Loại phòng đặt</label>
+                                        <input class="form-control" type="text" id="typeName" name="TypeName" value="@booking.TypeName" readonly />
 
-                                    <label for="expectedCheckinDate">Ngày check-in dự kiến</label>
-                                    <input class="form-control" type="date" id="expectedCheckinDate" name="ExpectedCheckinDate" value="@booking.ExpectedCheckinDate.ToString("yyyy-MM-dd")" readonly />
+                                        <label for="expectedCheckinDate">Ngày check-in dự kiến</label>
+                                        <input class="form-control" type="date" id="expectedCheckinDate" name="ExpectedCheckinDate" value="@booking.ExpectedCheckinDate.ToString("yyyy-MM-dd")" readonly />
 
-                                    <label for="expectedCheckoutDate">Ngày check-out dự kiến</label>
-                                    <input class="form-control" type="date" id="expectedCheckoutDate" name="ExpectedCheckoutDate" value="@booking.ExpectedCheckoutDate.ToString("yyyy-MM-dd")" readonly />
+                                        <label for="expectedCheckoutDate">Ngày check-out dự kiến</label>
+                                        <input class="form-control" type="date" id="expectedCheckoutDate" name="ExpectedCheckoutDate" value="@booking.ExpectedCheckoutDate.ToString("yyyy-MM-dd")" readonly />
+                                    </div>
 
-                                    <label for="checkinDate">Ngày check-in thực tế</label>
-                                    <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                                    <div class="col-md-6">
+                                        <label for="checkinDate">Ngày check-in thực tế</label>
+                                        <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
-                                    <label for="checkoutDate">Ngày check-out thực tế</label>
-                                    <input class="form-control" type="date" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                                        <label for="checkoutDate">Ngày check-out thực tế</label>
+                                        <input class="form-control" type="date" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
-                                    <label for="totalPrice">Tổng tiền</label>
-                                    <input class="form-control" type="number" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
+                                        <label for="totalPrice">Tổng tiền</label>
+                                        <input class="form-control" type="number" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
 
-                                    <label for="roomQuantity">Số phòng đặt</label>
-                                    <input class="form-control" type="number" id="roomQuantity" name="RoomQuantity" value="@booking.RoomQuantity" readonly />
+                                        <label for="roomQuantity">Số phòng đặt</label>
+                                        <input class="form-control" type="number" id="roomQuantity" name="RoomQuantity" value="@booking.RoomQuantity" readonly />
 
-                                    <label for="bookingStatus">Trạng thái</label>
-                                    <input class="form-control" type="text" id="bookingStatus" name="BookingStatus" value="@booking.BookingStatus.GetDisplayName()" readonly />
+                                        <label for="bookingStatus">Trạng thái</label>
+                                        <input class="form-control" type="text" id="bookingStatus" name="BookingStatus" value="@booking.BookingStatus.GetDisplayName()" readonly />
 
+                                    </div>
 
                                 </div>
                                 <div class="modal-footer">

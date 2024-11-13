@@ -13,7 +13,8 @@ global using BuildingBlocks.Exceptions;
 global using BuildingBlocks.Behaviors;
 global using FluentValidation;
 global using MassTransit;
-
+global using BookingManagement.API.Features.BookingRooms.CreateBookingRoom;
+global using BuildingBlocks.Messaging.Events;
 
 
 

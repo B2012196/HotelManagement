@@ -69,12 +69,15 @@
                                         TotalPrice = booking.TotalPrice,
                                     };
 
-                                    var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
-
-                                    var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
-                                    if (roomnumber != null)
+                                    var bookingrooms = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
+                                    bookingView.RoomNumber = "";
+                                    foreach (var bookroom in bookingrooms)
                                     {
-                                        bookingView.RoomNumber = roomnumber.Number;
+                                        var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookroom.RoomId);
+                                        if(roomnumber != null)
+                                        {
+                                            bookingView.RoomNumber += roomnumber.Number + " ";
+                                        }
                                     }
 
                                     bookingViewList.Add(bookingView);

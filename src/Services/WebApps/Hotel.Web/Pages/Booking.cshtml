@@ -39,6 +39,10 @@ else
                                 <input readonly type="text" class="form-control" id="RoomType" name="RoomType" value="@Model.RoomTypeName" />
                             </div>
                             <div class="form-group">
+                                <label for="checkInDate">Giá phòng</label>
+                                <input readonly type="text" class="form-control" id="roomTypePrice" name="RoomTypePrice" value="@Model.RoomTypeModel.PricePerNight.ToString("N0")" />
+                            </div>
+                            <div class="form-group">
                                 <label for="checkInDate">Ngày nhận phòng</label>
                                 <input readonly type="date" class="form-control" id="ExpectedCheckInDate" name="ExpectedCheckInDate" value="@Model.ExpectedCheckInDate.ToString("yyyy-MM-dd")" />
                             </div>
@@ -47,8 +51,12 @@ else
                                 <input readonly type="date" class="form-control" id="ExpectedCheckOutDate" name="ExpectedCheckOutDate" value="@Model.ExpectedCheckOutDate.ToString("yyyy-MM-dd")" />
                             </div>
                             <div class="form-group">
-                                <label for="checkInDate">Số phòng</label>
+                                <label for="checkInDate">Số lượng phòng đặt</label>
                                 <input readonly type="number" class="form-control" id="RoomQuantity" name="RoomQuantity" value="@Model.RoomQuantity" />
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Tổng thanh toán</label>
+                                <input readonly type="text" class="form-control" id="price" name="Price" value="@Model.Price.ToString("N0")" />
                             </div>
                             <button type="submit" class="btn btn-success">Xác nhận đặt phòng</button>
                         </form>

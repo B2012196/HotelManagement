@@ -1,4 +1,4 @@
-﻿namespace Admin.Web.Models
+﻿namespace Hotel.Web.Models
 {
     public class PaymentExecuteRequest
     {

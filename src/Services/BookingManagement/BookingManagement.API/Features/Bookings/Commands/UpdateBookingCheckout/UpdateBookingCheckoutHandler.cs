@@ -26,6 +26,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
             }
             //update checkout
             booking.CheckoutDate = DateTime.Now;
+
             //request price and update statusbooking
             var client = httpClientFactory.CreateClient();
             var response = await client.GetAsync($"http://hotelmanagement.api:8080/hotels/roomtypes/id/{booking.TypeId}");
@@ -47,11 +48,15 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
                     var bookingrooms = await context.BookingRooms.Where(r => r.BookingId == command.BookingId).ToListAsync(cancellationToken);
                     if (bookingrooms.Any())
                     {
-                        var roomId = bookingrooms[0].RoomId;
+                        List<Guid> RoomIds = new List<Guid>();
+                        foreach (var bookroom in bookingrooms)
+                        {
+                            RoomIds.Add(bookroom.RoomId);
+                        }
                         var eventObj = new
                         {
                             BookingId = command.BookingId,
-                            RoomId = roomId
+                            RoomIds = RoomIds
                         };
                         //event BookingCheckoutEvent
                         var eventMessage = eventObj.Adapt<BookingCheckoutEvent>();
@@ -62,6 +67,8 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
                             BookingId = command.BookingId,
                             TotalPrice = booking.TotalPrice
                         };
+
+
                         //event InvoiceTotalPrice
                         var eventMessage2 = eventPriceObj.Adapt<InvoiceTotalPriceEvent>();
                         await publishEndpoint.Publish(eventMessage2, cancellationToken);

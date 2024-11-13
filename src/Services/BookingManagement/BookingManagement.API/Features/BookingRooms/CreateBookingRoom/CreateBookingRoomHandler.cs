@@ -1,22 +1,24 @@
 ﻿namespace BookingManagement.API.Features.BookingRooms.CreateBookingRoom
 {
-    public record CreateBookingRoomCommand(Guid BookingId, Guid RoomId) : ICommand<CreateBookingRoomResult>;
-    public record CreateBookingRoomResult(bool IsSuccess, Guid RoomId);
+    public record CreateBookingRoomCommand(Guid BookingId, List<Guid> RoomIds) : ICommand<CreateBookingRoomResult>;
+    public record CreateBookingRoomResult(bool IsSuccess, List<Guid> RoomIds);
     public class CreateBookingRoomHandler(ApplicationDbContext context)
         : ICommandHandler<CreateBookingRoomCommand, CreateBookingRoomResult>
     {
         public async Task<CreateBookingRoomResult> Handle(CreateBookingRoomCommand command, CancellationToken cancellationToken)
         {
-            var bookingroom = new BookingRoom
+            foreach(var roomId in command.RoomIds)
             {
-                BookingId = command.BookingId,
-                RoomId = command.RoomId
-            };
-
-            context.BookingRooms.Add(bookingroom);
+                var bookingroom = new BookingRoom
+                {
+                    BookingId = command.BookingId,
+                    RoomId = roomId,
+                };
+                context.BookingRooms.Add(bookingroom);
+            }
             await context.SaveChangesAsync(cancellationToken);
 
-            return new CreateBookingRoomResult(true, bookingroom.RoomId);
+            return new CreateBookingRoomResult(true, command.RoomIds);
 
         }
     }

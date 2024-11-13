@@ -1,6 +1,6 @@
 ﻿namespace FinanceManagement.API.Features.Invoices.CreateInvoice
 {
-    public record CreateInvoiceCommand(Guid BookingId, Guid GuestId) : ICommand<CreateInvoiceResult>;
+    public record CreateInvoiceCommand(Guid BookingId, Guid GuestId, bool IsStatus) : ICommand<CreateInvoiceResult>;
     public record CreateInvoiceResult(Guid InvoiceId);
     public class CreateInvoiceHandler(ApplicationDbContext context)
         : ICommandHandler<CreateInvoiceCommand, CreateInvoiceResult>
@@ -13,9 +13,16 @@
                 BookingId = command.BookingId,
                 GuestId = command.GuestId,
                 CreateAt = DateTime.Now,
-                InvoiceStatus = InvoiceStatus.Pending,
                 TotalPrice = 0,
             };
+            if(command.IsStatus)
+            {
+                invoice.InvoiceStatus = InvoiceStatus.PartiallyPaid;
+            }
+            else
+            {
+                invoice.InvoiceStatus = InvoiceStatus.Pending;
+            }
 
             context.Invoices.Add(invoice);
             await context.SaveChangesAsync(cancellationToken);

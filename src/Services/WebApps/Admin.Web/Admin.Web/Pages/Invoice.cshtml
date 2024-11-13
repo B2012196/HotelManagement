@@ -27,7 +27,7 @@ else
                 <tr>
                     <td>@invoice.GuestName</td>
                     <td>@invoice.RoomNumber</td>
-                    <td>@invoice.InvoiceStatus</td>
+                    <td>@invoice.InvoiceStatus.GetDisplayName()</td>
                     <td>
                         <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#invoiceDetailSelectionModal-@invoice.InvoiceId">
                             Chi tiết
@@ -80,13 +80,14 @@ else
                                         <input class="form-control" type="text" id="totalServiceUsed" name="TotalServiceUsed" value="@((invoice.TotalServiceUsed.HasValue ? invoice.TotalServiceUsed.Value.ToString("N0") : ""))" readonly />
 
                                         <label for="serviceName">Tổng hóa đơn</label>
-                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@invoice.TotalPrice" readonly />
+                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@((invoice.TotalPrice.HasValue ? invoice.TotalPrice.Value.ToString("N0") : ""))" readonly />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <form method="post" asp-page-handler="PayInvoice">
                                         <input type="hidden" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
-                                        <button type="submit" class="btn btn-outline-success btn-sm m-2 ml-3">Thanh toán</button>
+                                        <input type="hidden" name="GuestName" value="@invoice.GuestName" hidden readonly />
+                                        <button type="submit" class="btn btn-outline-success m-2 ml-3">Thanh toán</button>
                                     </form>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                 </div>

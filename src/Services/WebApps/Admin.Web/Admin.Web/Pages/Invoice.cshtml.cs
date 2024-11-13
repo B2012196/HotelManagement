@@ -123,7 +123,7 @@ namespace Admin.Web.Pages
             return Page();  
         }
 
-        public async Task<IActionResult> OnPostPayInvoiceAsync(string InvoiceId)
+        public async Task<IActionResult> OnPostPayInvoiceAsync(string InvoiceId, string GuestName)
         {
             try
             {
@@ -137,7 +137,8 @@ namespace Admin.Web.Pages
                 var obj = new
                 {
                     InvoiceId = invoiceIdGuid,
-                    PaymentMethodId = paymentMethodId
+                    PaymentMethodId = paymentMethodId,
+                    FullName = GuestName,
                 };
 
                 var resultCreatePayment = await financeService.CreatePayment(obj);

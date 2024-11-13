@@ -1,0 +1,83 @@
+﻿@page "/admin/statistics"
+@model StatisticsModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+@if (TempData["ErrorApiException"] != null)
+{
+    <br />
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorApiException"]
+    </div>
+}
+else
+{
+    <h4>Doanh thu theo ngày</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tổng số lượng phòng đã đặt</th>
+                <th>Tổng doanh thu</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    @* <canvas id="myBarChart" width="400" height="200"></canvas> *@
+    <h4>Doanh thu theo tháng</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tổng số lượng phòng đã đặt</th>
+                <th>Tổng doanh thu</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <h4>Doanh thu theo năm</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tổng số lượng phòng đã đặt</th>
+                <th>Tổng doanh thu</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Lấy dữ liệu từ model Razor
+        const labels = @Html.Raw(Json.Serialize(Model.Statistics.Labels));
+        const data = @Html.Raw(Json.Serialize(Model.Statistics.Data));
+
+        // Tạo biểu đồ
+        const ctx = document.getElementById('myBarChart').getContext('2d');
+        const myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
