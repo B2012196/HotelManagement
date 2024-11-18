@@ -5,48 +5,61 @@
         public Guest Guest { get; set; } = new Guest();
         public async Task<IActionResult> OnGetAsync()
         {
-
-            var token = HttpContext.Session.GetString("AccessToken");
-            if (token != null)
+            try
             {
-                string userId = GetUserIdFromToken(token);
-                if (userId != null)
+                var token = HttpContext.Session.GetString("AccessToken");
+                if (token != null)
                 {
-                    var resultstaff = await guestService.GetGuestByUserId(Guid.Parse(userId));
-                    if (resultstaff != null)
+                    string userId = GetUserIdFromToken(token);
+                    if (userId != null)
                     {
+                        var resultstaff = await guestService.GetGuestByUserId(Guid.Parse(userId));
                         Guest = resultstaff.Guest;
                     }
-                }
-                
-            }
 
+                }
+            }
+            catch (ApiException apiEx)
+            {
+                HandleApiException(apiEx);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error: {ex.Message}");
+            }
             return Page();
         }
 
         public async Task<IActionResult> OnPostUpdateGuestAsync(string GuestId, string LastName, string FirstName, DateTime DateofBirst, string Address)
         {
-            Guid guestIdGuid;
-            if (!Guid.TryParse(GuestId, out guestIdGuid))
+            try
             {
-                ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
-                logger.LogInformation("Dữ liệu không hợp lệ.");
-                return Page();
-            }
+                Guid guestIdGuid;
+                if (!Guid.TryParse(GuestId, out guestIdGuid))
+                {
+                    ModelState.AddModelError(string.Empty, "Dữ liệu không hợp lệ.");
+                    logger.LogInformation("Dữ liệu không hợp lệ.");
+                    return Page();
+                }
 
-            var guest = new Guest
+                var guest = new Guest
+                {
+                    GuestId = guestIdGuid,
+                    LastName = LastName,
+                    FirstName = FirstName,
+                    DateofBirst = DateofBirst,
+                    Address = Address
+                };
+                Console.WriteLine(guest.DateofBirst);
+                var resultUpdateGuest = await guestService.UpdateGuest(guest);
+            }
+            catch (ApiException apiEx)
             {
-                GuestId = guestIdGuid,
-                LastName = LastName,
-                FirstName = FirstName,
-                DateofBirst = DateofBirst,
-                Address = Address
-            };
-            Console.WriteLine(guest.DateofBirst);
-            var resultUpdateGuest = await guestService.UpdateGuest(guest);
-            if (!resultUpdateGuest.IsSuccess)
+                HandleApiException(apiEx);
+            }
+            catch (Exception ex)
             {
-                logger.LogInformation("Error: Cannot update the guest");
+                logger.LogError($"Error: {ex.Message}");
             }
 
             return RedirectToPage("Account");
@@ -55,35 +68,41 @@
 
         public async Task<IActionResult> OnPostUpdatePasswordAsync(string password, string newPassword, string newPasswordAgain)
         {
-            if(newPassword != newPasswordAgain)
+            try
             {
-                logger.LogInformation("Error: New password and re-entered password are not the same");
-            }
-            else
-            {
-                var token = HttpContext.Session.GetString("AccessToken");
-                if (token != null)
+                if (newPassword != newPasswordAgain)
                 {
-                    string userId = GetUserIdFromToken(token);
-                    if (userId != null)
+                    logger.LogInformation("Error: New password and re-entered password are not the same");
+                }
+                else
+                {
+                    var token = HttpContext.Session.GetString("AccessToken");
+                    if (token != null)
                     {
-
-                        var user = new
+                        string userId = GetUserIdFromToken(token);
+                        if (userId != null)
                         {
-                            UserId = Guid.Parse(userId),
-                            Password = password,
-                            NewPassword = newPassword
-                        };
-                        var resultPassword = await authentication.UpdatePassword(user);
 
-                        if (!resultPassword.IsSuccess)
-                        {
-                            logger.LogInformation("Error: Cannot update the password");
+                            var user = new
+                            {
+                                UserId = Guid.Parse(userId),
+                                Password = password,
+                                NewPassword = newPassword
+                            };
+                            var resultPassword = await authentication.UpdatePassword(user);
                         }
                     }
                 }
             }
-            
+            catch (ApiException apiEx)
+            {
+                HandleApiException(apiEx);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error: {ex.Message}");
+            }
+
             return RedirectToPage("Account");
         }
 
@@ -101,6 +120,32 @@
             }
 
             return null; // Nếu không tìm thấy claim userid
+        }
+
+        private void HandleApiException(ApiException apiEx)
+        {
+            switch (apiEx.StatusCode)
+            {
+                case System.Net.HttpStatusCode.BadRequest:
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                    break;
+
+                case System.Net.HttpStatusCode.Unauthorized:
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                    break;
+
+                case System.Net.HttpStatusCode.Forbidden:
+                    Console.WriteLine("Forbidden: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                    break;
+
+                default:
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                    break;
+            }
         }
     }
 }

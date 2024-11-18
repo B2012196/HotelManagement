@@ -105,7 +105,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return Page();
         }
@@ -166,7 +166,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
 
 
@@ -197,10 +197,10 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
 
-            return RedirectToPage("Booking");
+            return RedirectToPage("Invoice");
         }
 
         public async Task<IActionResult> OnPostAddServiceAsync(string BookingId, string ServiceId, int ServiceNumber)
@@ -232,7 +232,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Booking");
         }

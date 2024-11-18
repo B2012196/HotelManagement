@@ -62,6 +62,28 @@ namespace HotelManagement.API.Data.Migrations
                     b.ToTable("Hotels");
                 });
 
+            modelBuilder.Entity("HotelManagement.API.Models.Image", b =>
+                {
+                    b.Property<Guid>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Data")
+                        .HasColumnType("bytea");
+
+                    b.Property<Guid>("RoomTypeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("RoomTypeId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("HotelManagement.API.Models.Room", b =>
                 {
                     b.Property<Guid>("RoomId")
@@ -122,12 +144,6 @@ namespace HotelManagement.API.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("ImageContentType")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -139,6 +155,17 @@ namespace HotelManagement.API.Data.Migrations
                     b.HasKey("TypeId");
 
                     b.ToTable("RoomTypes");
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.Image", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.RoomType", "RoomType")
+                        .WithMany("Images")
+                        .HasForeignKey("RoomTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoomType");
                 });
 
             modelBuilder.Entity("HotelManagement.API.Models.Room", b =>
@@ -180,6 +207,8 @@ namespace HotelManagement.API.Data.Migrations
 
             modelBuilder.Entity("HotelManagement.API.Models.RoomType", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618

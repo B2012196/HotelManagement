@@ -8,17 +8,33 @@ namespace Hotel.Web.Pages
     {
         public IEnumerable<HotelModel> HotelList { get; set; } = new List<HotelModel>();
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
+        public IEnumerable<Image> ImageList { get; set; } = new List<Image>();
         public async Task<IActionResult> OnGetAsync()
         {
-            // Kiểm tra xem token có tồn tại trong session không
-            bool isLoggedIn = HttpContext.Session.GetString("AccessToken") != null;
-            // Lưu trạng thái vào ViewData để sử dụng trong Razor
-            ViewData["IsLoggedIn"] = isLoggedIn;
+            try
+            {
+                // Kiểm tra xem token có tồn tại trong session không
+                bool isLoggedIn = HttpContext.Session.GetString("AccessToken") != null;
+                // Lưu trạng thái vào ViewData để sử dụng trong Razor
+                ViewData["IsLoggedIn"] = isLoggedIn;
 
-            logger.LogInformation("Index page visited");
-            var result = await hotelService.GetRoomTypes();
-            RoomTypeList = result.RoomTypes;
-            return Page();
+                logger.LogInformation("Index page visited");
+                var result = await hotelService.GetRoomTypes();
+                RoomTypeList = result.RoomTypes;
+
+                var resultGetImage = await hotelService.GetImageRoomTypes();
+
+                ImageList = resultGetImage.Images;
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                // Xử lý các lỗi khác nếu có
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                TempData["ErrorMessage"] = "Lỗi hệ thống";
+            }
+            return RedirectToPage("Index");
+
         }
 
         public async Task<IActionResult> OnPostAsync(string usernameLogin, string passwordLogin)

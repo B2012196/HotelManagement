@@ -123,6 +123,12 @@ namespace FinanceManagement.API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ContentImage")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("ServiceImage")
+                        .HasColumnType("bytea");
+
                     b.Property<string>("ServiceName")
                         .IsRequired()
                         .HasColumnType("text");

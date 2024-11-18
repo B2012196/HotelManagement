@@ -46,3 +46,13 @@ footer {
 footer a {
     color: #f8f9fa!important
 }
+
+.custom-img {
+    width: 100px;
+    height: 100px;
+}
+#serviceDetails {
+    visibility: visible !important;
+    display: block !important;
+}
+

@@ -50,7 +50,7 @@ namespace BookingManagement.API.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(12,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<Guid>("TypeId")
                         .HasColumnType("uuid");

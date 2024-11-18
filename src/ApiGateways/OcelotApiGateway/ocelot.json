@@ -182,7 +182,7 @@
         }
       ],
       "UpstreamPathTemplate": "/finance/{endpoint1}/{endpoint2}/{params}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [ "GET", "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

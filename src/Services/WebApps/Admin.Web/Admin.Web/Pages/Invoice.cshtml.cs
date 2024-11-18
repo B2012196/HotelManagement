@@ -1,7 +1,4 @@
-﻿using Admin.Web.Models;
-using Microsoft.Extensions.Logging;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class InvoiceModel(IFinanceService financeService, IHotelService hotelService, IBookingService bookingService, IGuestService guestService, 
         ILogger<InvoiceModel> logger) : PageModel
@@ -14,6 +11,7 @@ namespace Admin.Web.Pages
         public IEnumerable<Room> RoomList { get; set; } = new List<Room>();
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
+        public IEnumerable<Payment> PaymentList { get; set; } = new List<Payment>();
         public async Task<IActionResult> OnGetAsync()
         {
             try
@@ -40,11 +38,15 @@ namespace Admin.Web.Pages
 
                 //get all bookingroom
                 var resultbroom = await bookingService.GetBookingRooms();
-                logger.LogInformation("bookingroom");
+                logger.LogInformation("Get all bookingroom");
 
                 //get all room
                 var resultroom = await hotelService.GetRooms();
-                logger.LogInformation("room");
+                logger.LogInformation("Get all room");
+
+                //get all payment
+                var resultgetpayments = await financeService.GetPayments();
+                logger.LogInformation("Get all payment");
 
                 InvoiceDetailList = resultGetInvoiceDetail.InvoiceDetails;
                 ServiceList = resultGetService.Services;
@@ -52,6 +54,7 @@ namespace Admin.Web.Pages
                 GuestList = resultguest.Guests;
                 BookingRoomList = resultbroom.BookingRooms;
                 RoomList = resultroom.Rooms;
+                PaymentList = resultgetpayments.Payments;
 
                 var invoiceViews = new List<InvoiceView>();
 
@@ -106,6 +109,14 @@ namespace Admin.Web.Pages
                             }                                
                             invoiceView.InvoiceServiceViews = invoiceServiceViews;
 
+                            var payment = PaymentList.SingleOrDefault(p => p.InvoiceId == invoice.InvoiceId);
+                            if(payment != null)
+                            {
+                                invoiceView.PaymentTotal = payment.Amount;
+
+                            }
+                            invoiceView.RemainingAmount = invoiceView.TotalPrice - invoiceView.PaymentTotal;
+
                             invoiceViews.Add(invoiceView);
                         }
                     }
@@ -118,7 +129,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return Page();  
         }
@@ -150,11 +161,32 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Invoice");
         }
 
+        public async Task<IActionResult> OnPostUpdateInvoiceAsync(Guid InvoiceId)
+        {
+            try
+            {
+                var objUpdateInvoice = new
+                {
+                    InvoiceId = InvoiceId,
+                };
+                var resultUpdateInvoice = await financeService.UpdateInvoice(objUpdateInvoice);
+            }
+            catch (ApiException apiEx)
+            {
+                HandleApiException(apiEx);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error: {ex.Message}");
+            }
+            return RedirectToPage("Invoice");
+
+        }
         private void HandleApiException(ApiException apiEx)
         {
             switch (apiEx.StatusCode)

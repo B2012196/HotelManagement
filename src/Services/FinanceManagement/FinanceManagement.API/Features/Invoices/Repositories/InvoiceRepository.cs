@@ -10,9 +10,14 @@ namespace FinanceManagement.API.Features.Invoices.Repositories
             {
                 throw new InvoiceNotFoundException(BookingId);
             }
-
-            invoice.TotalPrice += TotalPrice;
-
+            if(invoice.TotalPrice == 0)
+            {
+                invoice.TotalPrice = TotalPrice;
+            }
+            else
+            {
+                invoice.TotalPrice += TotalPrice;
+            }
             context.Invoices.Update(invoice);
             await context.SaveChangesAsync(cancellationToken);
 

@@ -1,6 +1,5 @@
 ﻿namespace HotelManagement.API.Features.RoomTypes.UploadRoomTypeImage
 {
-    public record UploadRoomTypeImageRequest(Guid TypeId, IFormFile File);
     public record UploadRoomTypeImageResponse(bool IsSuccess);
     public class UploadRoomTypeImageEndpoint : ICarterModule
     {

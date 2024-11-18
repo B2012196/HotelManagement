@@ -10,6 +10,7 @@
                    .IsRequired();
 
             builder.Property(o => o.ServicePrice);
+            builder.Property(o => o.ServiceImage).HasColumnType("bytea").IsRequired(false);  // Lưu trữ ảnh dưới dạng nhị phân lớn
         }
     }
 }

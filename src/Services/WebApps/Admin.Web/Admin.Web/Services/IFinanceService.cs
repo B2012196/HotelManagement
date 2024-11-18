@@ -12,6 +12,14 @@
         [Get("/finance/invoices")]
         Task<GetInvoicesResponse> GetInvoices();
 
+        [Put("/finance/invoices")]
+        Task<UpdateInvoiceResponse> UpdateInvoice(object obj);
+
+        [Multipart]
+        [Put("/finance/services/image/{ServiceId}")]
+        Task<UploadRoomTypeImageResponse> UploadServiceImage(Guid ServiceId, [AliasAs("File")] StreamPart file);
+
+
         //invoicedetail
         [Get("/finance/invoicedetails")]
         Task<GetInvoiceDetailsResponse> GetInvoiceDetails();
@@ -33,8 +41,15 @@
         Task<DeleteServiceResponse> DeleteService(Guid ServiceId);
 
         //payment
+        [Get("/finance/payments")]
+        Task<GetPaymentsResponse> GetPayments();
+
+        [Get("/finance/payments/invoiceid/{InvoiceId}")]
+        Task<GetPayByInvoiceIdResponse> GetPayByInvoiceId(Guid InvoiceId);
+
         [Post("/finance/payments")]
         Task<CreatePaymentResponse> CreatePayment(object obj);
+
 
         [Post("/finance/vnpay")]
         Task<PaymentExecuteResponse> PaymentExecute(PaymentExecuteRequest request);

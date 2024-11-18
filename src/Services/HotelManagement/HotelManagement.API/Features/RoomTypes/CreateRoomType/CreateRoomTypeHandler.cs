@@ -35,7 +35,9 @@
                 Capacity = command.Capacity
             };
 
+
             context.RoomTypes.Add(type);
+
             await context.SaveChangesAsync(cancellationToken);
 
             return new CreateRoomTypeResult(type.TypeId);

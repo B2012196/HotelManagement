@@ -18,6 +18,7 @@ else
             <tr>
                 <th>Tên dịch vụ</th>
                 <th>Đơn giá</th>
+                <th>Ảnh</th>
             </tr>
         </thead>
         <tbody>
@@ -25,16 +26,26 @@ else
             {
                 <tr>
                     <td>@service.ServiceName.ServiceNameTranslate()</td>
-                    <td>@service.ServicePrice</td>
+                    <td>@service.ServicePrice.ToString("N0")</td>
+                    <td>
+                        @if(service.ServiceImage != null)
+                        {
+                            <img class="card-img-top custom-img" src="data:@service.ContentImage;base64,@Convert.ToBase64String(service.ServiceImage)" alt="Ảnh phòng">
+                        }
+                    </td>
                     <td>
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#serviceSelectionModal-@service.ServiceId">
                             Cập nhật
                         </button>
+                        <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#serviceImageSelectionModal-@service.ServiceId">
+                            Tải ảnh
+                        </button>
                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#serviceSelectionDeleteModal-@service.ServiceId">
                             Xóa
                         </button>
+                        
                     </td>
-
+                    @* delete service *@
                     <div class="modal fade" id="serviceSelectionDeleteModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionDeleteModal" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -56,7 +67,7 @@ else
                             </div>
                         </div>
                     </div>
-
+                    @* update service *@
                     <div class="modal fade" id="serviceSelectionModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -86,7 +97,29 @@ else
                             </div>
                         </div>
                     </div>
-                
+
+                    <div class="modal fade" id="serviceImageSelectionModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceImageSelectionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="serviceImageSelectionModalLabel">Tải ảnh dịch vụ</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="UploadImageService" enctype="multipart/form-data">
+                                        <input type="hidden" id="serviceId" name="ServiceId" required value="@service.ServiceId" hidden readonly>
+                                        <div class="mb-3">
+                                            <label for="image" class="form-label">Tải ảnh dịch vụ</label>
+                                            <input type="file" class="form-control" id="image" name="Image" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Upload Ảnh</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </tr>
             }
         </tbody>

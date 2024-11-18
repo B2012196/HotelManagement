@@ -23,6 +23,8 @@
         public DateTime CreateAt { get; set; }
         public InvoiceStatus InvoiceStatus { get; set; }
         public decimal? TotalPrice { get; set; }
+        public decimal? PaymentTotal { get; set; }
+        public decimal? RemainingAmount { get; set; }
     }
 
     public class InvoiceServiceView
@@ -36,6 +38,7 @@
     public record GetInvoicesResponse(IEnumerable<Invoice> Invoices);
     public record GetInvoiceByBookingIdResponse(Invoice Invoice);
     public record CreateInvoiceResponse(Guid InvoiceId);
+    public record UpdateInvoiceResponse(bool IsSuccess);
 
 
 }

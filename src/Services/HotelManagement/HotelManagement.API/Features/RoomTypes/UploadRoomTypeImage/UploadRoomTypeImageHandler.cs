@@ -7,12 +7,19 @@
     {
         public async Task<UploadRoomTypeImageResult> Handle(UploadRoomTypeImageCommand command, CancellationToken cancellationToken)
         {
+            //find typeroom
             var type = await context.RoomTypes.SingleOrDefaultAsync(t => t.TypeId == command.TypeId, cancellationToken);
 
             if (type is null)
             {
                 throw new TypeNotFoundException(command.TypeId);
             }
+
+            var typeImage = new Image
+            {
+                ImageId = Guid.NewGuid(),
+                RoomTypeId = type.TypeId
+            };
 
             var file = command.File;
             if (file != null && file.Length > 0)
@@ -22,15 +29,15 @@
                     await file.CopyToAsync(memoryStream);
 
                     // Lưu dữ liệu ảnh vào RoomType
-                    type.Image = memoryStream.ToArray();  // Chuyển file thành mảng byte
-                    type.ImageContentType = file.ContentType;  // Lưu loại nội dung của ảnh
-
-                    context.RoomTypes.Update(type);
-                    await context.SaveChangesAsync(cancellationToken);
+                    typeImage.Data = memoryStream.ToArray();  // Chuyển file thành mảng byte
+                    typeImage.ContentType = file.ContentType;  // Lưu loại nội dung của ảnh
                 }
             }
-            return new UploadRoomTypeImageResult(true);  // Trả về kết quả thành công
 
+            context.Images.Add(typeImage);
+            await context.SaveChangesAsync(cancellationToken);
+
+            return new UploadRoomTypeImageResult(true);  // Trả về kết quả thành công
         }
     }
 }

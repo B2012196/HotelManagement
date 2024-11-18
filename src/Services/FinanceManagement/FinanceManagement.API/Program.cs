@@ -1,5 +1,4 @@
-
-using FinanceManagement.API.Features.VnPay;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 //add services to the container
@@ -30,11 +29,12 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 //Async communication service
-builder.Services.AddMessageBroker(builder.Configuration);
+builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
-
+//add scope
+builder.Services.AddScoped<IInvoiceRepository,  InvoiceRepository>();
 //vnpay
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
 

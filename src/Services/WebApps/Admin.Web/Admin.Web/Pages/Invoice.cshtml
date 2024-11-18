@@ -63,7 +63,7 @@ else
                                         <label for="invoiceStatus">Ngày checkout</label>
                                         <input class="form-control" type="date" id="invoiceStatus" name="InvoiceStatus" value="@(invoice.CheckoutDate.HasValue ? invoice.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
 
-                                        <label for="invoiceStatus">Tổng phí phòng</label>
+                                        <label for="invoiceStatus">Phí Phòng</label>
                                         <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@((invoice.TotalBooking.HasValue ? invoice.TotalBooking.Value.ToString("N0") : ""))" readonly /> 
 
                                     </div>
@@ -76,27 +76,34 @@ else
                                                    value="@detail.ServiceName.ServiceNameTranslate() - @detail.ServiceNumber - Giá: @detail.ServicePrice.ToString("N0") - Thành tiền: @detail.TotalServiceUsed.ToString("N0")" readonly />
                                         }
 
-                                        <label for="totalServiceUsed">Tổng phí sử dụng dịch vụ</label>
+                                        <label for="totalServiceUsed">Phí Dịch vụ</label>
                                         <input class="form-control" type="text" id="totalServiceUsed" name="TotalServiceUsed" value="@((invoice.TotalServiceUsed.HasValue ? invoice.TotalServiceUsed.Value.ToString("N0") : ""))" readonly />
 
-                                        <label for="serviceName">Tổng hóa đơn</label>
-                                        <input class="form-control" type="text" id="serviceName" name="ServiceName" value="@((invoice.TotalPrice.HasValue ? invoice.TotalPrice.Value.ToString("N0") : ""))" readonly />
+                                        <label for="totalPrice">Tổng hóa đơn</label>
+                                        <input class="form-control" type="text" id="totalPrice" name="TotalPrice" value="@((invoice.TotalPrice.HasValue ? invoice.TotalPrice.Value.ToString("N0") : ""))" readonly />
+
+                                        <label for="paymentTotal">Thanh Toán Online (nếu có)</label>
+                                        <input class="form-control" type="text" id="paymentTotal" name="PaymentTotal" value="@((invoice.PaymentTotal.HasValue ? invoice.PaymentTotal.Value.ToString("N0") : ""))" readonly />
+
+                                        <label for="remainingAmount">Số Tiền Còn Lại</label>
+                                        <input class="form-control" type="text" id="remainingAmount" name="RemainingAmount" value="@((invoice.RemainingAmount.HasValue ? invoice.RemainingAmount.Value.ToString("N0") : ""))" readonly />
+
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <form method="post" asp-page-handler="PayInvoice">
-                                        <input type="hidden" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
-                                        <input type="hidden" name="GuestName" value="@invoice.GuestName" hidden readonly />
-                                        <button type="submit" class="btn btn-outline-success m-2 ml-3">Thanh toán</button>
-                                    </form>
+                                    @if(@invoice.InvoiceStatus != InvoiceStatus.Paid)
+                                    {
+                                        <form method="post" asp-page-handler="UpdateInvoice">
+                                            <input type="hidden" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
+                                            <button type="submit" class="btn btn-outline-success m-2 ml-3">Thanh toán</button>
+                                        </form>
+                                    }
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
             }
         </tbody>
     </table>

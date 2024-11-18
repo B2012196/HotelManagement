@@ -21,8 +21,7 @@
 
             builder.Property(b => b.BookingStatus).HasConversion<int>().IsRequired();
 
-            builder.Property(b => b.TotalPrice)
-               .HasColumnType("decimal(12,2)");
+            builder.Property(b => b.TotalPrice);
 
         }
 

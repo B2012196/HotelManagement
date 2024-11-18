@@ -36,5 +36,8 @@
         [Get("/hotels/rooms")]
         Task<GetRoomsResponse> GetRooms();
 
+        //imageRoomType
+        [Get("/hotels/roomtypes/image")]
+        Task<GetImageResponse> GetImageRoomTypes();
     }
 }

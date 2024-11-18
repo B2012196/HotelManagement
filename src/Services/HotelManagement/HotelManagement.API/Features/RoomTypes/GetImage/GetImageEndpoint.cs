@@ -1,17 +1,17 @@
 ﻿namespace HotelManagement.API.Features.RoomTypes.GetImage
 {
-    public record GetImageResponse(byte[] ImageData, string ContentType);
+    public record GetImageResponse(IEnumerable<Image> Images);
     public class GetImageEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/hotels/roomtypes/{typeId}/upload-image", async (Guid typeId, ISender sender) =>
+            app.MapGet("/hotels/roomtypes/image", async (ISender sender) =>
             {
-                var result = await sender.Send(new GetImageQuery(typeId));
+                var result = await sender.Send(new GetImageQuery());
 
                 var response = result.Adapt<GetImageResponse>();
 
-                return Results.File(response.ImageData, response.ContentType);
+                return Results.Ok(response);
             })
             .WithName("GetImageRoomTypes")
             .Produces<GetImageResponse>(StatusCodes.Status200OK)

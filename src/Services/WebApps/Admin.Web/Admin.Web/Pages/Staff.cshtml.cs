@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class StaffModel(IStaffService staffService, ILogger<StaffModel> logger) : PageModel
     {
@@ -15,32 +13,39 @@ namespace Admin.Web.Pages
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return Page();
+        }
+
+        private void HandleApiException(ApiException apiEx)
+        {
+            switch (apiEx.StatusCode)
+            {
+                case System.Net.HttpStatusCode.BadRequest:
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                    break;
+
+                case System.Net.HttpStatusCode.Unauthorized:
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                    break;
+
+                case System.Net.HttpStatusCode.Forbidden:
+                    Console.WriteLine("Forbidden: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                    break;
+
+                default:
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                    break;
+            }
         }
     }
 }

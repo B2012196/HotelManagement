@@ -68,11 +68,10 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
                             TotalPrice = booking.TotalPrice
                         };
 
-
                         //event InvoiceTotalPrice
                         var eventMessage2 = eventPriceObj.Adapt<InvoiceTotalPriceEvent>();
+                        Console.WriteLine("Publish event InvoiceTotalPrice: " + eventMessage2.BookingId + " - " + eventMessage2.TotalPrice);
                         await publishEndpoint.Publish(eventMessage2, cancellationToken);
-
 
                         context.Bookings.Update(booking);
                         await context.SaveChangesAsync(cancellationToken);

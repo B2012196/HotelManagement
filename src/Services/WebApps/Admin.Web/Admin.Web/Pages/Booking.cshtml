@@ -83,7 +83,7 @@ else
                                         <input class="form-control" type="number" id="roomQuantity" name="RoomQuantity" value="@booking.RoomQuantity" readonly />
 
                                         <label for="totalPrice">Tổng tiền phòng</label>
-                                        <input class="form-control" type="text" id="totalPrice" name="TotalPrice" value="@booking.TotalPrice" readonly />
+                                        <input class="form-control" type="text" id="totalPrice" name="TotalPrice" value="@((booking.TotalPrice.HasValue ? booking.TotalPrice.Value.ToString("N0") : ""))" readonly />
                                     </div>
 
 
@@ -163,38 +163,46 @@ else
 
                 //them service cho booking
                 <div class="modal fade" id="serviceSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="serviceSelectionModalLabel">Thêm Dịch vụ khách sử dụng</h5>
+                                <h5 class="modal-title" id="serviceSelectionModalLabel">Thêm dịch vụ khách sử dụng</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
 
-                                <form method="post" asp-page-handler="AddService">
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <input type="hidden" id="bookingId" name="BookingId" required value="@booking.BookingId" hidden readonly>
-                                            <label for="service">Tên dịch vụ</label>
-                                            <select class="form-control" id="serviceId" name="ServiceId">
-                                                @foreach (var service in Model.ServiceList)
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @foreach (var service in Model.ServiceList)
+                                            {
+                                                @if (service.ServiceImage != null)
                                                 {
-                                                    <option value="@service.ServiceId">@service.ServiceName.ServiceNameTranslate()</option>
+                                                    <div class="col-md-6 text-center mb-3">
+                                                        <img src="data:@service.ContentImage;base64,@Convert.ToBase64String(service.ServiceImage)"
+                                                             class="img-thumbnail service-image"
+                                                             alt="@service.ServiceName"
+                                                             data-service-id="@service.ServiceId"
+                                                             data-service-name="@service.ServiceName"
+                                                             onclick="showServiceDetails(this)"
+                                                             style="cursor: pointer; width: 150px; height: 100px;" />
+
+                                                        <p>@service.ServiceName.ServiceNameTranslate()</p>
+                                                    </div>
                                                 }
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="serviceNumber" class="form-label">Số lượng</label>
-                                            <input type="number" class="form-control" id="serviceNumber" name="ServiceNumber" required>
+                                            }
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Thêm</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+
+                                    <div class="col-md-6">
+                                        <div id="serviceDetails" class="p-3 border">
+                                            <h5 class="text-center">Chọn dịch vụ để xem chi tiết</h5>
+                                        </div>
                                     </div>
-                                </form>
+                                </div>
+
                             </div>
 
                         </div>
@@ -300,5 +308,31 @@ else
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function showServiceDetails(element) {
+            const serviceId = element.dataset.serviceId;
+            const serviceName = element.dataset.serviceName;
 
+            const detailsDiv = document.getElementById('serviceDetails');
+            if (detailsDiv) {
+                detailsDiv.innerHTML = `
+                    <h5 class="text-center">${serviceName}</h5>
+                    <form method="post" action="/YourAction">
+                        <input type="hidden" name="ServiceId" value="${serviceId}" />
+                        <div class="form-group mt-3">
+                            <label for="quantityInput">Số lượng</label>
+                            <input type="number" id="quantityInput" name="ServiceNumber" class="form-control" min="1" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Thêm</button>
+                    </form>
+                `;
+                console.log("Nội dung của #serviceDetails đã được cập nhật:", detailsDiv.innerHTML);
+            } else {
+                console.error("Element #serviceDetails not found!");
+            }
+        }
+
+
+    </script>
 }

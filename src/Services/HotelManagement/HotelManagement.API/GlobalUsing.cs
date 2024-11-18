@@ -15,6 +15,8 @@ global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using HotelManagement.API.Features.Rooms.Repositories;
 global using BuildingBlocks.Messaging.Events;
 global using MassTransit;
+global using System.Text.Json.Serialization;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
 

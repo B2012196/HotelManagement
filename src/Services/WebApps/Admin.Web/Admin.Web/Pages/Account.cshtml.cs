@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Logging;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class AccountModel(IAuthentication authentication, ILogger<AccountModel> logger) : PageModel
     {
@@ -43,7 +40,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return Page();
 
@@ -65,7 +62,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Account");
 
@@ -95,7 +92,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Account");
         }
@@ -118,7 +115,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Account");
 
@@ -158,7 +155,6 @@ namespace Admin.Web.Pages
             return RedirectToPage("Account");
 
         }
-
         public async Task<IActionResult> OnPostDeleteUserAsync(string UserId)
         {
             try
@@ -177,7 +173,7 @@ namespace Admin.Web.Pages
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Account");
 

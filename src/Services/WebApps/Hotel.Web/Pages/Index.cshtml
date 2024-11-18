@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Trang chủ";
 }
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <!-- Banner Section -->
 <div class="banner" style="background-image: url('/images/banner/hotel-banner.jpg'); background-size: cover; background-position: center; width: 100%; height: 400px; position: relative;">
@@ -54,27 +55,34 @@
 </div>
 <br/>
 <div class="row">
-    @if(Model.RoomTypeList != null && Model.RoomTypeList.Any())
+    @if (Model.RoomTypeList != null && Model.RoomTypeList.Any())
     {
-        foreach(var roomType in Model.RoomTypeList)
+        foreach (var roomType in Model.RoomTypeList)
         {
             <div class="col-md-4">
-                <div class="card mb-4 hover-card">
-                    @* <img class="card-img-top custom-img" src="/images/rooms/1-giuong.jpg" alt="Ảnh khách sạn"> *@
-                    @if (roomType.Image != null && roomType.Image.Length > 0)
-                    {
-                        <img class="card-img-top custom-img" src="data:@roomType.ImageContentType;base64,@Convert.ToBase64String(roomType.Image)" alt="Ảnh phòng">
+                <div class="card mb-4 hover-card"
+                     data-toggle="modal"
+                     data-target="#roomDetailsModal"
+                     data-room-id="@roomType.TypeId"
+                     data-name="@roomType.Name"
+                     data-capacity="@roomType.Capacity"
+                     data-description="@roomType.Description"
+                     data-price="@roomType.PricePerNight">
+                    @{
+                        var image = Model.ImageList.FirstOrDefault(img => img.RoomTypeId == roomType.TypeId);
                     }
-                    else
+
+                    @if (image != null)
                     {
-                        <img class="card-img-top custom-img" src="/images/placeholder.png" alt="Hình ảnh chưa có">
+                        <img class="card-img-top custom-img" src="data:@image.ContentType;base64,@Convert.ToBase64String(image.Data)" alt="Ảnh phòng">
                     }
                     <div class="card-body">
                         <h5 class="card-title">@roomType.Name</h5>
-                        <p class="card-text">Sức chứa: @roomType.Capacity người</p>
-                        <p class="card-text">@roomType.Description</p>
-                        <h6 class="card-text">Giá phòng: @roomType.PricePerNight VNĐ</h6> <!-- Định dạng lại tiền -->
-                        <a href="#booking-container" class="btn btn-outline-info">Đặt ngay</a>
+                        <h6 class="card-text">Giá phòng: @roomType.PricePerNight.ToString("N0")  VNĐ</h6>
+                        <p>Sức chứa: @roomType.Capacity người</p>
+                        <div class="d-flex justify-content-end">
+                            <a href="#booking-container" class="btn btn-outline-info">Đặt ngay</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,8 +99,10 @@
                 <p>Dọn phòng hằng ngày, giặt ủi đồ (phụ phí)</p>
             </div>
         </div>
-
-        <div class="col-md-4">
+ 
+        <div class="col-md-4" style="
+            border-left: 1px solid;
+            border-right: 1px solid;">
             <div>
                 <h4>Nhà hàng</h4>
                 <p>Thưởng thức các món ăn ngon từ đầu bếp hàng đầu.</p>
@@ -112,5 +122,112 @@
     <h4>Vị trí tuyệt vời của Golden Sands Hotel</h4>
     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4409.972169800734!2d105.7636706401366!3d10.030189345167212!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a0894058d7ecb9%3A0x2ae0a7757a2dc701!2zS1RYIEIgxJBIIEPhuqduIFRoxqE!5e0!3m2!1svi!2sus!4v1727107496218!5m2!1svi!2sus" width="1000" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="roomDetailsModal" tabindex="-1" role="dialog" aria-labelledby="roomDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomDetailsModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex">
+                <!-- Left: Image carousel -->
+                <div id="roomImageCarousel" class="carousel slide w-50" data-ride="carousel">
+                    <div class="carousel-inner" id="carouselImages">
+                        <!-- Images will be injected here -->
+                    </div>
+                    <a class="carousel-control-prev" href="#roomImageCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#roomImageCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- Right: Room details -->
+                <div class="ml-3 w-50">
+                    <h5 id="roomName"></h5>
+                    <p><strong>Sức chứa:</strong> <span id="roomCapacity"></span> người</p>
+                    <p id="roomDescription"></p>
+                    <h5><strong>Giá phòng:</strong> <span id="roomPrice"></span> VNĐ</h5>
+                    <h6>Tiện nghi phòng</h6>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-archive"></i> Tủ quần áo</li>
+                        <li><i class="fas fa-bed"></i> Ga trải giường, gối</li>
+                        <li><i class="fas fa-tv"></i> TV – cáp/vệ tinh</li>
+                        <li><i class="fas fa-coffee"></i> Máy pha cà phê</li>
+                        <li><i class="fas fa-shower"></i> Phòng tắm - vòi sen</li>
+                        <li><i class="fas fa-wifi"></i> Truy cập Internet WiFi trong phòng</li>
+                    </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" type="text/javascript"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        $('.hover-card').click(function () {
+            const roomId = $(this).data('room-id');
+            console.log('RoomTypeId is:', roomId);
+            const roomName = $(this).data('name');
+            const roomCapacity = $(this).data('capacity');
+            const roomDescription = $(this).data('description');
+                const roomPrice = $(this).data('price');
+
+            // Gắn thông tin vào modal
+            $('#roomDetailsModalLabel').text(roomName);
+            $('#roomName').text(roomName);
+            $('#roomCapacity').text(roomCapacity);
+            $('#roomDescription').text(roomDescription);
+            $('#roomPrice').text(roomPrice);
+
+            // Lấy danh sách ảnh từ Model.ImageList
+            const images = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ImageList ?? new List<Image>()))
+
+            const roomImages = images.filter(img => img.RoomTypeId === roomId);
+
+            console.log('Filtered roomImages:', roomImages);
+
+            // Xóa ảnh cũ trong carousel
+            $('#carouselImages').empty();
+
+            // Thêm ảnh mới vào carousel
+            if (roomImages.length > 0) {
+                    roomImages.forEach((img, index) => {
+                        console.log(img);
+                        console.log(img.Data);
+
+                        const isActive = index === 0 ? 'active' : '';
+                        
+                        // Thêm ảnh vào carousel
+                        $('#carouselImages').append(`
+                            <div class="carousel-item ${isActive}">
+                                <img class="d-block" src="data:${img.ContentType};base64,${img.Data}" alt="Ảnh phòng">
+                            </div>
+                            `);
+
+                    console.log("Successfully");
+                });
+            } else {
+                    // Nếu không có ảnh, hiển thị một ảnh mặc định (nếu cần thiết)
+                $('#carouselImages').append(`
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" src="https://via.placeholder.com/600x400" alt="Ảnh phòng mặc định">
+                    </div>
+                `);
+            }
+        });
+    });
+</script>
+
 
 
