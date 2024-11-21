@@ -10,6 +10,7 @@
             { "SwimmingPool", "Hồ bơi" },
             { "InstantNoodles", "Mì gói" },
             { "Bottledwater", "Nước đóng chai" },
+            { "Honda", "Thuê xe máy" },
             { "Softdrink", "Nước ngọt" }
 
         };

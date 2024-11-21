@@ -13,6 +13,54 @@
 }
 else
 {
+    <div class="container vh-100 d-flex justify-content-center align-items-center mt-3">
+        <div class="row w-100">
+            <!-- Cột 1: Form Tìm Kiếm -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <select class="form-control" id="searchType" name="SearchType">
+                                        <option value="bookingId">Mã đơn</option>
+                                        <option value="guestName">Tên Khách Hàng</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 ">
+                                    <input type="text" class="form-control" id="searchInput" name="SearchInput" placeholder="Nhập thông tin" required>
+                                </div>
+                            </div>
+                            <div class="form-group text-center mb-0">
+                                <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột 2: Form Lọc Trạng Thái Phòng -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form method="get" asp-action="Filter" asp-controller="Booking">
+                            <div class="form-group">
+                                <select class="form-control" id="filterStatus" name="FilterStatus">
+                                    <option value="pending">Đang chờ</option>
+                                    <option value="paid">Đã thanh toán</option>
+                                    <option value="partiallypaid">Thanh toán online</option>
+                                </select>
+                            </div>
+                            <div class="form-group text-center mb-0">
+                                <button type="submit" class="btn btn-success">Lọc</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -51,6 +99,9 @@ else
                                         <h5>Thông tin đặt phòng</h5>
                                         <input type="hidden" id="invoiceId" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
 
+                                        <label for="bookingCode">Mã đơn</label>
+                                        <input class="form-control" type="text" id="bookingCode" name="BookingCode" value="@invoice.BookingCode" readonly />
+
                                         <label for="guestName">Họ Tên</label>
                                         <input class="form-control" type="text" id="guestName" name="GuestName" value="@invoice.GuestName" readonly />
 
@@ -58,10 +109,10 @@ else
                                         <input class="form-control" type="text" id="roomNumber" name="RoomNumber" value="@invoice.RoomNumber" readonly />
 
                                         <label for="invoiceStatus">Ngày checkin</label>
-                                        <input class="form-control" type="date" id="invoiceStatus" name="InvoiceStatus" value="@(invoice.CheckinDate.HasValue ? invoice.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                                        <input class="form-control" type="datetime-local" id="checkinDate" name="CheckinDate" value="@(invoice.CheckinDate.HasValue ? invoice.CheckinDate.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" readonly />
 
                                         <label for="invoiceStatus">Ngày checkout</label>
-                                        <input class="form-control" type="date" id="invoiceStatus" name="InvoiceStatus" value="@(invoice.CheckoutDate.HasValue ? invoice.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                                        <input class="form-control" type="datetime-local" id="checkoutDate" name="CheckoutDate" value="@(invoice.CheckoutDate.HasValue ? invoice.CheckoutDate.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" readonly />
 
                                         <label for="invoiceStatus">Phí Phòng</label>
                                         <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@((invoice.TotalBooking.HasValue ? invoice.TotalBooking.Value.ToString("N0") : ""))" readonly /> 
@@ -95,7 +146,14 @@ else
                                     {
                                         <form method="post" asp-page-handler="UpdateInvoice">
                                             <input type="hidden" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
+                                            <input type="hidden" name="RemainingAmount" value="@invoice.RemainingAmount" hidden readonly />
                                             <button type="submit" class="btn btn-outline-success m-2 ml-3">Thanh toán</button>
+                                        </form>
+                                    }
+                                    else 
+                                    {
+                                        <form method="post" asp-page-handler="PrintInvoice">
+                                            <button type="submit" class="btn btn-outline-success">Xuất hóa đơn</button>
                                         </form>
                                     }
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>

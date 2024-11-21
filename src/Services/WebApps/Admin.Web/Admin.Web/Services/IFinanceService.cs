@@ -50,6 +50,9 @@
         [Post("/finance/payments")]
         Task<CreatePaymentResponse> CreatePayment(object obj);
 
+        [Post("/finance/paymentdirect")]
+        Task<CreatePayDirectResponse> CreatePaymentDirect(object obj);
+
 
         [Post("/finance/vnpay")]
         Task<PaymentExecuteResponse> PaymentExecute(PaymentExecuteRequest request);

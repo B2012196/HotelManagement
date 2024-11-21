@@ -1,7 +1,7 @@
 ﻿namespace Authentication.API.Features.Users.CreateUser
 {
     public record CreateUserRequest
-        (Guid RoleId, string UserName, string Email, string PhoneNumber, string Password);
+        (Guid RoleId, string UserName, string Email, string PhoneNumber, string Password, bool IsActive);
     public record CreateUserResponse(Guid UserId);
     public class CreateUserEndpoint : ICarterModule
     {

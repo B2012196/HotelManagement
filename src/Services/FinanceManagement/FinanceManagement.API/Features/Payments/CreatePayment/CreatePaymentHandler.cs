@@ -21,7 +21,7 @@
                 InvoiceId = command.InvoiceId,
                 PaymentMethodId = command.PaymentMethodId,
                 Amount = command.Price,
-                CreateAt = DateTime.Now
+                CreateAt = DateTime.UtcNow
             };
 
             var vnpay = new VnPaymentRequestModel

@@ -56,6 +56,7 @@
                                     var bookingView = new BookingView
                                     {
                                         BookingId = booking.BookingId,
+                                        BookingCode = booking.BookingCode,
                                         TypeId = booking.TypeId,
                                         TypeName = type.RoomType.Name,
                                         GuestFirstName = guest.Guest.FirstName,

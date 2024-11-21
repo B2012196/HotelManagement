@@ -1,7 +1,6 @@
 ﻿namespace BookingManagement.API.Features.Bookings.Commands.CreateBooking
 {
-    public record CreateBookingRequest
-        (Guid GuestId, Guid TypeId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate, int RoomQuantity);
+    public record CreateBookingRequest(Guid GuestId, DateTime ExpectedCheckinDate, DateTime ExpectedCheckoutDate, Guid TypeId, int RoomQuantity);
     public record CreateBookingResponse(Guid BookingId);
     public class CreateBookingEndpoint : ICarterModule
     { 

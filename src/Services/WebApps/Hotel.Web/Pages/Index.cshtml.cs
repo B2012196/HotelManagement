@@ -27,11 +27,13 @@ namespace Hotel.Web.Pages
                 ImageList = resultGetImage.Images;
                 return Page();
             }
+            catch (ApiException apiEx)
+            {
+                HandleApiException(apiEx);
+            }
             catch (Exception ex)
             {
-                // Xử lý các lỗi khác nếu có
-                Console.WriteLine($"An error occurred: {ex.Message}");
-                TempData["ErrorMessage"] = "Lỗi hệ thống";
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Index");
 
@@ -64,29 +66,13 @@ namespace Hotel.Web.Pages
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorMessage"] = "Tên đăng nhập hoặc mật khẩu không đúng";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorMessage"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorMessage"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
-                // Xử lý các lỗi khác nếu có
-                Console.WriteLine($"An error occurred: {ex.Message}");
-                TempData["ErrorMessage"] = "Lỗi hệ thống";
+                logger.LogError($"Error: {ex.Message}");
             }
-            return RedirectToPage("/Index");
+            return RedirectToPage("Index");
         }
 
         public async Task<IActionResult> OnPostLogoutAsync()
@@ -102,7 +88,7 @@ namespace Hotel.Web.Pages
                 Console.WriteLine("Token đã được lưu vào session: " + storedToken);
             }
             // Chuyển hướng về trang đăng nhập hoặc trang chính sau khi đăng xuất
-            return RedirectToPage("/Index");
+            return RedirectToPage("Index");
         }
 
         public async Task<IActionResult> OnPostRegisterAsync(string username, string email, string phone, string password, string confirmPassword)
@@ -118,6 +104,7 @@ namespace Hotel.Web.Pages
                         Email = email,
                         PhoneNumber = phone,
                         Password = password,
+                        IsActive = true,
                     };
 
                     var response = await authentication.CreateUser(registerUser);
@@ -126,35 +113,40 @@ namespace Hotel.Web.Pages
             }
             catch (ApiException apiEx)
             {
-                if (apiEx.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine("Bad request: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
-                }
-                else if (apiEx.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Console.WriteLine("Unauthorized: " + apiEx.Content);
-                    TempData["ErrorApiException"] = "Không có quyền truy cập";
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
-                    TempData["ErrorApiException"] = "Lỗi hệ thống";
-                }
+                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error fetching guests: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
             return RedirectToPage("Index");
         }
 
 
+        private void HandleApiException(ApiException apiEx)
+        {
+            switch (apiEx.StatusCode)
+            {
+                case System.Net.HttpStatusCode.BadRequest:
+                    Console.WriteLine("Bad request: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không tìm thấy nội dung";
+                    break;
 
+                case System.Net.HttpStatusCode.Unauthorized:
+                    Console.WriteLine("Unauthorized: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Đăng nhập để tiếp tục";
+                    break;
+
+                case System.Net.HttpStatusCode.Forbidden:
+                    Console.WriteLine("Forbidden: " + apiEx.Content);
+                    TempData["ErrorApiException"] = "Không có quyền truy cập";
+                    break;
+
+                default:
+                    Console.WriteLine($"Error: {apiEx.StatusCode}, Content: {apiEx.Content}");
+                    TempData["ErrorApiException"] = "Lỗi hệ thống";
+                    break;
+            }
+        }
     }
 }

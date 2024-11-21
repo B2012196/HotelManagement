@@ -56,6 +56,9 @@ else
                                     <div class="col-md-6">
                                         <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
 
+                                        <label for="bookingCode">Mã đặt phòng</label>
+                                        <input class="form-control" type="text" id="bookingCode" name="BookingCode" value="@booking.BookingCode" readonly />
+
                                         <label for="guestFirstName">Họ Tên</label>
                                         <input class="form-control" type="text" id="guestLastName" name="GuestLastName" value="@booking.GuestLastName @booking.GuestFirstName" readonly />
 

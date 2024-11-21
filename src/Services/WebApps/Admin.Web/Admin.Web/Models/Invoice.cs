@@ -13,6 +13,7 @@
     public class InvoiceView
     {
         public Guid InvoiceId { get; set; }
+        public string BookingCode { get; set; }
         public DateTime? CheckinDate { get; set; }
         public DateTime? CheckoutDate { get; set; }
         public decimal? TotalBooking { get; set; }

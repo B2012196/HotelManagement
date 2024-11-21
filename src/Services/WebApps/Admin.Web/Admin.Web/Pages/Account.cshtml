@@ -25,91 +25,94 @@ else
         <tbody>
             @foreach (var user in Model.UserViewList)
             {
-                <tr>
-                    <td>@user.UserName</td>
-                    <td>@user.Email</td>
-                    <td>@user.PhoneNumber</td>
-                    <td>@user.RoleName.RoleTranslate()</td>
-                    <td>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
-                            Cập nhật
-                        </button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#userSelectionDeleteModal-@user.UserName">
-                            Xóa
-                        </button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#userDetailSelectionModal-@user.UserName">
-                            Chi tiết
-                        </button>
-                    </td>
-                </tr>
+                @if(user.IsActive == true)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.RoleName.RoleTranslate()</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
+                                Cập nhật
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#userSelectionDeleteModal-@user.UserName">
+                                Xóa
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#userDetailSelectionModal-@user.UserName">
+                                Chi tiết
+                            </button>
+                        </td>
+                    </tr>
 
-                <div class="modal fade" id="userDetailSelectionModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userDetailSelectionModal" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin tài khoản</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Form to choose available room -->
-                                <div class="form-group">
-
-                                    <label for="username">Tên tài khoản</label>
-                                    <input class="form-control" type="text" id="username" value="@user.UserName" readonly />
-
-                                    <label for="email">Email</label>
-                                    <input class="form-control" type="text" id="email" value="@user.Email" readonly />
-
-                                    <label for="phoneNumber">Số điện thoại</label>
-                                    <input class="form-control" type="text" id="phoneNumber" value="@user.PhoneNumber" readonly />
-
-                                    <label for="failedLogin">Số lần đăng nhập thất bại</label>
-                                    <input class="form-control" type="number" id="failedLogin" value="@user.FailedLoginAttempt" readonly />
-
-                                    <label for="active">Trạng thái</label>
-                                    <input class="form-control" type="text" id="active" value="@(user.IsActive == true ? "Đang hoạt động" : "Khóa")" readonly />
-
-                                    <label for="createdDate">Ngày tạo</label>
-                                    <input class="form-control" type="date" id="createdDate" value="@user.CreateAt.ToString("yyyy-MM-dd")" readonly />
-
-                                    <label for="role">Vai trò</label>
-                                    <input class="form-control" type="text" id="role" value="@user.RoleName" readonly />
+                    <div class="modal fade" id="userDetailSelectionModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userDetailSelectionModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin tài khoản</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <div class="modal-body">
+                                    <!-- Form to choose available room -->
+                                    <div class="form-group">
 
-                <div class="modal fade" id="userSelectionDeleteModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userSelectionDeleteModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="userSelectionDeleteModalLabel">Bạn có chắc chắn muốn xóa?</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="post" asp-page-handler="DeleteUser">
-                                    <input type="hidden" id="userId" name="UserId" required value="@user.UserId" hidden readonly>
+                                        <label for="username">Tên tài khoản</label>
+                                        <input class="form-control" type="text" id="username" value="@user.UserName" readonly />
+
+                                        <label for="email">Email</label>
+                                        <input class="form-control" type="text" id="email" value="@user.Email" readonly />
+
+                                        <label for="phoneNumber">Số điện thoại</label>
+                                        <input class="form-control" type="text" id="phoneNumber" value="@user.PhoneNumber" readonly />
+
+                                        <label for="failedLogin">Số lần đăng nhập thất bại</label>
+                                        <input class="form-control" type="number" id="failedLogin" value="@user.FailedLoginAttempt" readonly />
+
+                                        <label for="active">Trạng thái</label>
+                                        <input class="form-control" type="text" id="active" value="@(user.IsActive == true ? "Đang hoạt động" : "Khóa")" readonly />
+
+                                        <label for="createdDate">Ngày tạo</label>
+                                        <input class="form-control" type="date" id="createdDate" value="@user.CreateAt.ToString("yyyy-MM-dd")" readonly />
+
+                                        <label for="role">Vai trò</label>
+                                        <input class="form-control" type="text" id="role" value="@user.RoleName" readonly />
+                                    </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Xác nhận</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="modal fade" id="userSelectionDeleteModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userSelectionDeleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="userSelectionDeleteModalLabel">Bạn có chắc chắn muốn xóa?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="DeleteUser">
+                                        <input type="hidden" id="userId" name="UserId" required value="@user.UserId" hidden readonly>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
         </tbody>
     </table>

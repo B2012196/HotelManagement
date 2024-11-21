@@ -3,7 +3,7 @@
 namespace Authentication.API.Features.Users.CreateUser
 {
     public record CreateUserCommand
-        (Guid RoleId, string UserName, string Password, string Email, string PhoneNumber) : ICommand<CreateUserResult>;
+        (Guid RoleId, string UserName, string Password, string Email, string PhoneNumber, bool IsActive) : ICommand<CreateUserResult>;
     public record CreateUserResult(Guid UserId);
     public class CreateUserHandler(ApplicationDbContext context, IPublishEndpoint publishEndpoint, IHttpClientFactory httpClientFactory, ILogger<CreateUserHandler> logger)
         : ICommandHandler<CreateUserCommand, CreateUserResult>
@@ -18,7 +18,7 @@ namespace Authentication.API.Features.Users.CreateUser
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(command.Password),
                 Email = command.Email,
                 PhoneNumber = command.PhoneNumber,
-                IsActive = true,
+                IsActive = command.IsActive,
                 CreateAt = DateTime.Now
             };
 

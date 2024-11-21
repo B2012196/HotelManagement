@@ -1,14 +1,42 @@
-﻿namespace Admin.Web.Pages
+﻿using System.Net;
+using System.Numerics;
+
+namespace Admin.Web.Pages
 {
-    public class GuestModel(IGuestService guestService, ILogger<GuestModel> logger) : PageModel
+    public class GuestModel(IGuestService guestService, IAuthentication authentication, ILogger<GuestModel> logger) : PageModel
     {
-        public IEnumerable<Guest> GuestList { get; set; } = new List<Guest>();
+        public IEnumerable<GuestView> GuestList { get; set; } = new List<GuestView>();
+        public IEnumerable<UserDto> UserList { get; set; } = new List<UserDto>();
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
                 var resultguests = await guestService.GetGuests();
-                GuestList = resultguests.Guests;
+                var resultusers = await authentication.GetUsers();
+
+                UserList = resultusers.UserDtos;
+
+                List<GuestView>  guestViews = new List<GuestView>(); 
+                foreach (var guest in resultguests.Guests)
+                {
+                    var user = UserList.SingleOrDefault(u => u.UserId == guest.UserId);
+
+                    var guestView = new GuestView
+                    {
+                        GuestId = guest.GuestId,
+                        UserId = guest.UserId,
+                        FirstName = guest.FirstName,
+                        LastName = guest.LastName,
+                        DateofBirst = guest.DateofBirst,
+                        Address = guest.Address,
+                        Phone = user.PhoneNumber,
+                        Email = user.Email,
+                        IsActive = user.IsActive,
+                    };
+
+                    guestViews.Add(guestView);
+                }
+                GuestList = guestViews;
             }
             catch (ApiException apiEx)
             {

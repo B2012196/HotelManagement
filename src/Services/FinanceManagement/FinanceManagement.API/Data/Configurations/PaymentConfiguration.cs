@@ -12,7 +12,7 @@
             builder.Property(p => p.PaymentMethodId)
                    .IsRequired();
 
-            builder.Property(p => p.CreateAt).HasColumnType("timestamp without time zone").IsRequired();
+            builder.Property(p => p.CreateAt).IsRequired();
 
             builder.Property(p => p.Amount);
 

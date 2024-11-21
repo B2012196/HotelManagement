@@ -11,4 +11,6 @@
     public record GetPaymentsResponse(IEnumerable<Payment> Payments);
     public record GetPayByInvoiceIdResponse(Payment Payment);
     public record CreatePaymentResponse(string PaymentUrl, Guid PaymentId);
+
+    public record CreatePayDirectResponse(Guid PaymentId);
 }

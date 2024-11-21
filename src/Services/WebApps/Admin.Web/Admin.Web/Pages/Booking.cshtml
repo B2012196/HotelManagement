@@ -13,6 +13,58 @@
 }
 else
 {
+    <div class="container vh-100 d-flex justify-content-center align-items-center mt-3">
+        <div class="row w-100">
+            <!-- Cột 1: Form Tìm Kiếm -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <select class="form-control" id="searchType" name="SearchType">
+                                        <option value="bookingId">Mã đơn</option>
+                                        <option value="guestName">Tên Khách Hàng</option>
+                                        <option value="checkInDate">Ngày Nhận Phòng</option>
+                                        <option value="checkOutDate">Ngày Trả Phòng</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 ">
+                                    <input type="text" class="form-control" id="searchInput" name="SearchInput" placeholder="Nhập thông tin" required>
+                                </div>
+                            </div>
+                            <div class="form-group text-center mb-0">
+                                <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột 2: Form Lọc Trạng Thái Phòng -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form method="get" asp-action="Filter" asp-controller="Booking">
+                            <div class="form-group">
+                                <select class="form-control" id="filterStatus" name="FilterStatus">
+                                    <option value="pending">Đang chờ</option>
+                                    <option value="confirmed">Đã xác nhận</option>
+                                    <option value="checkedin">Đã nhận phòng</option>
+                                    <option value="checkedout">Đã trả phòng</option>
+                                </select>
+                            </div>
+                            <div class="form-group text-center mb-0">
+                                <button type="submit" class="btn btn-success">Lọc</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -38,6 +90,12 @@ else
                         <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#bookingDetailSelectionModal-@booking.BookingId">
                             Chi tiết
                         </button>
+                        @if (booking.BookingStatus == BookingStatus.CheckedIn)
+                        {
+                            <button type="button" class="btn btn-outline-success btn-sm ml-3" data-toggle="modal" data-target="#serviceSelectionModal-@booking.BookingId">
+                                Thêm dịch vụ
+                            </button>
+                        }
                     </td>
                 </tr>
 
@@ -55,6 +113,9 @@ else
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <input type="hidden" id="bookingId" name="BookingId" value="@booking.BookingId" hidden readonly />
+
+                                        <label for="bookingCode">Mã đơn đặt</label>
+                                        <input class="form-control" type="text" id="bookingCode" name="BookingCode" value="@booking.BookingCode" readonly />
 
                                         <label for="guestFirstName">Họ Tên</label>
                                         <input class="form-control" type="text" id="guestLastName" name="GuestLastName" value="@booking.GuestLastName @booking.GuestFirstName" readonly />
@@ -74,10 +135,10 @@ else
                                     </div>
                                     <div class="col-md-6">
                                         <label for="checkinDate">Ngày check-in thực tế</label>
-                                        <input class="form-control" type="date" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                                        <input class="form-control" type="datetime-local" id="checkinDate" name="CheckinDate" value="@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" readonly />
 
                                         <label for="checkoutDate">Ngày check-out thực tế</label>
-                                        <input class="form-control" type="date" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                                        <input class="form-control" type="datetime-local" id="checkoutDate" name="CheckoutDate" value="@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" readonly />
 
                                         <label for="roomQuantity">Số phòng đặt</label>
                                         <input class="form-control" type="number" id="roomQuantity" name="RoomQuantity" value="@booking.RoomQuantity" readonly />
@@ -162,7 +223,7 @@ else
                 </div>
 
                 //them service cho booking
-                <div class="modal fade" id="serviceSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionModalLabel" aria-hidden="true">
+                <div style="z-index: 1050;" class="modal fade" id="serviceSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="serviceSelectionModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -172,35 +233,23 @@ else
                                 </button>
                             </div>
                             <div class="modal-body">
-
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @foreach (var service in Model.ServiceList)
-                                            {
-                                                @if (service.ServiceImage != null)
-                                                {
-                                                    <div class="col-md-6 text-center mb-3">
-                                                        <img src="data:@service.ContentImage;base64,@Convert.ToBase64String(service.ServiceImage)"
-                                                             class="img-thumbnail service-image"
-                                                             alt="@service.ServiceName"
-                                                             data-service-id="@service.ServiceId"
-                                                             data-service-name="@service.ServiceName"
-                                                             onclick="showServiceDetails(this)"
-                                                             style="cursor: pointer; width: 150px; height: 100px;" />
-
-                                                        <p>@service.ServiceName.ServiceNameTranslate()</p>
-                                                    </div>
-                                                }
-                                            }
+                                    @foreach (var service in Model.ServiceList)
+                                    {
+                                        <div class="col-md-3 text-center">
+                                            <img src="data:@service.ContentImage;base64,@(service.ServiceImage != null ? Convert.ToBase64String(service.ServiceImage) : "")"
+                                                 class="img-thumbnail service-image"
+                                                 alt="@service.ServiceName.ServiceNameTranslate()"
+                                                 data-toggle="modal"
+                                                 data-target="#serviceModal-@service.ServiceId"
+                                                 style="cursor: pointer; width: 200px; height: 150px; object-fit: cover;" />
+                                            <p>@service.ServiceName.ServiceNameTranslate()</p>
                                         </div>
-                                    </div>
+                                    }
+                                </div>
 
-                                    <div class="col-md-6">
-                                        <div id="serviceDetails" class="p-3 border">
-                                            <h5 class="text-center">Chọn dịch vụ để xem chi tiết</h5>
-                                        </div>
-                                    </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                 </div>
 
                             </div>
@@ -208,7 +257,38 @@ else
                         </div>
                     </div>
                 </div>
+                
+                @foreach (var service in Model.ServiceList)
+                {
+                    <div style="z-index: 1060;" class="modal fade" id="serviceModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="serviceModalLabel">Thêm Dịch vụ: @service.ServiceName</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="AddService">
+                                        <input type="hidden" name="BookingId" value="@booking.BookingId" />
+                                        <input type="hidden" name="ServiceId" value="@service.ServiceId" />
 
+                                        <div class="form-group">
+                                            <label for="serviceNumber-@service.ServiceId">Số lượng</label>
+                                            <input type="number" class="form-control" id="serviceNumber-@service.ServiceId" name="ServiceNumber" required>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success">Thêm</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
                 //checkout booking
                 <div class="modal fade" id="checkoutSelectionModal-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="checkoutSelectionModal" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -308,31 +388,4 @@ else
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        function showServiceDetails(element) {
-            const serviceId = element.dataset.serviceId;
-            const serviceName = element.dataset.serviceName;
-
-            const detailsDiv = document.getElementById('serviceDetails');
-            if (detailsDiv) {
-                detailsDiv.innerHTML = `
-                    <h5 class="text-center">${serviceName}</h5>
-                    <form method="post" action="/YourAction">
-                        <input type="hidden" name="ServiceId" value="${serviceId}" />
-                        <div class="form-group mt-3">
-                            <label for="quantityInput">Số lượng</label>
-                            <input type="number" id="quantityInput" name="ServiceNumber" class="form-control" min="1" required />
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-3">Thêm</button>
-                    </form>
-                `;
-                console.log("Nội dung của #serviceDetails đã được cập nhật:", detailsDiv.innerHTML);
-            } else {
-                console.error("Element #serviceDetails not found!");
-            }
-        }
-
-
-    </script>
 }

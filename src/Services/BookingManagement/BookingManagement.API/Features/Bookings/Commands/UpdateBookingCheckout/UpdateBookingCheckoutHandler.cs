@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
-
-namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
+﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
 {
     public record UpdateBookingCheckoutCommand(Guid BookingId)
         : ICommand<UpdateBookingCheckoutResult>;
@@ -25,7 +23,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
                 throw new BookingNotFoundException(command.BookingId);
             }
             //update checkout
-            booking.CheckoutDate = DateTime.Now;
+            booking.CheckoutDate = DateTime.UtcNow;
 
             //request price and update statusbooking
             var client = httpClientFactory.CreateClient();
@@ -85,6 +83,16 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
 
         public decimal CalculateTotalPrice(DateTime checkinDate, DateTime checkoutDate, decimal roomPricePerDay)
         {
+            // Xác định múi giờ Việt Nam
+            var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+            // Chuyển đổi thời gian từ UTC sang giờ Việt Nam
+            if (checkinDate.Kind == DateTimeKind.Utc)
+                checkinDate = TimeZoneInfo.ConvertTimeFromUtc(checkinDate, vietnamTimeZone);
+
+            if (checkoutDate.Kind == DateTimeKind.Utc)
+                checkoutDate = TimeZoneInfo.ConvertTimeFromUtc(checkoutDate, vietnamTimeZone);
+
             // Quy định giờ chuẩn check-in và check-out là 12 giờ trưa
             TimeSpan standardCheckinTime = new TimeSpan(12, 0, 0);
             TimeSpan earlyCheckinTime1 = new TimeSpan(5, 0, 0);
@@ -96,7 +104,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckout
             TimeSpan lateCheckoutTime3 = new TimeSpan(18, 0, 0);
 
             // Tính số ngày lưu trú
-            int totalDays = (int)(checkoutDate.Date - checkinDate.Date).TotalDays + 1;
+            int totalDays = (int)(checkoutDate.Date - checkinDate.Date).TotalDays;
 
             // Kiểm tra trường hợp check-in sớm
             decimal earlyCheckinFee = 0;

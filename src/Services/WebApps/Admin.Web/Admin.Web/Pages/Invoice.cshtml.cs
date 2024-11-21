@@ -5,6 +5,7 @@
     {
         public IEnumerable<InvoiceView> InvoiceViewList { get; set; } = new List<InvoiceView>();
         public IEnumerable<InvoiceDetail> InvoiceDetailList { get; set; } = new List<InvoiceDetail>();
+        public IEnumerable<Invoice> InvoiceList { get; set; } = new List<Invoice>();
         public IEnumerable<Service> ServiceList { get; set; } = new List<Service>();
         public IEnumerable<Booking> BookingList { get; set; } = new List<Booking>();
         public IEnumerable<Guest> GuestList { get; set; } = new List<Guest>();
@@ -12,7 +13,7 @@
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
         public IEnumerable<Payment> PaymentList { get; set; } = new List<Payment>();
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string SearchType, string SearchInput, string FilterStatus)
         {
             try
             {
@@ -48,6 +49,7 @@
                 var resultgetpayments = await financeService.GetPayments();
                 logger.LogInformation("Get all payment");
 
+                InvoiceList = resultGetInvoice.Invoices;
                 InvoiceDetailList = resultGetInvoiceDetail.InvoiceDetails;
                 ServiceList = resultGetService.Services;
                 BookingList = resultbooking.Bookings;
@@ -56,9 +58,43 @@
                 RoomList = resultroom.Rooms;
                 PaymentList = resultgetpayments.Payments;
 
+                // Lọc danh sách Booking theo điều kiện tìm kiếm
+                IEnumerable<Booking> filteredBookings = resultbooking.Bookings;
+
+                if (!string.IsNullOrEmpty(SearchType) && !string.IsNullOrEmpty(SearchInput))
+                {
+                    switch (SearchType)
+                    {
+                        case "bookingId":
+                            BookingList = BookingList.Where(b => b.BookingCode == SearchInput);
+                            break;
+                        case "guestName":
+                            GuestList = GuestList.Where(b => b.FirstName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase));
+                            break;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(FilterStatus))
+                {
+                    switch (FilterStatus)
+                    {
+                        case "pending":
+                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.Pending);
+                            break;
+                        case "paid":
+                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.Paid);
+                            break;
+                        case "partiallypaid":
+                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.PartiallyPaid);
+                            break;
+                        default:
+                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.Cancelled);
+                            break;
+                    }
+                }
+
                 var invoiceViews = new List<InvoiceView>();
 
-                foreach (var invoice in resultGetInvoice.Invoices)
+                foreach (var invoice in InvoiceList)
                 {
                     var booking = BookingList.SingleOrDefault(b => b.BookingId == invoice.BookingId);
                     if(booking != null)
@@ -69,6 +105,7 @@
                             var invoiceView = new InvoiceView
                             {
                                 InvoiceId = invoice.InvoiceId,
+                                BookingCode = booking.BookingCode,
                                 GuestName = guest.LastName + " " +guest.FirstName,
                                 InvoiceStatus = invoice.InvoiceStatus,
                                 CheckinDate = booking.CheckinDate,
@@ -76,18 +113,22 @@
                                 TotalBooking = booking.TotalPrice,
                                 TotalPrice = invoice.TotalPrice,
                             };
-                            var bookingroom = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
+                            var bookingrooms = BookingRoomList.Where(b => b.BookingId == booking.BookingId).ToList();
 
                             if (booking.BookingStatus != BookingStatus.Pending)
                             {
-                                logger.LogWarning("Du lieu tu bookingroom: " +bookingroom[0].RoomId + "");
-                                var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookingroom[0].RoomId);
-                                if (roomnumber != null)
+                                invoiceView.RoomNumber = "";
+                                foreach (var bookroom in bookingrooms)
                                 {
-                                    logger.LogWarning("Du lieu tu room: " + roomnumber.Number);
-                                    invoiceView.RoomNumber = roomnumber.Number;
+                                    var roomnumber = RoomList.SingleOrDefault(r => r.RoomId == bookroom.RoomId);
+
+                                    if (roomnumber != null)
+                                    {
+                                        invoiceView.RoomNumber += roomnumber.Number + " ";
+                                    }
                                 }
                             }
+
                             var details = InvoiceDetailList.Where(d => d.InvoiceId == invoice.InvoiceId).ToList();
                             var invoiceServiceViews = new List<InvoiceServiceView>();
                             invoiceView.TotalServiceUsed = 0;
@@ -166,7 +207,7 @@
             return RedirectToPage("Invoice");
         }
 
-        public async Task<IActionResult> OnPostUpdateInvoiceAsync(Guid InvoiceId)
+        public async Task<IActionResult> OnPostUpdateInvoiceAsync(Guid InvoiceId, decimal RemainingAmount)
         {
             try
             {
@@ -175,6 +216,16 @@
                     InvoiceId = InvoiceId,
                 };
                 var resultUpdateInvoice = await financeService.UpdateInvoice(objUpdateInvoice);
+
+                //create payment
+                var objCreatePayment = new
+                {
+                    InvoiceId = InvoiceId,
+                    PaymentMethodId = Guid.Parse("15d78f29-1977-41de-a41f-9270c89270c5"),
+                    Amount = RemainingAmount
+                };
+
+                var resultCreatePayment = await financeService.CreatePaymentDirect(objCreatePayment);
             }
             catch (ApiException apiEx)
             {
@@ -187,6 +238,34 @@
             return RedirectToPage("Invoice");
 
         }
+
+        public async Task<IActionResult> OnPostPrintInvoiceAsync()
+        {
+            // Cấp phép QuestPDF
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
+            // 1. Tạo hóa đơn PDF
+            string fileName = $"Invoice_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            string filePath = Path.Combine("wwwroot", "invoices", fileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+            var invoice = new InvoiceDocument(
+                "BOOK-123",
+                DateTime.Now, // Ngày xuất hóa đơn
+                "Lam Minh Duc",
+                120000
+            );
+
+            invoice.GeneratePdf(filePath);
+
+            // 3. Trả file PDF về trình duyệt
+            byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            return File(fileBytes, "application/pdf", fileName);
+
+
+        }
+
         private void HandleApiException(ApiException apiEx)
         {
             switch (apiEx.StatusCode)

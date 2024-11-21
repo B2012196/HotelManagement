@@ -18,7 +18,7 @@
                 RoomQuantity = command.RoomQuantity,
                 BookingStatus = BookingStatus.Pending
             };
-
+            booking.BookingCode = $"BOOK-{DateTime.Now:yyyyMMdd}-{booking.BookingId.ToString().Substring(0, 3)}";
             context.Bookings.Add(booking);
             await context.SaveChangesAsync(cancellationToken);
 

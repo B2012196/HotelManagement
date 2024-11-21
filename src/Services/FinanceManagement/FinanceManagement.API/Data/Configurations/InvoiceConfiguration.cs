@@ -12,7 +12,7 @@
             builder.Property(o => o.GuestId)
                    .IsRequired();
 
-            builder.Property(o => o.CreateAt).HasColumnType("timestamp without time zone").IsRequired();
+            builder.Property(o => o.CreateAt).IsRequired();
 
             builder.Property(o => o.InvoiceStatus).HasConversion<int>().IsRequired();
 

@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
         IFinanceService financeService,
@@ -13,32 +11,32 @@ namespace Admin.Web.Pages
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
         public Room BRoom { get; set; } = new Room();
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string SearchType, string SearchInput, string FilterStatus)
         {
             try
             {
                 //get all booking
                 var resultbooking = await bookingService.GetBookings();
-                logger.LogWarning("booking");
+                logger.LogInformation("get all booking");
                 //get all guest
                 var resultguest = await guestService.GetGuests();
-                logger.LogWarning("guest");
+                logger.LogInformation("get all guest");
                 //get all roomtype
                 var resultroomtype = await hotelService.GetRoomTypes();
-                logger.LogWarning("roomtype");
+                logger.LogInformation("get all roomtype");
                 //get all room
                 var resultroom = await hotelService.GetRooms();
-                logger.LogWarning("room");
+                logger.LogInformation("get all room");
                 //get all bookingroom
                 var resultbroom = await bookingService.GetBookingRooms();
-                logger.LogWarning("bookingroom");
+                logger.LogInformation("get all bookingroom");
                 //get all service
                 var resultServices = await financeService.GetServices();
-                logger.LogWarning("service");
+                logger.LogInformation("get all service");
                 if (resultbooking == null || resultguest == null || resultroomtype == null || resultroom == null ||
                     resultbroom == null || resultServices == null)
                 {
-                    logger.LogWarning("null do get all");
+                    logger.LogInformation("null do get all");
                     TempData["ErrorApiException"] = "null do get all";
                     return Page();
                 }
@@ -48,21 +46,71 @@ namespace Admin.Web.Pages
                 BookingRoomList = resultbroom.BookingRooms;
                 ServiceList = resultServices.Services;
 
+                // Lọc danh sách Booking theo điều kiện tìm kiếm
+                IEnumerable<Booking> filteredBookings = resultbooking.Bookings;
+
+                if (!string.IsNullOrEmpty(SearchType) && !string.IsNullOrEmpty(SearchInput))
+                {
+                    switch (SearchType)
+                    {
+                        case "bookingId":
+                            filteredBookings = filteredBookings.Where(b => b.BookingCode == SearchInput);
+                            break;
+                        case "guestName":
+                            GuestList = GuestList.Where(b => b.FirstName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase));
+                            break;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(FilterStatus))
+                {
+                    switch (FilterStatus)
+                    {
+                        case "pending":
+                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.Pending);
+                            break;
+                        case "confirmed":
+                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.Confirmed);
+                            break;
+                        case "checkedin":
+                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.CheckedIn);
+                            break;
+                        case "checkedout":
+                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.CheckedOut);
+                            break;
+                        default:
+                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.Canceled);
+                            break;
+                    }
+                }
+
+
                 var bookingViewList = new List<BookingView>();
 
-                foreach (var booking in resultbooking.Bookings)
+                foreach (var booking in filteredBookings)
                 {
                     var typename = RoomTypeList.SingleOrDefault(r => r.TypeId == booking.TypeId);
                     var guestname = GuestList.SingleOrDefault(g => g.GuestId == booking.GuestId);
                     if (guestname == null || typename == null)
                     {
                         logger.LogWarning("Guest or Type are null");
-                        return Page();
+                        continue;
                     }
-                    logger.LogWarning("Guest or Type are not null");
+
+                    var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+                    if (booking.CheckinDate.HasValue && booking.CheckinDate.Value.Kind == DateTimeKind.Utc)
+                    {
+                        booking.CheckinDate = TimeZoneInfo.ConvertTimeFromUtc(booking.CheckinDate.Value, vietnamTimeZone);
+                    }
+                    if (booking.CheckoutDate.HasValue && booking.CheckoutDate.Value.Kind == DateTimeKind.Utc)
+                    {
+                        booking.CheckinDate = TimeZoneInfo.ConvertTimeFromUtc(booking.CheckoutDate.Value, vietnamTimeZone);
+                    }
+
                     var bookingView = new BookingView
                     {
                         BookingId = booking.BookingId,
+                        BookingCode = booking.BookingCode,
                         TypeId = booking.TypeId,
                         TypeName = typename.Name,
                         GuestId = booking.GuestId,
@@ -250,11 +298,22 @@ namespace Admin.Web.Pages
                 }
                 //if Kiem tra chưa có tài khoản thì tạo
                 var resultGetUser = await authentication.GetUserByPhone(PhoneNumber);
-                //tim thay user
-                if(resultGetUser != null)
+
+                //get guestID
+                var resultGetGuest = await guestService.GetGuestByUserId(resultGetUser.UserDto.UserId);
+
+                //tạo booking
+                var booking = new Booking
                 {
-                    //tao booking
-                }
+                    BookingId = Guid.Empty,
+                    GuestId = resultGetGuest.Guest.GuestId,
+                    TypeId = roomTypeIdGuid,
+                    ExpectedCheckinDate = ExpectedCheckInDate,
+                    ExpectedCheckoutDate = ExpectedCheckOutDate,
+                    RoomQuantity = RoomQuantity
+                };
+                 
+                var resultCreateBooking = await bookingService.CreateBooking(booking);
                 
             }
             catch (ApiException apiEx)
@@ -270,18 +329,19 @@ namespace Admin.Web.Pages
                             logger.LogInformation("Dữ liệu không hợp lệ.");
                             return Page();
                         }
-                        //create user
+                        //create user and create guest
                         var user = new User
                         {
                             RoleId = roleIdGuid,
-                            UserName = string.Empty,
-                            Email = string.Empty,
+                            UserName = Guid.NewGuid().ToString(), 
+                            Email = Guid.NewGuid().ToString(),
                             PhoneNumber = PhoneNumber,
-                            Password = string.Empty
+                            Password = string.Empty,
+                            IsActive = false,
                         };
                         var resultCreateUser = await authentication.CreateUser(user);
 
-                        //create guest
+                        //get guest and update guest
                         var resultGetGuestByUserId = await guestService.GetGuestByUserId(resultCreateUser.UserId);
                         var guest = new Guest
                         {

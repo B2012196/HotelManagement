@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
-
-namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
+﻿namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
 {
     public record UpdateBookingCheckinCommand(Guid BookingId) : ICommand<UpdateBookingCheckinResult>;
     public record UpdateBookingCheckinResult(bool IsSuccess);
@@ -23,7 +21,7 @@ namespace BookingManagement.API.Features.Bookings.Commands.UpdateBookingCheckin
                 throw new BookingNotFoundException(command.BookingId);
             }
             //change date and status
-            booking.CheckinDate = DateTime.Now;
+            booking.CheckinDate = DateTime.UtcNow;
             booking.BookingStatus = BookingStatus.CheckedIn;
 
 

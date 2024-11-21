@@ -3,6 +3,7 @@
     public class BookingView
     {
         public Guid BookingId { get; set; }
+        public string BookingCode { get; set; }
         public Guid GuestId { get; set; }
         public string GuestFirstName { get; set; }
         public string GuestLastName { get; set; }
@@ -21,6 +22,7 @@
     public class Booking
     {
         public Guid BookingId { get; set; }
+        public string BookingCode { get; set; }
         public Guid GuestId { get; set; }
         public Guid TypeId { get; set; }
         public DateTime ExpectedCheckinDate { get; set; }

@@ -63,21 +63,20 @@ footer {
     cursor: pointer;
 }
 /* Modal chia làm 2 phần: ảnh bên trái và thông tin bên phải */
-.modal-body {
+.modal-body-custom {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
 
-    .modal-body .left {
+    .modal-body-custom .left {
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    .modal-body .right {
-        flex: 1;
-    }
+.mmodal-body-custom .right {
+    flex: 1;
+}
 
 #modalRoomImage {
     max-width: 400px;
@@ -87,10 +86,10 @@ footer {
     margin: 0 auto;
 }
 
-    .modal-body img {
-        width: 100%; /* Đảm bảo ảnh luôn chiếm toàn bộ không gian */
-        border-radius: 8px; /* Tùy chọn: làm bo góc ảnh */
-    }
+.modal-body-custom img {
+    width: 100%; /* Đảm bảo ảnh luôn chiếm toàn bộ không gian */
+    border-radius: 8px; /* Tùy chọn: làm bo góc ảnh */
+}
 
 .modal-footer {
     display: flex;
