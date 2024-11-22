@@ -34,7 +34,8 @@ builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnection
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("ClientIdPolicy", policy => policy.RequireClaim("client_id", "hotelmanagementClient"));
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireStaffRole", policy => policy.RequireRole("Staff"));
 });
 
 var app = builder.Build();
@@ -46,6 +47,5 @@ app.UseHealthChecks("/health",
     {
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
-//app.UseAuthentication();
 app.UseAuthorization();
 app.Run();

@@ -29,7 +29,6 @@
 
             }
 
-            //var hotels = await _context.Hotels.ToListAsync(cancellationToken);
             return new GetHotelsResult(await hotels.ToListAsync());
         }
     }

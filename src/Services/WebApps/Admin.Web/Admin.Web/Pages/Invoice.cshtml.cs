@@ -30,7 +30,7 @@
                 logger.LogInformation("Get all services");
 
                 //get all booking
-                var resultbooking = await bookingService.GetBookings();
+                var resultbooking = await bookingService.GetBookings(1, 10);
                 logger.LogInformation("Get all bookings");
 
                 //get all guest

@@ -284,7 +284,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
-      }
+      },
     },
     //get all, put, delete
     {
@@ -301,6 +301,9 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
+      },
+      "AddClaimsToRequest": {
+        "ClaimType": "role"
       }
     },
     {

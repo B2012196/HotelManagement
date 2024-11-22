@@ -112,6 +112,11 @@
                         Console.WriteLine($"User ID: {userId}");
                         //get guest
                         var resultGetGuest = await guestService.GetGuestByUserId(Guid.Parse(userId));
+                        if(resultGetGuest.Guest.FirstName == "Your Firstname")
+                        {
+                            TempData["ErrorApiException"] = "Vui lòng điền thông tin cá nhân";
+                            return RedirectToPage("Account");
+                        }
                         //get user
                         var resultGetUser = await authentication.GetUserByUserId(Guid.Parse(userId));
                         
@@ -139,6 +144,7 @@
                                 {
                                     Console.WriteLine("BookingId: " +resultbooking.BookingId);
                                     //create invoice
+                                    //if IsStatus = true, thanh toan online
                                     var objCreateInvoice = new
                                     {
                                         BookingId = resultbooking.BookingId,    

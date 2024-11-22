@@ -33,7 +33,8 @@
         public int RoomQuantity { get; set; }
         public BookingStatus BookingStatus { get; set; }
     }
-    public record GetBookingsResponse(IEnumerable<Booking> Bookings);
+
+    public record GetBookingsResponse(IEnumerable<Booking> Bookings, int totalCount);
     public record CreateBookingResponse(Guid BookingId);
     public record UpdateBookingConfirmResponse(bool IsSuccess, Guid RoomId);
     public record UpdateBookingCheckinResponse(bool IsSuccess);

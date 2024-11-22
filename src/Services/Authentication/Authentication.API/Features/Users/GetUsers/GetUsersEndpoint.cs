@@ -13,6 +13,7 @@
 
                 return Results.Ok(response);
             })
+            .RequireAuthorization("RequireAdminRole")
             .WithName("GetUsers")
             .Produces<GetUsersResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

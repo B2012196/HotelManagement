@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using System.Text;
@@ -7,6 +6,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json");
 // Cấu hình JWT Authentication
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -22,11 +22,12 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuerSigningKey = true
         };
     });
+
 builder.Services.AddOcelot();
 
 var app = builder.Build();
-
-await app.UseOcelot();
 app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthorization();
+await app.UseOcelot();
+
 app.Run();

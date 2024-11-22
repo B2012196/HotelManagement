@@ -32,9 +32,39 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 //health check
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
+//add authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        // Địa chỉ của Authentication Service (Issuer)
+        options.Authority = "https://localhost:5056";  // Đặt đây là URL của IdentityServer hoặc Auth Service của bạn
+
+        // Nếu đang phát triển với HTTP (chưa có SSL), tắt kiểm tra HTTPS
+        options.RequireHttpsMetadata = false;  // Cảnh báo, chỉ nên tắt ở môi trường phát triển
+
+        // Cấu hình xác thực JWT token
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,  // Kiểm tra Issuer
+            ValidIssuer = "https://localhost:5056",  // Đây phải là URL của Identity Server hoặc Token Issuer
+
+            ValidateAudience = false,  // Tắt nếu không kiểm tra Audience trong token
+            ValidateLifetime = true,  // Kiểm tra thời gian hết hạn của token
+
+            // Key xác thực token
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKeyHotelwebsite14")),
+            ValidateIssuerSigningKey = true // Xác nhận key ký token
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireStaffRole", policy => policy.RequireRole("Staff"));
+    options.AddPolicy("RequireGuestRole", policy => policy.RequireRole("Guest"));
+});
 
 var app = builder.Build();
-//app.UseAuthentication();
 app.MapCarter();
 app.UseExceptionHandler(options => { });
 app.UseHealthChecks("/health",
@@ -42,5 +72,6 @@ app.UseHealthChecks("/health",
     {
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();

@@ -1,4 +1,6 @@
-﻿namespace Admin.Web.Pages
+﻿using Microsoft.Extensions.Logging;
+
+namespace Admin.Web.Pages
 {
     public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
         IFinanceService financeService,
@@ -10,13 +12,15 @@
         public IEnumerable<Service> ServiceList { get; set; } = new List<Service>();
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
+        public BookingPage BookingPage { get; set; } = new BookingPage();   
+
         public Room BRoom { get; set; } = new Room();
-        public async Task<IActionResult> OnGetAsync(string SearchType, string SearchInput, string FilterStatus)
+        public async Task<IActionResult> OnGetAsync(string SearchType, string SearchInput, string FilterStatus, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
                 //get all booking
-                var resultbooking = await bookingService.GetBookings();
+                var resultbooking = await bookingService.GetBookings(pageNumber, pageSize);
                 logger.LogInformation("get all booking");
                 //get all guest
                 var resultguest = await guestService.GetGuests();
@@ -33,6 +37,7 @@
                 //get all service
                 var resultServices = await financeService.GetServices();
                 logger.LogInformation("get all service");
+
                 if (resultbooking == null || resultguest == null || resultroomtype == null || resultroom == null ||
                     resultbroom == null || resultServices == null)
                 {
@@ -41,6 +46,10 @@
                     return Page();
                 }
                 GuestList = resultguest.Guests;
+                BookingPage.PageNumber = pageNumber;
+                BookingPage.PageSize = pageSize;
+                BookingPage.TotalPages = (int)Math.Ceiling((double)resultbooking.totalCount / pageSize);
+
                 RoomTypeList = resultroomtype.RoomTypes;
                 RoomList = resultroom.Rooms;
                 BookingRoomList = resultbroom.BookingRooms;
@@ -83,7 +92,7 @@
                     }
                 }
 
-
+                logger.LogWarning("code 98 line");
                 var bookingViewList = new List<BookingView>();
 
                 foreach (var booking in filteredBookings)
@@ -314,6 +323,8 @@
                 };
                  
                 var resultCreateBooking = await bookingService.CreateBooking(booking);
+
+
                 
             }
             catch (ApiException apiEx)
