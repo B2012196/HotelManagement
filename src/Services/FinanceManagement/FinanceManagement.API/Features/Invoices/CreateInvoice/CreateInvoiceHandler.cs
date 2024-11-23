@@ -12,7 +12,7 @@
                 InvoiceId = Guid.NewGuid(),
                 BookingId = command.BookingId,
                 GuestId = command.GuestId,
-                CreateAt = DateTime.Now,
+                CreateAt = DateTime.UtcNow,
                 TotalPrice = 0,
             };
             if(command.IsStatus)

@@ -1,6 +1,6 @@
 ﻿namespace BookingManagement.API.Features.Bookings.Queries.GetBookings
 {
-    public record GetBookingsRequest(int? pageNumber = 1, int? pageSize = 10);
+    public record GetBookingsRequest(int? pageNumber = 1, int? pageSize = 10, BookingStatus? filterStatus = BookingStatus.Pending);
     public record GetBookingsResponse(IEnumerable<Booking> Bookings, int totalCount);
     public class GetBookingsEndpoint : ICarterModule
     {
@@ -8,7 +8,7 @@
         {
             app.MapGet("/bookings/bookings", async ([AsParameters] GetBookingsRequest request, ISender sender) =>
             {
-                var result = await sender.Send(new GetBookingsQuery(request.pageNumber, request.pageSize));
+                var result = await sender.Send(new GetBookingsQuery(request.pageNumber, request.pageSize, request.filterStatus));
 
                 var response = result.Adapt<GetBookingsResponse>();
 

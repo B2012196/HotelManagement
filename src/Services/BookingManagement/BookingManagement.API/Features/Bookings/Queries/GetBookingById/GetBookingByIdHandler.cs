@@ -3,11 +3,18 @@ namespace BookingManagement.API.Features.Bookings.Queries.GetBookingById
 {
     public record GetBookingByIdQuery(Guid BookingId) : IQuery<GetBookingByIdResult>;
     public record GetBookingByIdResult(Booking Booking);
-    public class GetBookingByIdHandler : IQueryHandler<GetBookingByIdQuery, GetBookingByIdResult>
+    public class GetBookingByIdHandler(ApplicationDbContext context) : IQueryHandler<GetBookingByIdQuery, GetBookingByIdResult>
     {
-        public Task<GetBookingByIdResult> Handle(GetBookingByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetBookingByIdResult> Handle(GetBookingByIdQuery query, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var booking = await context.Bookings.SingleOrDefaultAsync(b => b.BookingId == query.BookingId, cancellationToken);
+
+            if (booking == null)
+            {
+                throw new BookingNotFoundException(query.BookingId+"");
+            }
+
+            return new GetBookingByIdResult(booking);
         }
     }
 }

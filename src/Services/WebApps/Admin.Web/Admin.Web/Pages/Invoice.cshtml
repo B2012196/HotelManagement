@@ -95,7 +95,7 @@ else
                             <div class="modal-body">
                                 <!-- Form to choose available room -->
                                 <div class="form-group row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <h5>Thông tin đặt phòng</h5>
                                         <input type="hidden" id="invoiceId" name="InvoiceId" value="@invoice.InvoiceId" hidden readonly />
 
@@ -116,9 +116,8 @@ else
 
                                         <label for="invoiceStatus">Phí Phòng</label>
                                         <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@((invoice.TotalBooking.HasValue ? invoice.TotalBooking.Value.ToString("N0") : ""))" readonly /> 
-
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-7">
                                         <h5>Dịch vụ đã sử dụng</h5>
                                         @foreach (var detail in invoice.InvoiceServiceViews)
                                         {

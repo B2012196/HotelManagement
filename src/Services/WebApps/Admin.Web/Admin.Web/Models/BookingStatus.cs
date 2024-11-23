@@ -13,6 +13,9 @@ namespace Admin.Web.Models
         [Display(Name = "Đã nhận phòng")]
         CheckedIn = 4,
         [Display(Name = "Đã trả phòng")]
-        CheckedOut = 5
+        CheckedOut = 5,
+
+        None = 6,
+
     }
 }

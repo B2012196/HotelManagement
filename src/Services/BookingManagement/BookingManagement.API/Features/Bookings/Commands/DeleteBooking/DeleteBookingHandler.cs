@@ -11,7 +11,7 @@
 
             if (booking is null)
             {
-                throw new BookingNotFoundException(command.BookingId);
+                throw new BookingNotFoundException(command.BookingId+"");
             }
 
             context.Bookings.Remove(booking);

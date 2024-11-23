@@ -35,6 +35,9 @@
     }
 
     public record GetBookingsResponse(IEnumerable<Booking> Bookings, int totalCount);
+    public record GetBookingByIdResponse(Booking Booking);
+    public record GetBookingByCodeResponse(Booking Booking);
+    public record GetBookingsByStatusResponse(IEnumerable<Booking> Bookings);
     public record CreateBookingResponse(Guid BookingId);
     public record UpdateBookingConfirmResponse(bool IsSuccess, Guid RoomId);
     public record UpdateBookingCheckinResponse(bool IsSuccess);

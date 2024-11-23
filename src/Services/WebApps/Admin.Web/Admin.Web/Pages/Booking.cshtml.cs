@@ -15,12 +15,52 @@ namespace Admin.Web.Pages
         public BookingPage BookingPage { get; set; } = new BookingPage();   
 
         public Room BRoom { get; set; } = new Room();
-        public async Task<IActionResult> OnGetAsync(string SearchType, string SearchInput, string FilterStatus, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> OnGetAsync(string SearchInput, string FilterStatus, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
                 //get all booking
-                var resultbooking = await bookingService.GetBookings(pageNumber, pageSize);
+                // Lọc danh sách Booking theo điều kiện tìm kiếm
+                IEnumerable<Booking> filteredBookings = new List<Booking>();
+                int totalCount;
+                if (!string.IsNullOrEmpty(FilterStatus))
+                {
+                    var resultNone = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.None);
+                    filteredBookings = resultNone.Bookings;
+                    totalCount = resultNone.totalCount;
+                }
+                else 
+                {
+                    switch (FilterStatus)
+                    {
+                        case "pending":
+                            var resultPending = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.Pending);
+                            filteredBookings = resultPending.Bookings;
+                            totalCount = resultPending.totalCount;
+                            break;
+                        case "confirmed":
+                            var resultConfirmed = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.Confirmed);
+                            filteredBookings = resultConfirmed.Bookings;
+                            totalCount = resultConfirmed.totalCount;
+                            break;
+                        case "checkedin":
+                            var resultCheckin = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.CheckedIn);
+                            filteredBookings = resultCheckin.Bookings;
+                            totalCount = resultCheckin.totalCount;
+                            break;
+                        case "checkedout":
+                            var resultCheckout = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.CheckedOut);
+                            filteredBookings = resultCheckout.Bookings;
+                            totalCount = resultCheckout.totalCount;
+                            break;
+                        default:
+                            var resultCancel = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.Canceled);
+                            filteredBookings = resultCancel.Bookings;
+                            totalCount = resultCancel.totalCount;
+                            break;
+                    }
+                }
+                
                 logger.LogInformation("get all booking");
                 //get all guest
                 var resultguest = await guestService.GetGuests();
@@ -38,7 +78,7 @@ namespace Admin.Web.Pages
                 var resultServices = await financeService.GetServices();
                 logger.LogInformation("get all service");
 
-                if (resultbooking == null || resultguest == null || resultroomtype == null || resultroom == null ||
+                if (resultguest == null || resultroomtype == null || resultroom == null ||
                     resultbroom == null || resultServices == null)
                 {
                     logger.LogInformation("null do get all");
@@ -48,51 +88,28 @@ namespace Admin.Web.Pages
                 GuestList = resultguest.Guests;
                 BookingPage.PageNumber = pageNumber;
                 BookingPage.PageSize = pageSize;
-                BookingPage.TotalPages = (int)Math.Ceiling((double)resultbooking.totalCount / pageSize);
+                BookingPage.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
                 RoomTypeList = resultroomtype.RoomTypes;
                 RoomList = resultroom.Rooms;
                 BookingRoomList = resultbroom.BookingRooms;
                 ServiceList = resultServices.Services;
 
-                // Lọc danh sách Booking theo điều kiện tìm kiếm
-                IEnumerable<Booking> filteredBookings = resultbooking.Bookings;
-
-                if (!string.IsNullOrEmpty(SearchType) && !string.IsNullOrEmpty(SearchInput))
+               
+                var Bookings = new List<Booking>();
+                
+                if (!string.IsNullOrEmpty(SearchInput))
                 {
-                    switch (SearchType)
-                    {
-                        case "bookingId":
-                            filteredBookings = filteredBookings.Where(b => b.BookingCode == SearchInput);
-                            break;
-                        case "guestName":
-                            GuestList = GuestList.Where(b => b.FirstName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase));
-                            break;
-                    }
+
+                    var resultGetBookById = await bookingService.GetBookingByBookingCode(SearchInput);
+                    Bookings.Add(resultGetBookById.Booking);
+                    filteredBookings = Bookings;
                 }
                 else if (!string.IsNullOrEmpty(FilterStatus))
                 {
-                    switch (FilterStatus)
-                    {
-                        case "pending":
-                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.Pending);
-                            break;
-                        case "confirmed":
-                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.Confirmed);
-                            break;
-                        case "checkedin":
-                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.CheckedIn);
-                            break;
-                        case "checkedout":
-                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.CheckedOut);
-                            break;
-                        default:
-                            filteredBookings = filteredBookings.Where(b => b.BookingStatus == BookingStatus.Canceled);
-                            break;
-                    }
+                    
                 }
 
-                logger.LogWarning("code 98 line");
                 var bookingViewList = new List<BookingView>();
 
                 foreach (var booking in filteredBookings)

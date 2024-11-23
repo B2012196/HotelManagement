@@ -2,7 +2,7 @@
 {
     public class BookingNotFoundException : NotFoundException
     {
-        public BookingNotFoundException(Guid Id) : base("Booking", Id)
+        public BookingNotFoundException(string Id) : base("Booking", Id)
         {
 
         }

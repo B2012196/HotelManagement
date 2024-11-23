@@ -16,6 +16,7 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Mã đơn</th>
                 <th>Loại phòng</th>
                 <th>Ngày Check-in</th>
                 <th>Ngày Check-out</th>
@@ -28,6 +29,7 @@ else
             @foreach (var booking in Model.BookingList)
             {
                 <tr>
+                    <td>@booking.BookingCode</td>
                     <td>@booking.TypeName</td>
                     <td>@(booking.CheckinDate.HasValue ? booking.CheckinDate.Value.ToString("dd/MM/yyyy") : string.Empty)</td>
                     <td>@(booking.CheckoutDate.HasValue ? booking.CheckoutDate.Value.ToString("dd/MM/yyyy") : string.Empty)</td>

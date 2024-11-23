@@ -12,7 +12,7 @@ namespace BookingManagement.API.Features.Bookings.Queries.GetBookingsByGuestId
 
             if(bookings is null)
             {
-                throw new BookingNotFoundException(query.GuestId);
+                throw new BookingNotFoundException(query.GuestId+"");
             }
 
             return new GetBookingByGuestIdResult(bookings);

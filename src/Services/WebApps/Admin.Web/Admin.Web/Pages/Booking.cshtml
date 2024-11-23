@@ -20,19 +20,9 @@ else
                 <div class="card shadow">
                     <div class="card-body">
                         <form method="get">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <select class="form-control" id="searchType" name="SearchType">
-                                        <option value="bookingId">Mã đơn</option>
-                                        <option value="guestName">Tên Khách Hàng</option>
-                                        <option value="checkInDate">Ngày Nhận Phòng</option>
-                                        <option value="checkOutDate">Ngày Trả Phòng</option>
-                                    </select>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="searchInput" name="SearchInput" placeholder="Nhập mã đơn đặt phòng" required>
                                 </div>
-                                <div class="form-group col-md-6 ">
-                                    <input type="text" class="form-control" id="searchInput" name="SearchInput" placeholder="Nhập thông tin" required>
-                                </div>
-                            </div>
                             <div class="form-group text-center mb-0">
                                 <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
                             </div>
@@ -154,7 +144,7 @@ else
 
                                     @if (booking.BookingStatus == BookingStatus.Pending)
                                     {
-                                        <button type="button" class="btn btn-primary btn-sm m-2 ml-3" data-toggle="modal" data-target="#roomSelectionModal-@booking.BookingId">
+                                        <button type="button" class="btn btn-primary m-2 ml-3" data-toggle="modal" data-target="#roomSelectionModal-@booking.BookingId">
                                             Tìm phòng
                                         </button>
                                     }
@@ -163,15 +153,12 @@ else
                                         <form method="post" asp-page-handler="CheckinBooking">
                                              <input type="hidden" name="BookingId" value="@booking.BookingId" hidden readonly />
                                              <input type="hidden" name="GuestId" value="@booking.GuestId" hidden readonly />
-                                            <button type="submit" class="btn btn-outline-success btn-sm m-2 ml-3">Checkin</button>
+                                            <button type="submit" class="btn btn-outline-success m-2 ml-3">Checkin</button>
                                         </form>
                                     }
                                     else if (booking.BookingStatus == BookingStatus.CheckedIn)
                                     {
-                                        <button type="button" class="btn btn-outline-primary btn-sm m-2 ml-3" data-toggle="modal" data-target="#serviceSelectionModal-@booking.BookingId">
-                                            Thêm dịch vụ
-                                        </button>
-                                        <button type="button" class="btn btn-outline-warning btn-sm m-2" data-toggle="modal" data-target="#checkoutSelectionModal-@booking.BookingId">
+                                        <button type="button" class="btn btn-outline-warning m-2 ml-3" data-toggle="modal" data-target="#checkoutSelectionModal-@booking.BookingId">
                                             Checkout
                                         </button>
                                     }

@@ -3,7 +3,16 @@
     public interface IBookingService
     {
         [Get("/bookings/bookings")]
-        Task<GetBookingsResponse> GetBookings(int? pageNumber, int? pageSize);
+        Task<GetBookingsResponse> GetBookings(int? pageNumber, int? pageSize, BookingStatus status);
+
+        [Get("/bookings/bookings/id/{BookingId}")]
+        Task<GetBookingByIdResponse> GetBookingById(Guid BookingId);
+
+        [Get("/bookings/bookings/code/{BookingCode}")]
+        Task<GetBookingByCodeResponse> GetBookingByBookingCode(string BookingCode);
+
+        [Get("/bookings/bookings/status/{status}")]
+        Task<GetBookingsByStatusResponse> GetBookingByBookingStatus(BookingStatus status);
 
         [Get("/bookings/bookingrooms")]
         Task<GetBookingRoomsResponse> GetBookingRooms();
