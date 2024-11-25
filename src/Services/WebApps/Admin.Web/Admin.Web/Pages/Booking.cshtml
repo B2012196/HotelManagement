@@ -35,7 +35,7 @@ else
             <div class="col-md-6 mb-3">
                 <div class="card shadow">
                     <div class="card-body">
-                        <form method="get" asp-action="Filter" asp-controller="Booking">
+                        <form method="get">
                             <div class="form-group">
                                 <select class="form-control" id="filterStatus" name="FilterStatus">
                                     <option value="pending">Đang chờ</option>
@@ -313,16 +313,26 @@ else
         <div class="d-flex justify-content-center">
             <ul class="pagination">
                 <li class="page-item @(Model.BookingPage.PageNumber == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-route-pageNumber="@(Model.BookingPage.PageNumber - 1)">&laquo;</a>
+                    <a class="page-link" 
+                        asp-route-pageNumber="@(Model.BookingPage.PageNumber - 1)"
+                        asp-route-FilterStatus="@Model.Filter" 
+                    >&laquo;</a>
                 </li>
                 @for (int i = 1; i <= Model.BookingPage.TotalPages; i++)
                 {
                     <li class="page-item @(Model.BookingPage.PageNumber == i ? "active" : "")">
-                        <a class="page-link" asp-route-pageNumber="@i">@i</a>
+                        <a class="page-link" asp-route-pageNumber="@i"
+                            asp-route-FilterStatus="@Model.Filter" >
+                            @i
+                        </a>
                     </li>
                 }
                 <li class="page-item @(Model.BookingPage.PageNumber == Model.BookingPage.TotalPages ? "disabled" : "")">
-                    <a class="page-link" asp-route-pageNumber="@(Model.BookingPage.PageNumber + 1)">&raquo;</a>
+                    <a class="page-link" 
+                        asp-route-pageNumber="@(Model.BookingPage.PageNumber + 1)"
+                            asp-route-FilterStatus="@Model.Filter" >
+                        &raquo;
+                    </a>
                 </li>
             </ul>
         </div>

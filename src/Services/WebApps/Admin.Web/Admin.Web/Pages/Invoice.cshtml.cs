@@ -5,7 +5,6 @@
     {
         public IEnumerable<InvoiceView> InvoiceViewList { get; set; } = new List<InvoiceView>();
         public IEnumerable<InvoiceDetail> InvoiceDetailList { get; set; } = new List<InvoiceDetail>();
-        public IEnumerable<Invoice> InvoiceList { get; set; } = new List<Invoice>();
         public IEnumerable<Service> ServiceList { get; set; } = new List<Service>();
         public IEnumerable<Booking> BookingList { get; set; } = new List<Booking>();
         public IEnumerable<Guest> GuestList { get; set; } = new List<Guest>();
@@ -13,14 +12,54 @@
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
         public IEnumerable<Payment> PaymentList { get; set; } = new List<Payment>();
-        public async Task<IActionResult> OnGetAsync(string SearchType, string SearchInput, string FilterStatus)
+        public InvoicePage InvoicePage { get; set; } = new InvoicePage();
+        public string Filter = "";
+        public async Task<IActionResult> OnGetAsync(string SearchInput, string FilterStatus, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
-                //get all invoice
-                var resultGetInvoice = await financeService.GetInvoices();
-                logger.LogInformation("Get all invoices");
-
+                // Lọc danh sách Invoice theo điều kiện tìm kiếm
+                IEnumerable<Invoice> filteredInvoices = new List<Invoice>();
+                int totalCount;
+                //neu co loc
+                var filterStatus = InvoiceStatus.None;
+                if (string.IsNullOrEmpty(FilterStatus))
+                {
+                    var resultNone = await financeService.GetInvoices(pageNumber, pageSize, filterStatus);
+                    filteredInvoices = resultNone.Invoices;
+                    totalCount = resultNone.totalCount;
+                    logger.LogWarning("totalCount: " + totalCount);
+                }
+                else
+                {
+                    Filter = FilterStatus;
+                    switch (FilterStatus)
+                    {
+                        case "pending":
+                            filterStatus = InvoiceStatus.Pending;
+                            var resultPending = await financeService.GetInvoices(pageNumber, pageSize, filterStatus);
+                            filteredInvoices = resultPending.Invoices;
+                            totalCount = resultPending.totalCount;
+                            break;
+                        case "paid":
+                            filterStatus = InvoiceStatus.Paid;
+                            var resultConfirmed = await financeService.GetInvoices(pageNumber, pageSize, filterStatus);
+                            filteredInvoices = resultConfirmed.Invoices;
+                            totalCount = resultConfirmed.totalCount;
+                            break;
+                        case "partiallypaid":
+                            filterStatus = InvoiceStatus.PartiallyPaid;
+                            var resultCheckin = await financeService.GetInvoices(pageNumber, pageSize, filterStatus);
+                            filteredInvoices = resultCheckin.Invoices;
+                            totalCount = resultCheckin.totalCount;
+                            break;
+                        default:
+                            var resultCancel = await financeService.GetInvoices(pageNumber, pageSize, filterStatus);
+                            filteredInvoices = resultCancel.Invoices;
+                            totalCount = resultCancel.totalCount;
+                            break;
+                    }
+                }
                 //get all invoicedetails
                 var resultGetInvoiceDetail = await financeService.GetInvoiceDetails();
                 logger.LogInformation("Get all invoicedetails");
@@ -28,10 +67,6 @@
                 //get all services
                 var resultGetService = await financeService.GetServices();
                 logger.LogInformation("Get all services");
-
-                //get all booking
-                var resultbooking = await bookingService.GetBookings(1, 10);
-                logger.LogInformation("Get all bookings");
 
                 //get all guest
                 var resultguest = await guestService.GetGuests();
@@ -49,54 +84,40 @@
                 var resultgetpayments = await financeService.GetPayments();
                 logger.LogInformation("Get all payment");
 
-                InvoiceList = resultGetInvoice.Invoices;
                 InvoiceDetailList = resultGetInvoiceDetail.InvoiceDetails;
                 ServiceList = resultGetService.Services;
-                BookingList = resultbooking.Bookings;
                 GuestList = resultguest.Guests;
                 BookingRoomList = resultbroom.BookingRooms;
                 RoomList = resultroom.Rooms;
                 PaymentList = resultgetpayments.Payments;
 
-                // Lọc danh sách Booking theo điều kiện tìm kiếm
-                IEnumerable<Booking> filteredBookings = resultbooking.Bookings;
+                InvoicePage.PageNumber = pageNumber;
+                InvoicePage.PageSize = pageSize;
+                InvoicePage.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-                if (!string.IsNullOrEmpty(SearchType) && !string.IsNullOrEmpty(SearchInput))
+                var Invoices = new List<Invoice>();
+                if (!string.IsNullOrEmpty(SearchInput))
                 {
-                    switch (SearchType)
+                    var resultGetBookById = await bookingService.GetBookingByBookingCode(SearchInput);
+                    var invoiceSearch = filteredInvoices.SingleOrDefault(i => i.BookingId == resultGetBookById.Booking.BookingId);
+                    if(invoiceSearch != null)
                     {
-                        case "bookingId":
-                            BookingList = BookingList.Where(b => b.BookingCode == SearchInput);
-                            break;
-                        case "guestName":
-                            GuestList = GuestList.Where(b => b.FirstName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase));
-                            break;
-                    }
-                }
-                else if (!string.IsNullOrEmpty(FilterStatus))
-                {
-                    switch (FilterStatus)
-                    {
-                        case "pending":
-                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.Pending);
-                            break;
-                        case "paid":
-                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.Paid);
-                            break;
-                        case "partiallypaid":
-                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.PartiallyPaid);
-                            break;
-                        default:
-                            InvoiceList = InvoiceList.Where(i => i.InvoiceStatus == InvoiceStatus.Cancelled);
-                            break;
+                        Invoices.Add(invoiceSearch);
+                        filteredInvoices = Invoices;
                     }
                 }
 
                 var invoiceViews = new List<InvoiceView>();
+                //danh sach task api
+                var boookingTasks = filteredInvoices.Select(i => bookingService.GetBookingById(i.BookingId)).ToList();
+                //thuc hien task dong thoi
+                var response = await Task.WhenAll(boookingTasks);
 
-                foreach (var invoice in InvoiceList)
+                var bookings = response.Select(b => b.Booking).ToList();
+
+                foreach (var invoice in filteredInvoices)
                 {
-                    var booking = BookingList.SingleOrDefault(b => b.BookingId == invoice.BookingId);
+                    var booking = bookings.SingleOrDefault(b => b.BookingId == invoice.BookingId);
                     if(booking != null)
                     {
                         var guest = GuestList.SingleOrDefault(g => g.GuestId == booking.GuestId);

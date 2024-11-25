@@ -20,16 +20,8 @@ else
                 <div class="card shadow">
                     <div class="card-body">
                         <form method="get">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <select class="form-control" id="searchType" name="SearchType">
-                                        <option value="bookingId">Mã đơn</option>
-                                        <option value="guestName">Tên Khách Hàng</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6 ">
-                                    <input type="text" class="form-control" id="searchInput" name="SearchInput" placeholder="Nhập thông tin" required>
-                                </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="searchInput" name="SearchInput" placeholder="Nhập mã đơn đặt phòng" required>
                             </div>
                             <div class="form-group text-center mb-0">
                                 <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
@@ -43,7 +35,7 @@ else
             <div class="col-md-6 mb-3">
                 <div class="card shadow">
                     <div class="card-body">
-                        <form method="get" asp-action="Filter" asp-controller="Booking">
+                        <form method="get">
                             <div class="form-group">
                                 <select class="form-control" id="filterStatus" name="FilterStatus">
                                     <option value="pending">Đang chờ</option>
@@ -164,4 +156,34 @@ else
             }
         </tbody>
     </table>
+
+    <nav aria-label="Page navigation">
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item @(Model.InvoicePage.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-route-pageNumber="@(Model.InvoicePage.PageNumber - 1)"
+                        asp-route-FilterStatus="@Model.Filter" 
+                    >&laquo;</a>
+                </li>
+                @for (int i = 1; i <= Model.InvoicePage.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.InvoicePage.PageNumber == i ? "active" : "")">
+                        <a class="page-link" asp-route-pageNumber="@i"
+                            asp-route-FilterStatus="@Model.Filter" >
+                            @i
+                        </a>
+                    </li>
+                }
+                <li class="page-item @(Model.InvoicePage.PageNumber == Model.InvoicePage.TotalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-route-pageNumber="@(Model.InvoicePage.PageNumber + 1)"
+                            asp-route-FilterStatus="@Model.Filter" >
+                        &raquo;
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
 }

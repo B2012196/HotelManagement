@@ -15,46 +15,53 @@ namespace Admin.Web.Pages
         public BookingPage BookingPage { get; set; } = new BookingPage();   
 
         public Room BRoom { get; set; } = new Room();
+        public string Filter = "";
         public async Task<IActionResult> OnGetAsync(string SearchInput, string FilterStatus, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
-                //get all booking
                 // Lọc danh sách Booking theo điều kiện tìm kiếm
                 IEnumerable<Booking> filteredBookings = new List<Booking>();
                 int totalCount;
-                if (!string.IsNullOrEmpty(FilterStatus))
+                //neu co loc
+                var filterStatus = BookingStatus.None;
+                if (string.IsNullOrEmpty(FilterStatus))
                 {
-                    var resultNone = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.None);
+                    var resultNone = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                     filteredBookings = resultNone.Bookings;
                     totalCount = resultNone.totalCount;
                 }
                 else 
                 {
+                    Filter = FilterStatus;
                     switch (FilterStatus)
                     {
                         case "pending":
-                            var resultPending = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.Pending);
+                            filterStatus = BookingStatus.Pending;
+                            var resultPending = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                             filteredBookings = resultPending.Bookings;
                             totalCount = resultPending.totalCount;
                             break;
                         case "confirmed":
-                            var resultConfirmed = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.Confirmed);
+                            filterStatus = BookingStatus.Confirmed;
+                            var resultConfirmed = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                             filteredBookings = resultConfirmed.Bookings;
                             totalCount = resultConfirmed.totalCount;
                             break;
                         case "checkedin":
-                            var resultCheckin = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.CheckedIn);
+                            filterStatus = BookingStatus.Confirmed;
+                            var resultCheckin = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                             filteredBookings = resultCheckin.Bookings;
                             totalCount = resultCheckin.totalCount;
                             break;
                         case "checkedout":
-                            var resultCheckout = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.CheckedOut);
+                            filterStatus = BookingStatus.CheckedOut;
+                            var resultCheckout = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                             filteredBookings = resultCheckout.Bookings;
                             totalCount = resultCheckout.totalCount;
                             break;
                         default:
-                            var resultCancel = await bookingService.GetBookings(pageNumber, pageSize, BookingStatus.Canceled);
+                            var resultCancel = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                             filteredBookings = resultCancel.Bookings;
                             totalCount = resultCancel.totalCount;
                             break;
@@ -104,10 +111,6 @@ namespace Admin.Web.Pages
                     var resultGetBookById = await bookingService.GetBookingByBookingCode(SearchInput);
                     Bookings.Add(resultGetBookById.Booking);
                     filteredBookings = Bookings;
-                }
-                else if (!string.IsNullOrEmpty(FilterStatus))
-                {
-                    
                 }
 
                 var bookingViewList = new List<BookingView>();

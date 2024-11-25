@@ -10,7 +10,7 @@
         Task<GetInvoiceByBookingIdResponse> GetInvoiceByBookingId(Guid BookingId);
         
         [Get("/finance/invoices")]
-        Task<GetInvoicesResponse> GetInvoices();
+        Task<GetInvoicesResponse> GetInvoices(int? pageNumber, int? pageSize, InvoiceStatus filterStatus);
 
         [Put("/finance/invoices")]
         Task<UpdateInvoiceResponse> UpdateInvoice(object obj);

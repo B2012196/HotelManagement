@@ -3,7 +3,7 @@
     public interface IBookingService
     {
         [Get("/bookings/bookings")]
-        Task<GetBookingsResponse> GetBookings(int? pageNumber, int? pageSize, BookingStatus status);
+        Task<GetBookingsResponse> GetBookings(int? pageNumber, int? pageSize, BookingStatus filterStatus);
 
         [Get("/bookings/bookings/id/{BookingId}")]
         Task<GetBookingByIdResponse> GetBookingById(Guid BookingId);

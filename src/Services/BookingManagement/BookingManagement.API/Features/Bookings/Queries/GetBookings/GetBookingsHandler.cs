@@ -1,7 +1,7 @@
 ﻿namespace BookingManagement.API.Features.Bookings.Queries.GetBookings
 {
     public record GetBookingsQuery(int? pageNumber = 1, int? pageSize = 10, BookingStatus? filterStatus = BookingStatus.Pending) : IQuery<GetBookingsResult>;
-    public record GetBookingsResult(IEnumerable<Booking> Bookings, int totalCount);
+    public record GetBookingsResult(IEnumerable<Booking> Bookings, int TotalCount);
     public class GetBookingsHandler(ApplicationDbContext context) : IQueryHandler<GetBookingsQuery, GetBookingsResult>
     {
         public async Task<GetBookingsResult> Handle(GetBookingsQuery query, CancellationToken cancellationToken)

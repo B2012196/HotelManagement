@@ -36,7 +36,7 @@
         public decimal TotalServiceUsed { get; set; }
     }
 
-    public record GetInvoicesResponse(IEnumerable<Invoice> Invoices);
+    public record GetInvoicesResponse(IEnumerable<Invoice> Invoices, int totalCount);
     public record GetInvoiceByBookingIdResponse(Invoice Invoice);
     public record CreateInvoiceResponse(Guid InvoiceId);
     public record UpdateInvoiceResponse(bool IsSuccess);

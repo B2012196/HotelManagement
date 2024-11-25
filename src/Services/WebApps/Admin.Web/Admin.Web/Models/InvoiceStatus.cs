@@ -14,5 +14,7 @@ namespace Admin.Web.Models
         PartiallyPaid = 4,   // Hóa đơn đã thanh toán một phần
         [Display(Name = "Thất bại")]
         Failed = 5,          // Thanh toán hóa đơn thất bại
+
+        None = 6,
     }
 }
