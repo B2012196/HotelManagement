@@ -5,17 +5,24 @@
         public IEnumerable<RoomView> RoomList { get; set; } = new List<RoomView>();
         public IEnumerable<RoomType> TypeList { get; set; } = new List<RoomType>();
         public IEnumerable<RoomStatus> StatusList { get; set; } = new List<RoomStatus>();
-        public async Task<IActionResult> OnGetAsync()
+        public RoomPage RoomPage { get; set; } = new RoomPage();
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 10)
         {
             try
             {
+                int totalCount;
                 var resultType = await hotelService.GetRoomTypes();
                 TypeList = resultType.RoomTypes;
 
                 var resultStatus = await hotelService.GetRoomStatuses();
                 StatusList = resultStatus.Statuses;
 
-                var resultroom = await hotelService.GetRooms();
+                var resultroom = await hotelService.GetRooms(pageNumber, pageSize);
+
+                RoomPage.PageNumber = pageNumber;
+                RoomPage.PageSize = pageSize;
+                totalCount = resultroom.TotalCount;
+                RoomPage.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
                 var RoomViewList = new List<RoomView>();
 

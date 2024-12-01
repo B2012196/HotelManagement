@@ -17,6 +17,9 @@
         [Get("/bookings/bookingrooms")]
         Task<GetBookingRoomsResponse> GetBookingRooms();
 
+        [Get("/bookings/bookingrooms/id/{BookingId}")]
+        Task<GetBookRoomsByIdResponse> GetBookingRoomsById(Guid BookingId);
+
         [Post("/bookings/bookings")]
         Task<CreateBookingResponse> CreateBooking(Booking Booking);
 

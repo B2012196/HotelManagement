@@ -4,7 +4,10 @@
     {
         //room
         [Get("/hotels/rooms")]
-        Task<GetRoomsResponse> GetRooms();
+        Task<GetRoomsResponse> GetRooms(int? pageNumber, int? pageSize);
+
+        [Get("/hotels/rooms/available")]
+        Task<GetRoomsAvaResult> GetRoomsAvailable();
 
         [Get("/hotels/rooms/roomid/{RoomId}")]
         Task<GetRoomByIdResponse> GetRoomtByRoomId(Guid RoomId);

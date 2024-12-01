@@ -35,31 +35,7 @@ else
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@staff.StaffId">
                             Cập nhật
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#roomSelectionDeleteModal-@staff.StaffId">
-                            Xóa
-                        </button>
                     </td>
-                    <div class="modal fade" id="roomSelectionDeleteModal-@staff.StaffId" tabindex="-1" role="dialog" aria-labelledby="roomSelectionDeleteModal" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="roomSelectionModalLabel">Bạn có chắc chắn muốn xóa?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form method="post" asp-page-handler="DeleteRoom">
-                                        <input type="text" id="roomId" name="RoomId" required value="@staff.StaffId" hidden readonly>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Xác nhận</button>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="modal fade" id="roomSelectionModal-@staff.StaffId" tabindex="-1" role="dialog" aria-labelledby="roomSelectionModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">

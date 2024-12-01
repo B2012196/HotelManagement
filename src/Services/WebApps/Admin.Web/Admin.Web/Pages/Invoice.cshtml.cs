@@ -76,24 +76,29 @@
                 var resultbroom = await bookingService.GetBookingRooms();
                 logger.LogInformation("Get all bookingroom");
 
-                //get all room
-                var resultroom = await hotelService.GetRooms();
-                logger.LogInformation("Get all room");
+                var resultGetRoomType = await hotelService.GetRoomTypes();
+
 
                 //get all payment
                 var resultgetpayments = await financeService.GetPayments();
                 logger.LogInformation("Get all payment");
 
+                RoomTypeList = resultGetRoomType.RoomTypes;
                 InvoiceDetailList = resultGetInvoiceDetail.InvoiceDetails;
                 ServiceList = resultGetService.Services;
                 GuestList = resultguest.Guests;
                 BookingRoomList = resultbroom.BookingRooms;
-                RoomList = resultroom.Rooms;
                 PaymentList = resultgetpayments.Payments;
 
                 InvoicePage.PageNumber = pageNumber;
                 InvoicePage.PageSize = pageSize;
                 InvoicePage.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                //danh sach task api
+                var roomTasks = BookingRoomList.Select(br => hotelService.GetRoomtByRoomId(br.RoomId)).ToList();
+                //thuc hien task dong thoi
+                var responseRoom = await Task.WhenAll(roomTasks);
+                RoomList = responseRoom.Select(br => br.Room).ToList();
 
                 var Invoices = new List<Invoice>();
                 if (!string.IsNullOrEmpty(SearchInput))
@@ -108,6 +113,7 @@
                 }
 
                 var invoiceViews = new List<InvoiceView>();
+
                 //danh sach task api
                 var boookingTasks = filteredInvoices.Select(i => bookingService.GetBookingById(i.BookingId)).ToList();
                 //thuc hien task dong thoi
@@ -123,6 +129,18 @@
                         var guest = GuestList.SingleOrDefault(g => g.GuestId == booking.GuestId);
                         if(guest != null)
                         {
+
+                            var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+                            if (booking.CheckinDate.HasValue && booking.CheckinDate.Value.Kind == DateTimeKind.Utc)
+                            {
+                                booking.CheckinDate = TimeZoneInfo.ConvertTimeFromUtc(booking.CheckinDate.Value, vietnamTimeZone);
+                            }
+                            if (booking.CheckoutDate.HasValue && booking.CheckoutDate.Value.Kind == DateTimeKind.Utc)
+                            {
+                                booking.CheckoutDate = TimeZoneInfo.ConvertTimeFromUtc(booking.CheckoutDate.Value, vietnamTimeZone);
+                            }
+
                             var invoiceView = new InvoiceView
                             {
                                 InvoiceId = invoice.InvoiceId,
@@ -145,7 +163,13 @@
 
                                     if (roomnumber != null)
                                     {
+                                        var roomtype = RoomTypeList.SingleOrDefault(t => t.TypeId == roomnumber.TypeId);
                                         invoiceView.RoomNumber += roomnumber.Number + " ";
+                                        if(roomtype != null)
+                                        {
+                                            invoiceView.RoomTypePrice = roomtype.PricePerNight;
+                                            invoiceView.RoomTypeName = roomtype.Name;
+                                        }
                                     }
                                 }
                             }
@@ -171,11 +195,14 @@
                             }                                
                             invoiceView.InvoiceServiceViews = invoiceServiceViews;
 
-                            var payment = PaymentList.SingleOrDefault(p => p.InvoiceId == invoice.InvoiceId);
-                            if(payment != null)
+                            var payments = PaymentList.Where(p => p.InvoiceId == invoice.InvoiceId).ToList();
+                            invoiceView.PaymentTotal = 0;
+                            if (payments != null)
                             {
-                                invoiceView.PaymentTotal = payment.Amount;
-
+                                foreach(var payment in payments)
+                                {
+                                    invoiceView.PaymentTotal = payment.Amount;
+                                }
                             }
                             invoiceView.RemainingAmount = invoiceView.TotalPrice - invoiceView.PaymentTotal;
 
@@ -260,7 +287,8 @@
 
         }
 
-        public async Task<IActionResult> OnPostPrintInvoiceAsync()
+        public async Task<IActionResult> OnPostPrintInvoiceAsync(string BookingCode, string GuestName, string CheckinDate, string CheckoutDate, string RoomTypeName, decimal RoomTypePrice,
+                         List<InvoiceServiceView> InvoiceServiceViews, decimal TotalBooking, decimal TotalServiceUsed, decimal TotalPrice, decimal PaymentTotal, decimal RemainingAmount)
         {
             // Cấp phép QuestPDF
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
@@ -272,10 +300,19 @@
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
             var invoice = new InvoiceDocument(
-                "BOOK-123",
+                BookingCode,
                 DateTime.Now, // Ngày xuất hóa đơn
-                "Lam Minh Duc",
-                120000
+                GuestName,
+                CheckinDate,
+                CheckoutDate,
+                RoomTypeName,
+                RoomTypePrice,
+                InvoiceServiceViews,
+                TotalBooking,
+                TotalServiceUsed,
+                TotalPrice,
+                PaymentTotal,
+                RemainingAmount
             );
 
             invoice.GeneratePdf(filePath);
@@ -283,6 +320,7 @@
             // 3. Trả file PDF về trình duyệt
             byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(fileBytes, "application/pdf", fileName);
+
 
 
         }

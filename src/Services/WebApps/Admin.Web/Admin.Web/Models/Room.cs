@@ -19,7 +19,8 @@
         public string StatusName { get; set; }
     }
 
-    public record GetRoomsResponse(IEnumerable<Room> Rooms);
+    public record GetRoomsResponse(IEnumerable<Room> Rooms, int TotalCount);
+    public record GetRoomsAvaResult(IEnumerable<Room> Rooms);
     public record GetRoomByIdResponse(Room Room);
     public record GetRoomsAvaResponse(IEnumerable<Room> Rooms);
     public record GetRoomsByTypeResponse(IEnumerable<Room> Rooms);

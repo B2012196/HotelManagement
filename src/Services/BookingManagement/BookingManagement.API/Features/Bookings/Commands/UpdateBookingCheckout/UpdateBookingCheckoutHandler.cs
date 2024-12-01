@@ -38,7 +38,7 @@
                     if (booking.CheckinDate.HasValue && booking.CheckoutDate.HasValue)
                     {
                         logger.LogInformation("Price"+roomType.pricePerNight);
-                        booking.TotalPrice = CalculateTotalPrice(booking.CheckinDate.Value, booking.CheckoutDate.Value, roomType.pricePerNight);
+                        booking.TotalPrice = CalculateTotalPrice(booking.CheckinDate.Value, booking.CheckoutDate.Value, roomType.pricePerNight, booking.RoomQuantity);
                         logger.LogInformation("Price" + booking.TotalPrice);
                     }
                     booking.BookingStatus = BookingStatus.CheckedOut;
@@ -81,7 +81,7 @@
             return new UpdateBookingCheckoutResult(false);
         }
 
-        public decimal CalculateTotalPrice(DateTime checkinDate, DateTime checkoutDate, decimal roomPricePerDay)
+        public decimal CalculateTotalPrice(DateTime checkinDate, DateTime checkoutDate, decimal roomPricePerDay, int RoomQuantity)
         {
             // Xác định múi giờ Việt Nam
             var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
@@ -137,6 +137,8 @@
 
             // Cộng phí trả phòng trễ (nếu có) vào tổng giá
             totalPrice += lateCheckoutFee;
+
+            totalPrice = totalPrice * RoomQuantity;
 
             return totalPrice;
 

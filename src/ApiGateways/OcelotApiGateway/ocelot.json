@@ -45,7 +45,7 @@
       }
     },
 
-    //delete
+    //delete, get
     {
       "DownstreamPathTemplate": "/hotels/{endpoint}/{params}",
       "DownstreamScheme": "http",
@@ -56,7 +56,7 @@
         }
       ],
       "UpstreamPathTemplate": "/hotels/{endpoint}/{params}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [ "DELETE", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

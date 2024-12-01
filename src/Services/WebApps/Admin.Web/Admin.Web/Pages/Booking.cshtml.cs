@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class BookingModel(IAuthentication authentication ,IBookingService bookingService, IGuestService guestService, IHotelService hotelService, 
         IFinanceService financeService,
@@ -9,6 +7,7 @@ namespace Admin.Web.Pages
         public IEnumerable<BookingView> BookingList { get; set; } = new List<BookingView>();
         public IEnumerable<Guest> GuestList { get; set; } = new List<Guest>();
         public IEnumerable<Room> RoomList { get; set; } = new List<Room>();
+        public IEnumerable<Room> RoomAvailableList { get; set; } = new List<Room>();
         public IEnumerable<Service> ServiceList { get; set; } = new List<Service>();
         public IEnumerable<RoomType> RoomTypeList { get; set; } = new List<RoomType>();
         public IEnumerable<BookingRoom> BookingRoomList { get; set; } = new List<BookingRoom>();
@@ -75,9 +74,7 @@ namespace Admin.Web.Pages
                 //get all roomtype
                 var resultroomtype = await hotelService.GetRoomTypes();
                 logger.LogInformation("get all roomtype");
-                //get all room
-                var resultroom = await hotelService.GetRooms();
-                logger.LogInformation("get all room");
+
                 //get all bookingroom
                 var resultbroom = await bookingService.GetBookingRooms();
                 logger.LogInformation("get all bookingroom");
@@ -85,7 +82,12 @@ namespace Admin.Web.Pages
                 var resultServices = await financeService.GetServices();
                 logger.LogInformation("get all service");
 
-                if (resultguest == null || resultroomtype == null || resultroom == null ||
+                //get room available
+                var resultGetRoomsAvai = await hotelService.GetRoomsAvailable();
+                logger.LogInformation("get all room available");
+
+
+                if (resultguest == null || resultroomtype == null || resultGetRoomsAvai == null ||
                     resultbroom == null || resultServices == null)
                 {
                     logger.LogInformation("null do get all");
@@ -97,12 +99,18 @@ namespace Admin.Web.Pages
                 BookingPage.PageSize = pageSize;
                 BookingPage.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
+                RoomAvailableList = resultGetRoomsAvai.Rooms;
                 RoomTypeList = resultroomtype.RoomTypes;
-                RoomList = resultroom.Rooms;
                 BookingRoomList = resultbroom.BookingRooms;
                 ServiceList = resultServices.Services;
 
-               
+
+                //danh sach task api
+                var roomTasks = BookingRoomList.Select(br => hotelService.GetRoomtByRoomId(br.RoomId)).ToList();
+                //thuc hien task dong thoi
+                var response = await Task.WhenAll(roomTasks);
+                RoomList = response.Select(br => br.Room).ToList();
+
                 var Bookings = new List<Booking>();
                 
                 if (!string.IsNullOrEmpty(SearchInput))
@@ -133,7 +141,7 @@ namespace Admin.Web.Pages
                     }
                     if (booking.CheckoutDate.HasValue && booking.CheckoutDate.Value.Kind == DateTimeKind.Utc)
                     {
-                        booking.CheckinDate = TimeZoneInfo.ConvertTimeFromUtc(booking.CheckoutDate.Value, vietnamTimeZone);
+                        booking.CheckoutDate = TimeZoneInfo.ConvertTimeFromUtc(booking.CheckoutDate.Value, vietnamTimeZone);
                     }
 
                     var bookingView = new BookingView

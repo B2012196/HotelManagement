@@ -1,6 +1,7 @@
 ﻿namespace Admin.Web.Extentions
 {
-    public class InvoiceDocument(string BookingCode, DateTime CreatedAt, string Name, decimal ToTalPrice) : IDocument
+    public class InvoiceDocument(string BookingCode, DateTime CreatedAt, string Name, string CheckinDate, string CheckoutDate, string RoomTypeName, decimal RoomTypePrice,
+            List<InvoiceServiceView> InvoiceServiceViews, decimal TotalBooking, decimal TotalServiceUsed, decimal TotalPrice, decimal PaymentTotal,  decimal RemainingAmount) : IDocument
     {
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
 
@@ -38,8 +39,8 @@
                         table.ColumnsDefinition(columns =>
                         {
                             columns.RelativeColumn(); // Cột tên sản phẩm
-                            columns.ConstantColumn(80); // Cột số lượng
-                            columns.ConstantColumn(80); // Cột số lượng
+                            columns.ConstantColumn(60); // Cột số lượng
+                            columns.ConstantColumn(100); // Cột số lượng
                             columns.ConstantColumn(100); // Cột giá tiền
                         });
 
@@ -49,20 +50,29 @@
                             header.Cell().Element(CellStyle).Text("Dịch vụ").Bold();
                             header.Cell().Element(CellStyle).Text("Đơn giá").Bold();
                             header.Cell().Element(CellStyle).Text("Số lượng").Bold();
-                            header.Cell().Element(CellStyle).Text("Giá").Bold();
+                            header.Cell().Element(CellStyle).Text("Phí phòng").Bold();
                         });
 
                         // Dòng dữ liệu
-                        table.Cell().Element(CellStyle).Text("Room Booking");
-                        table.Cell().Element(CellStyle).Text("500");
-                        table.Cell().Element(CellStyle).Text("2");
-                        table.Cell().Element(CellStyle).Text("1000 USD");
+                        table.Cell().Element(CellStyle).Text($"{RoomTypeName}");
+                        table.Cell().Element(CellStyle).Text($"{RoomTypePrice.ToString("N0")}");
+                        table.Cell().Element(CellStyle).Text($"Checkin: {CheckinDate}. Checkout {CheckoutDate}");
+                        table.Cell().Element(CellStyle).Text(TotalBooking.ToString("N0"));
+
+                        foreach(var service in InvoiceServiceViews)
+                        {
+                            table.Cell().Element(CellStyle).Text($"{service.ServiceName}");
+                            table.Cell().Element(CellStyle).Text($"{service.ServicePrice.ToString("N0")}");
+                            table.Cell().Element(CellStyle).Text($"{service.ServiceNumber}");
+                            table.Cell().Element(CellStyle).Text($"{service.TotalServiceUsed.ToString("N0")}");
+                        }
                     });
 
                     // Tổng tiền và lời cảm ơn
-                    column.Item().Text($"Tổng thanh toán: {ToTalPrice:C}").AlignRight();
-                    column.Item().Text($"Tiền đã thanh toán online: {ToTalPrice:C}").AlignRight();
-                    column.Item().Text($"Còn lại: {ToTalPrice:C}").Bold().FontSize(14).AlignRight();
+                    column.Item().Text($"Phí dịch vụ: {TotalServiceUsed.ToString("N0")} VND").AlignRight();
+                    column.Item().Text($"Tổng hóa đơn: {TotalPrice.ToString("N0")} VND").AlignRight();
+                    column.Item().Text($"Thanh toán online: {PaymentTotal.ToString("N0")} VND").AlignRight();
+                    column.Item().Text($"Còn lại: {RemainingAmount.ToString("N0")} VND").Bold().FontSize(14).AlignRight();
                     column.Item().Text("XIN CẢM ƠN VÀ HẸN GẶP LẠI!").AlignCenter();
                 });
             });

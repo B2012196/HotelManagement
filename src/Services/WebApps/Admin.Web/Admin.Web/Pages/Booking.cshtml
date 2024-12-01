@@ -192,7 +192,7 @@ else
                                         {
                                             <br />
                                             <select class="form-control" id="room_@number" name="RoomIds[]">
-                                                @foreach (var room in Model.RoomList)
+                                                @foreach (var room in Model.RoomAvailableList)
                                                 {
                                                     @if (booking.TypeId == room.TypeId && room.StatusId == Guid.Parse("3ad2b5c4-cd33-42f1-a030-53a0a213f791"))
                                                     {

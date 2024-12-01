@@ -108,6 +108,33 @@ else
         </tbody>
     </table>
 
+    <nav aria-label="Page navigation">
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item @(Model.RoomPage.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-route-pageNumber="@(Model.RoomPage.PageNumber - 1)">
+                        &laquo;
+                    </a>
+                </li>
+                @for (int i = 1; i <= Model.RoomPage.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.RoomPage.PageNumber == i ? "active" : "")">
+                        <a class="page-link" asp-route-pageNumber="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+                <li class="page-item @(Model.RoomPage.PageNumber == Model.RoomPage.TotalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-route-pageNumber="@(Model.RoomPage.PageNumber + 1)">
+                        &raquo;
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- Button to trigger modal -->
     <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addRoomModal">
         Thêm phòng

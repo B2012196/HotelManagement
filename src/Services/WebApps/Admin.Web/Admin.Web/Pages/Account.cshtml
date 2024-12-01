@@ -33,7 +33,7 @@ else
                         <td>@user.PhoneNumber</td>
                         <td>@user.RoleName.RoleTranslate()</td>
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionModal-@user.UserName">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#roomSelectionUpdateModal-@user.UserName">
                                 Cập nhật
                             </button>
                         </td>
@@ -49,6 +49,7 @@ else
                         </td>
                     </tr>
 
+                    //modal chi tiet
                     <div class="modal fade" id="userDetailSelectionModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userDetailSelectionModal" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -91,6 +92,52 @@ else
                         </div>
                     </div>
 
+                    //update
+                    <div class="modal fade" id="roomSelectionUpdateModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="roomSelectionUpdateModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="roomSelectionModalLabel">Thông tin tài khoản</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Form to choose available room -->
+                                    <div class="form-group">
+
+                                        <label for="username">Tên tài khoản</label>
+                                        <input class="form-control" type="text" id="username" value="@user.UserName" readonly />
+
+                                        <label for="email">Email</label>
+                                        <input class="form-control" type="text" id="email" value="@user.Email" />
+
+                                        <label for="phoneNumber">Số điện thoại</label>
+                                        <input class="form-control" type="text" id="phoneNumber" value="@user.PhoneNumber" />
+
+@*                                         <label for="failedLogin">Số lần đăng nhập thất bại</label>
+                                        <input class="form-control" type="number" id="failedLogin" value="@user.FailedLoginAttempt" /> *@
+
+@*                                         <label for="active">Trạng thái</label>
+                                        <input class="form-control" type="text" id="active" value="@(user.IsActive == true ? "Đang hoạt động" : "Khóa")" /> *@
+
+                                        <label for="role" class="form-label">Vai trò</label>
+                                        <select class="form-control" id="role" name="RoleId">
+                                            @foreach (var role in Model.RoleList)
+                                            {
+                                                <option value="@role.RoleId">@role.RoleName.RoleTranslate()</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    //xoa 
                     <div class="modal fade" id="userSelectionDeleteModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="userSelectionDeleteModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -126,7 +173,7 @@ else
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userSelectionModalLabel">Thêm phòng mới</h5>
+                    <h5 class="modal-title" id="userSelectionModalLabel">Thêm nhân viên mới</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

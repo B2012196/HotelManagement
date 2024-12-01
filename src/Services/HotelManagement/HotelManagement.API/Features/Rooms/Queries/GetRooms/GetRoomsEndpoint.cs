@@ -1,13 +1,14 @@
 ﻿namespace HotelManagement.API.Features.Rooms.Queries.GetRooms
 {
-    public record GetRoomsResponse(IEnumerable<Room> Rooms);
+    public record GetRoomsRequest(int? pageNumber = 1, int? pageSize = 10);
+    public record GetRoomsResponse(IEnumerable<Room> Rooms, int TotalCount);
     public class GetRoomsEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/hotels/rooms", async (ISender sender) =>
+            app.MapGet("/hotels/rooms", async ([AsParameters] GetRoomsRequest request, ISender sender) =>
             {
-                var result = await sender.Send(new GetRoomsQuery());
+                var result = await sender.Send(new GetRoomsQuery(request.pageNumber, request.pageSize));
 
                 var response = result.Adapt<GetRoomsResponse>();
 

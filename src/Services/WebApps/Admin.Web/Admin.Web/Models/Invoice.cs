@@ -19,6 +19,8 @@
         public decimal? TotalBooking { get; set; }
         public string GuestName { get; set; }
         public string RoomNumber { get; set; }
+        public decimal RoomTypePrice { get; set; }
+        public string RoomTypeName { get; set; }
         public List<InvoiceServiceView> InvoiceServiceViews { get; set; }
         public decimal? TotalServiceUsed { get; set; }
         public DateTime CreateAt { get; set; }

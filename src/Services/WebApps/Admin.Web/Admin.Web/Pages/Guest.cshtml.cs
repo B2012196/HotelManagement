@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.Numerics;
-
-namespace Admin.Web.Pages
+﻿namespace Admin.Web.Pages
 {
     public class GuestModel(IGuestService guestService, IAuthentication authentication, ILogger<GuestModel> logger) : PageModel
     {
@@ -13,14 +10,14 @@ namespace Admin.Web.Pages
             {
                 var resultguests = await guestService.GetGuests();
                 var resultusers = await authentication.GetUsers();
-
+                Console.WriteLine("resultguests + resultusers");
                 UserList = resultusers.UserDtos;
-
-                List<GuestView>  guestViews = new List<GuestView>(); 
+                Console.WriteLine("UserList");
+                var  guestViews = new List<GuestView>(); 
                 foreach (var guest in resultguests.Guests)
                 {
                     var user = UserList.SingleOrDefault(u => u.UserId == guest.UserId);
-
+                    Console.WriteLine("guest.UserId: " + guest.UserId);
                     var guestView = new GuestView
                     {
                         GuestId = guest.GuestId,

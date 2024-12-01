@@ -97,6 +97,12 @@ else
                                         <label for="guestName">Họ Tên</label>
                                         <input class="form-control" type="text" id="guestName" name="GuestName" value="@invoice.GuestName" readonly />
 
+                                        <label for="roomTypeName">Loại phòng</label>
+                                        <input class="form-control" type="text" id="roomTypeName" name="RoomTypeName" value="@invoice.RoomTypeName" readonly />
+
+                                        <label for="roomTypePrice">Giá phòng</label>
+                                        <input class="form-control" type="text" id="roomTypePrice" name="RoomTypePrice" value="@invoice.RoomTypePrice.ToString("N0")" readonly />
+
                                         <label for="roomNumber">Số phòng</label>
                                         <input class="form-control" type="text" id="roomNumber" name="RoomNumber" value="@invoice.RoomNumber" readonly />
 
@@ -106,10 +112,12 @@ else
                                         <label for="invoiceStatus">Ngày checkout</label>
                                         <input class="form-control" type="datetime-local" id="checkoutDate" name="CheckoutDate" value="@(invoice.CheckoutDate.HasValue ? invoice.CheckoutDate.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" readonly />
 
-                                        <label for="invoiceStatus">Phí Phòng</label>
-                                        <input class="form-control" type="text" id="invoiceStatus" name="InvoiceStatus" value="@((invoice.TotalBooking.HasValue ? invoice.TotalBooking.Value.ToString("N0") : ""))" readonly /> 
                                     </div>
                                     <div class="col-md-7">
+
+                                        <label for="invoiceStatus">Phí Phòng</label>
+                                        <input class="form-control" type="text" id="totalBooking" name="TotalBooking" value="@((invoice.TotalBooking.HasValue ? invoice.TotalBooking.Value.ToString("N0") : ""))" readonly />
+                                        
                                         <h5>Dịch vụ đã sử dụng</h5>
                                         @foreach (var detail in invoice.InvoiceServiceViews)
                                         {
@@ -144,6 +152,22 @@ else
                                     else 
                                     {
                                         <form method="post" asp-page-handler="PrintInvoice">
+                                            <input type="hidden" id="bookingCode" name="BookingCode" value="@invoice.BookingCode" readonly />
+                                            <input type="hidden" id="guestName" name="GuestName" value="@invoice.GuestName" readonly />
+
+                                            <input type="hidden" id="checkinDate" name="CheckinDate" value="@invoice.CheckinDate" readonly />
+                                            <input type="hidden" id="checkoutDate" name="CheckoutDate" value="@invoice.CheckoutDate" readonly />
+
+                                            <input type="hidden" id="roomNumber" name="RoomTypeName" value="@invoice.RoomTypeName" readonly />
+                                            <input type="hidden" id="roomNumber" name="RoomTypePrice" value="@invoice.RoomTypePrice" readonly />
+
+                                            <input type="hidden" id="invoiceServiceViews" name="InvoiceServiceViews" value="@invoice.InvoiceServiceViews" readonly />
+                                            
+                                            <input type="hidden" id="totalBooking" name="TotalBooking" value="@invoice.TotalBooking" readonly />
+                                            <input type="hidden" id="totalServiceUsed" name="TotalServiceUsed" value="@invoice.TotalServiceUsed" readonly />
+                                            <input type="hidden" id="totalPrice" name="TotalPrice" value="@invoice.TotalPrice" readonly />
+                                            <input type="hidden" id="paymentTotal" name="PaymentTotal" value="@invoice.PaymentTotal" readonly />
+                                            <input type="hidden" id="remainingAmount" name="RemainingAmount" value="@invoice.RemainingAmount" readonly />
                                             <button type="submit" class="btn btn-outline-success">Xuất hóa đơn</button>
                                         </form>
                                     }
