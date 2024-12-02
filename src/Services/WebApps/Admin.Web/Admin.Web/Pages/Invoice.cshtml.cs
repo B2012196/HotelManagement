@@ -1,4 +1,6 @@
-﻿namespace Admin.Web.Pages
+﻿using System.Text.Json;
+
+namespace Admin.Web.Pages
 {
     public class InvoiceModel(IFinanceService financeService, IHotelService hotelService, IBookingService bookingService, IGuestService guestService, 
         ILogger<InvoiceModel> logger) : PageModel
@@ -195,16 +197,13 @@
                             }                                
                             invoiceView.InvoiceServiceViews = invoiceServiceViews;
 
-                            var payments = PaymentList.Where(p => p.InvoiceId == invoice.InvoiceId).ToList();
+                            var payment = PaymentList.SingleOrDefault(p => p.InvoiceId == invoice.InvoiceId && p.PaymentMethodId == Guid.Parse("ed82b3a3-69ec-475e-961f-ba1a854d0348"));
                             invoiceView.PaymentTotal = 0;
-                            if (payments != null)
+                            if (payment != null)
                             {
-                                foreach(var payment in payments)
-                                {
-                                    invoiceView.PaymentTotal = payment.Amount;
-                                }
+                                invoiceView.PaymentTotal = payment.Amount;
                             }
-                            invoiceView.RemainingAmount = invoiceView.TotalPrice - invoiceView.PaymentTotal;
+                            invoiceView.RemainingAmount = invoice.TotalPrice - invoiceView.PaymentTotal;
 
                             invoiceViews.Add(invoiceView);
                         }
@@ -287,8 +286,8 @@
 
         }
 
-        public async Task<IActionResult> OnPostPrintInvoiceAsync(string BookingCode, string GuestName, string CheckinDate, string CheckoutDate, string RoomTypeName, decimal RoomTypePrice,
-                         List<InvoiceServiceView> InvoiceServiceViews, decimal TotalBooking, decimal TotalServiceUsed, decimal TotalPrice, decimal PaymentTotal, decimal RemainingAmount)
+        public async Task<IActionResult> OnPostPrintInvoiceAsync(string BookingCode, string GuestName, DateTime CheckinDate, DateTime CheckoutDate, string RoomTypeName, decimal RoomTypePrice,
+                        string InvoiceServiceViews, decimal TotalBooking, decimal TotalServiceUsed, decimal TotalPrice, decimal PaymentTotal, decimal RemainingAmount)
         {
             // Cấp phép QuestPDF
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
@@ -298,6 +297,8 @@
             string filePath = Path.Combine("wwwroot", "invoices", fileName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            Console.WriteLine(InvoiceServiceViews.ToString());
+            var invoiceServiceViews = JsonSerializer.Deserialize<List<InvoiceServiceView>>(InvoiceServiceViews);
 
             var invoice = new InvoiceDocument(
                 BookingCode,
@@ -307,14 +308,18 @@
                 CheckoutDate,
                 RoomTypeName,
                 RoomTypePrice,
-                InvoiceServiceViews,
+                invoiceServiceViews,
                 TotalBooking,
                 TotalServiceUsed,
                 TotalPrice,
                 PaymentTotal,
                 RemainingAmount
             );
-
+            Console.WriteLine("314");
+            foreach(var service in invoiceServiceViews)
+            {
+                Console.WriteLine(service.ServiceName);
+            }
             invoice.GeneratePdf(filePath);
 
             // 3. Trả file PDF về trình duyệt

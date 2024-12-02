@@ -65,16 +65,16 @@ namespace Authentication.API.Features.Login
             var token = new JwtSecurityToken(
                 issuer: "https://localhost:5056",
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddHours(5),
                 signingCredentials: credentials);
 
             var tokens = new TokenModel
             {
                 Access_token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expires_in = 30
+                Expires_in = 5
             };
 
-            Console.WriteLine(tokens.Access_token);
+            //Console.WriteLine(tokens.Access_token);
             return tokens;
         }
     }

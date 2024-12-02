@@ -1,6 +1,6 @@
 ﻿namespace Admin.Web.Extentions
 {
-    public class InvoiceDocument(string BookingCode, DateTime CreatedAt, string Name, string CheckinDate, string CheckoutDate, string RoomTypeName, decimal RoomTypePrice,
+    public class InvoiceDocument(string BookingCode, DateTime CreatedAt, string Name, DateTime CheckinDate, DateTime CheckoutDate, string RoomTypeName, decimal RoomTypePrice,
             List<InvoiceServiceView> InvoiceServiceViews, decimal TotalBooking, decimal TotalServiceUsed, decimal TotalPrice, decimal PaymentTotal,  decimal RemainingAmount) : IDocument
     {
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -56,12 +56,12 @@
                         // Dòng dữ liệu
                         table.Cell().Element(CellStyle).Text($"{RoomTypeName}");
                         table.Cell().Element(CellStyle).Text($"{RoomTypePrice.ToString("N0")}");
-                        table.Cell().Element(CellStyle).Text($"Checkin: {CheckinDate}. Checkout {CheckoutDate}");
+                        table.Cell().Element(CellStyle).Text($"Checkin: {CheckinDate:dd/MM/yyyy HH:mm:ss}. Checkout {CheckoutDate:dd/MM/yyyy HH:mm:ss}");
                         table.Cell().Element(CellStyle).Text(TotalBooking.ToString("N0"));
 
                         foreach(var service in InvoiceServiceViews)
                         {
-                            table.Cell().Element(CellStyle).Text($"{service.ServiceName}");
+                            table.Cell().Element(CellStyle).Text($"{service.ServiceName.ServiceNameTranslate()}");
                             table.Cell().Element(CellStyle).Text($"{service.ServicePrice.ToString("N0")}");
                             table.Cell().Element(CellStyle).Text($"{service.ServiceNumber}");
                             table.Cell().Element(CellStyle).Text($"{service.TotalServiceUsed.ToString("N0")}");

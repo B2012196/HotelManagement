@@ -1,4 +1,6 @@
-﻿namespace Admin.Web.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Admin.Web.Models
 {
     public class Invoice
     {
@@ -32,9 +34,16 @@
 
     public class InvoiceServiceView
     {
+        [JsonPropertyName("serviceName")]
         public string ServiceName { get; set; }
+
+        [JsonPropertyName("serviceNumber")]
         public int ServiceNumber { get; set; }
+
+        [JsonPropertyName("servicePrice")]
         public decimal ServicePrice { get; set; }
+
+        [JsonPropertyName("totalServiceUsed")]
         public decimal TotalServiceUsed { get; set; }
     }
 

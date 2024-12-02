@@ -161,7 +161,7 @@ else
                                             <input type="hidden" id="roomNumber" name="RoomTypeName" value="@invoice.RoomTypeName" readonly />
                                             <input type="hidden" id="roomNumber" name="RoomTypePrice" value="@invoice.RoomTypePrice" readonly />
 
-                                            <input type="hidden" id="invoiceServiceViews" name="InvoiceServiceViews" value="@invoice.InvoiceServiceViews" readonly />
+                                            <input type="hidden" id="invoiceServiceViews" name="InvoiceServiceViews" value='@Html.Raw(Json.Serialize(invoice.InvoiceServiceViews))' readonly />
                                             
                                             <input type="hidden" id="totalBooking" name="TotalBooking" value="@invoice.TotalBooking" readonly />
                                             <input type="hidden" id="totalServiceUsed" name="TotalServiceUsed" value="@invoice.TotalServiceUsed" readonly />
