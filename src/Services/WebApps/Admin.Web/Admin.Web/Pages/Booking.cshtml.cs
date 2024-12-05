@@ -110,6 +110,7 @@
                 //thuc hien task dong thoi
                 var response = await Task.WhenAll(roomTasks);
                 RoomList = response.Select(br => br.Room).ToList();
+                RoomList = RoomList.DistinctBy(room => room.RoomId).ToList();
 
                 var Bookings = new List<Booking>();
                 

@@ -4,6 +4,7 @@
     ViewData["Title"] = "Trang chủ";
 }
 
+
 @if (TempData["ErrorApiException"] != null)
 {
     <br />
@@ -13,7 +14,7 @@
 }
 else
 {
-    <h4>Doanh thu theo ngày</h4>
+    @* <h4>Doanh thu theo tháng</h4>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -23,31 +24,16 @@ else
         </thead>
         <tbody>
         </tbody>
-    </table>
-    @* <canvas id="myBarChart" width="400" height="200"></canvas> *@
-    <h4>Doanh thu theo tháng</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Tổng số lượng phòng đã đặt</th>
-                <th>Tổng doanh thu</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    </table> *@
+    <div class="container-chart">
+        <h5>THỐNG KÊ SỐ LƯỢNG KHÁCH ĐẾN THEO TỪNG THÁNG</h5>
+        <div class="chart-wrapper">
+            <canvas id="myBarChart" width="800" height="400"></canvas>
+        </div>
+    </div>
 
-    <h4>Doanh thu theo năm</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Tổng số lượng phòng đã đặt</th>
-                <th>Tổng doanh thu</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    
+    
 }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -64,7 +50,7 @@ else
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Revenue',
+                    label: 'Tháng',
                     data: data,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',

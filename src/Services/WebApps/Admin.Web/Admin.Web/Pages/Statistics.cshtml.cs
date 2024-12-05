@@ -1,4 +1,4 @@
-namespace Admin.Web.Pages.Shared
+namespace Admin.Web.Pages
 {
     public class StatisticsModel : PageModel
     {
@@ -7,8 +7,8 @@ namespace Admin.Web.Pages.Shared
         {
             Statistics = new StatisticsViewModel
             {
-                Labels = new List<string> { "January", "February", "March", "April" },
-                Data = new List<int> { 10, 20, 30, 40 }
+                Labels = new List<string> { "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 10", "Tháng 11", "Tháng 12" },
+                Data = new List<int> { 19, 31, 43, 40, 51, 21, 11, 25, 45, 86, 62, 33 }
             };
 
             return Page();

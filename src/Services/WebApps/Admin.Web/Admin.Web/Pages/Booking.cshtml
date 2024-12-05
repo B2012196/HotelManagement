@@ -62,10 +62,10 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Mã đơn</th>
                 <th>Họ tên</th>
                 <th>Ngày Check-in dự kiến</th>
                 <th>Ngày Check-out dự kiến</th>
-                <th>Số lượng phòng</th>
                 <th>Số phòng</th>
                 <th>Trạng thái</th>
             </tr>
@@ -74,10 +74,10 @@ else
             @foreach (var booking in Model.BookingList)
             {
                 <tr>
+                    <td>@booking.BookingCode</td>
                     <td>@booking.GuestLastName @booking.GuestFirstName</td>
                     <td>@booking.ExpectedCheckinDate.ToString("dd/MM/yyyy")</td>
                     <td>@booking.ExpectedCheckoutDate.ToString("dd/MM/yyyy")</td>
-                    <td>@booking.RoomQuantity</td>
                     <td>@booking.RoomNumber</td>
                     <td>@booking.BookingStatus.GetDisplayName()</td>
                     <td>

@@ -56,3 +56,19 @@ footer a {
     display: block !important;
 }
 
+/* Đặt chiều cao màn hình cho container chính */
+.container-chart {
+    display: flex;
+    flex-direction: column; /* Căn các phần tử theo cột */
+    justify-content: center; /* Căn giữa theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Căn giữa text của <h5> */
+    margin-top: 10px;
+}
+
+/* Định dạng biểu đồ */
+.chart-wrapper {
+    width: 800px;
+    height: 400px;
+    border: 1px solid #ccc; /* Chỉ để kiểm tra khung nếu cần */
+}

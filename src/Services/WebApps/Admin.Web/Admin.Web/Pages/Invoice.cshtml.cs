@@ -101,6 +101,7 @@ namespace Admin.Web.Pages
                 //thuc hien task dong thoi
                 var responseRoom = await Task.WhenAll(roomTasks);
                 RoomList = responseRoom.Select(br => br.Room).ToList();
+                RoomList = RoomList.DistinctBy(room => room.RoomId).ToList();
 
                 var Invoices = new List<Invoice>();
                 if (!string.IsNullOrEmpty(SearchInput))
