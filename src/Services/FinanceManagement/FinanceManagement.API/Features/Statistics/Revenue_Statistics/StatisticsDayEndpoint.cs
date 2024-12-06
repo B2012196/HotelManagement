@@ -8,8 +8,7 @@ namespace FinanceManagement.API.Features.Statistics.Revenue_Statistics
         {
             app.MapGet("/finance/statistics/{type}", async (string type, ISender sender) =>
             {
-                DateTime Date = DateTime.Now;
-                var result = await sender.Send(new RevenueStatisticsQuery(Date, type));
+                var result = await sender.Send(new RevenueStatisticsQuery(type));
 
                 var response = result.Adapt<RevenueStatisticsResponse>();
 

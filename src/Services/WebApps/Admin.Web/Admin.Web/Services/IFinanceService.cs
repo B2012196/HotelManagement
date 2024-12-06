@@ -56,5 +56,9 @@
 
         [Post("/finance/vnpay")]
         Task<PaymentExecuteResponse> PaymentExecute(PaymentExecuteRequest request);
+
+        //statistic
+        [Get("/finance/statistics/{type}")]
+        Task<RevenueStatisticsResponse> GetStatistic(string type);
     }
 }

@@ -165,7 +165,7 @@
         }
       ],
       "UpstreamPathTemplate": "/finance/{endpoint}/{params}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [ "DELETE", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

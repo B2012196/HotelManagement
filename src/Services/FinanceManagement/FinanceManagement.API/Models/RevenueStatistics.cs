@@ -2,8 +2,8 @@
 {
     public class RevenueStatistics
     {
-        // Thống kê doanh thu
-        public decimal TotalRevenue { get; set; } // Tổng doanh thu trong ngày
+        public List<string> Labels { get; set; }    
+        public List<decimal> Data { get; set; }
 
     }
 }

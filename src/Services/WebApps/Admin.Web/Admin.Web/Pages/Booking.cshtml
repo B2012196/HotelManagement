@@ -232,7 +232,7 @@ else
                                                  class="img-thumbnail service-image"
                                                  alt="@service.ServiceName.ServiceNameTranslate()"
                                                  data-toggle="modal"
-                                                 data-target="#serviceModal-@service.ServiceId"
+                                                 data-target="#serviceModal-@service.ServiceId-@booking.BookingId"
                                                  style="cursor: pointer; width: 200px; height: 150px; object-fit: cover;" />
                                             <p>@service.ServiceName.ServiceNameTranslate()</p>
                                         </div>
@@ -251,7 +251,7 @@ else
                 
                 @foreach (var service in Model.ServiceList)
                 {
-                    <div style="z-index: 1060;" class="modal fade" id="serviceModal-@service.ServiceId" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
+                    <div style="z-index: 1060;" class="modal fade" id="serviceModal-@service.ServiceId-@booking.BookingId" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">

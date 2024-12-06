@@ -48,7 +48,7 @@
                             totalCount = resultConfirmed.totalCount;
                             break;
                         case "checkedin":
-                            filterStatus = BookingStatus.Confirmed;
+                            filterStatus = BookingStatus.CheckedIn;
                             var resultCheckin = await bookingService.GetBookings(pageNumber, pageSize, filterStatus);
                             filteredBookings = resultCheckin.Bookings;
                             totalCount = resultCheckin.totalCount;
@@ -237,7 +237,7 @@
             }
             catch(ApiException apiEx)
             {
-                if(apiEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                if (apiEx.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     var objCreateInvoice = new
                     {
@@ -248,13 +248,11 @@
                     //create invoice
                     var resultCreateInvoice = await financeService.CreateInvoice(objCreateInvoice);
                 }
-                HandleApiException(apiEx);
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error: {ex.Message}");
             }
-
 
             return RedirectToPage("Booking");
         }
@@ -299,9 +297,12 @@
                     logger.LogInformation("Dữ liệu không hợp lệ.");
                     return Page();
                 }
+
+                Console.WriteLine("BookingId: " + BookingId);
                 //get invoice by bookingId
                 var resultGetInvoice = await financeService.GetInvoiceByBookingId(bookingIdGuid);
 
+                Console.WriteLine("InvoiceId: " + resultGetInvoice.Invoice.InvoiceId);
                 var detail = new InvoiceDetail
                 {
                     InvoiceId = resultGetInvoice.Invoice.InvoiceId,
